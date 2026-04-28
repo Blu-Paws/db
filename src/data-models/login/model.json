@@ -1,0 +1,80 @@
+{
+  "login_id": {
+    "type": "number",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "email": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "name": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "password": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "create_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "status": {
+    "type": "boolean",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "phone": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "force_change_password": {
+    "type": "string",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "login_status_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "created_by": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "module_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "country_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "country_code": {
+    "type": "string",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  }
+}

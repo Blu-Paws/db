@@ -1,0 +1,35 @@
+{
+  "name": "@blupaws/connection",
+  "version": "1.0.0",
+  "description": "Shared BluPaws MySQL connection and data model helpers",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "MODEL_CONFLICTS.md"
+  ],
+  "scripts": {
+    "build": "tsc && node scripts/copy-json.js",
+    "clean": "rm -rf dist",
+    "prepack": "npm run clean && npm run build"
+  },
+  "author": "Samarth",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.947.0",
+    "mysql2": "^3.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

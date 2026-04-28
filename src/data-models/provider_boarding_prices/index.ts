@@ -1,0 +1,15 @@
+import model from './model.json';
+
+import type { DataModel, TableDefinition } from '../../types';
+
+export type ProviderBoardingPricesTable = typeof providerBoardingPricesTable;
+
+export const providerBoardingPricesTable: TableDefinition = {
+  tableName: 'provider_boarding_prices',
+  model: model as DataModel,
+  validateInsert: async (_conn, _row) => {},
+  validateUpdate: async (_conn, _row) => {},
+  validateDelete: async (_conn, _row) => {},
+};
+
+export default providerBoardingPricesTable;

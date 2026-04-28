@@ -1,0 +1,127 @@
+# @blupaws/connection
+
+Shared MySQL connection, pooling, transaction, and table-validation helpers for
+BluPaws Lambda handlers.
+
+## Usage
+
+Create one connection context at the beginning of each Lambda invocation. Both
+`stage` and `flavor` are required.
+
+```js
+const { createConnection } = require('@blupaws/connection');
+
+exports.handler = async (event) => {
+  const db = createConnection(
+    event.requestContext.stage,
+    event.headers?.['x-blupaws-flavor'],
+  );
+
+  return db.query('select 1');
+};
+```
+
+The database secret is resolved from:
+
+```txt
+${stage}/RDB/mysql
+```
+
+There is no fallback stage. If the stage is missing, flavor is missing, or the
+stage secret does not exist, the package throws.
+
+## Context API
+
+`createConnection(stage, flavor)` returns a small `db` object:
+
+- `db.query(sql, values?, conn?)`
+- `db.withTransaction(callback)`
+- `db.insertRowIntoTable(tableName, row, conn?)`
+- `db.insertRowsIntoTable(tableName, rows, conn?)`
+- `db.updateRowTable(tableName, row, clauses, conn?)`
+- `db.deleteRowFromTable(tableName, clauses, conn?)`
+
+`stage` and `flavor` are kept internal and are not exposed on the returned
+object.
+
+## Queries
+
+Use `db.query(...)` for normal reads and simple statements.
+
+```js
+const pets = await db.query(
+  'select * from pets where login_id = ?',
+  [loginId],
+);
+```
+
+## Writes
+
+Table write helpers automatically run in a transaction when no connection is
+passed.
+
+```js
+const petId = await db.insertRowIntoTable('pets', payload);
+
+await db.updateRowTable(
+  'pets',
+  { pet_name: 'Milo' },
+  { pet_id: petId },
+);
+```
+
+For multi-step writes that must commit or roll back together, use
+`db.withTransaction(...)` and pass the transaction connection into each helper.
+
+```js
+await db.withTransaction(async (conn) => {
+  const petId = await db.insertRowIntoTable('pets', pet, conn);
+
+  await db.insertRowIntoTable(
+    'pet_history',
+    { ...history, pet_id: petId },
+    conn,
+  );
+});
+```
+
+If the callback throws, the transaction is rolled back and the connection is
+released.
+
+## Pool Tuning
+
+Defaults are intentionally conservative for Lambda so one warm container does
+not open too many database connections.
+
+- `BLUPAWS_DB_CONNECTION_LIMIT` defaults to `3`
+- `BLUPAWS_DB_MAX_IDLE` defaults to `1`
+- `BLUPAWS_DB_QUEUE_LIMIT` defaults to `25`
+- `BLUPAWS_DB_IDLE_TIMEOUT_MS` defaults to `30000`
+- `BLUPAWS_DB_CONNECT_TIMEOUT_MS` defaults to `10000`
+- `BLUPAWS_DB_ACQUIRE_TIMEOUT_MS` defaults to `8000`
+
+## Data Models
+
+Shared table models live in `src/data-models`. Each table has its own folder:
+
+```txt
+src/data-models/<table_name>/model.json
+src/data-models/<table_name>/index.ts
+```
+
+`model.json` contains the common field metadata used for type checks and
+create/update support. `index.ts` contains the internal table definition, an
+exported table type, and three internal validator hooks:
+
+- `validateInsert(conn, row)`
+- `validateUpdate(conn, row)`
+- `validateDelete(conn, row)`
+
+The validator hooks are currently no-ops. Add table-specific rules there later.
+If a validator throws or returns `false`, the write helper rejects the operation
+before mutating the table.
+
+The initial model set was generated from all handler-local data models under
+the `aws` workspace. Conflicting definitions were merged permissively so the
+first migration does not break existing handlers. See `MODEL_CONFLICTS.md` for
+the files and fields that need review.
