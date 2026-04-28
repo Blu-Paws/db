@@ -14,6 +14,7 @@ export declare const getPoolConfig: () => {
     charset: string;
 };
 export declare const getAcquireTimeoutMs: () => number;
+export declare const getSlowQueryLogMs: () => number | null;
 export declare function isFatalError(err: unknown): err is FatalMysqlError;
 export declare const getTableDefinition: (tableName: string) => TableDefinition;
 export declare const getDataModel: (tableName: string) => DataModel;

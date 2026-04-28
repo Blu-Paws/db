@@ -90,15 +90,17 @@ released.
 
 ## Pool Tuning
 
-Defaults are intentionally conservative for Lambda so one warm container does
-not open too many database connections.
+Defaults are tuned for the current Lambda handlers. Environment variables remain
+the source of truth when a handler needs tighter or looser limits.
 
-- `BLUPAWS_DB_CONNECTION_LIMIT` defaults to `3`
-- `BLUPAWS_DB_MAX_IDLE` defaults to `1`
-- `BLUPAWS_DB_QUEUE_LIMIT` defaults to `25`
+- `BLUPAWS_DB_CONNECTION_LIMIT` defaults to `10`
+- `BLUPAWS_DB_MAX_IDLE` defaults to `5`
+- `BLUPAWS_DB_QUEUE_LIMIT` defaults to `0`
 - `BLUPAWS_DB_IDLE_TIMEOUT_MS` defaults to `30000`
 - `BLUPAWS_DB_CONNECT_TIMEOUT_MS` defaults to `10000`
 - `BLUPAWS_DB_ACQUIRE_TIMEOUT_MS` defaults to `8000`
+- `BLUPAWS_DB_LOG_SLOW_QUERY_MS` is disabled by default. Set it to a positive
+  integer to log slow query execution and connection-acquire timings.
 
 ## Data Models
 

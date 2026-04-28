@@ -9,6 +9,15 @@ const client_secrets_manager_1 = require("@aws-sdk/client-secrets-manager");
 const utils_1 = require("./utils");
 const pools = new Map();
 const poolPromises = new Map();
+const getElapsedMs = (startedAt) => Number(process.hrtime.bigint() - startedAt) / 1_000_000;
+const logIfSlow = (operation, elapsedMs, sql) => {
+    const slowQueryLogMs = (0, utils_1.getSlowQueryLogMs)();
+    if (slowQueryLogMs == null || elapsedMs < slowQueryLogMs) {
+        return;
+    }
+    const detail = sql == null ? '' : `: ${sql.replace(/\s+/g, ' ').trim()}`;
+    console.warn(`[blupaws-db] Slow ${operation}: ${elapsedMs.toFixed(1)}ms${detail}`);
+};
 const getSecretId = (stageKey) => `${stageKey}/RDB/mysql`;
 const getDBDetails = async (stageKey) => {
     const client = new client_secrets_manager_1.SecretsManagerClient({
@@ -50,12 +59,19 @@ const attachListeners = (pool, stageKey) => {
     });
 };
 const runQuery = async (executor, sql, values) => {
-    const [rows] = values === undefined
-        ? await executor.query(sql)
-        : await executor.query(sql, values);
-    return rows;
+    const startedAt = process.hrtime.bigint();
+    try {
+        const [rows] = values === undefined
+            ? await executor.query(sql)
+            : await executor.query(sql, values);
+        return rows;
+    }
+    finally {
+        logIfSlow('query', getElapsedMs(startedAt), sql);
+    }
 };
 const acquireConnection = async (pool) => {
+    const startedAt = process.hrtime.bigint();
     let timedOut = false;
     let timeout;
     const connectionPromise = pool.getConnection();
@@ -77,6 +93,7 @@ const acquireConnection = async (pool) => {
         if (timeout != null) {
             clearTimeout(timeout);
         }
+        logIfSlow('connection acquire', getElapsedMs(startedAt));
     }
 };
 const createPoolForStage = async (stageKey) => {
@@ -191,7 +208,7 @@ const updateRowTableForStage = async (stageKey, conn, tableName, row, clauses) =
         await run(conn);
         return;
     }
-    await withTransactionForStage(stageKey, run);
+    await withConnectionForStage(stageKey, run);
 };
 const insertRowIntoTableForStage = async (stageKey, conn, tableName, row) => {
     const table = (0, utils_1.getTableDefinition)(tableName);
@@ -211,7 +228,7 @@ const insertRowIntoTableForStage = async (stageKey, conn, tableName, row) => {
     if (conn != null) {
         return run(conn);
     }
-    return withTransactionForStage(stageKey, run);
+    return withConnectionForStage(stageKey, run);
 };
 const insertRowsIntoTableForStage = async (stageKey, conn, tableName, rows) => {
     if (!Array.isArray(rows) || rows.length === 0) {
@@ -253,7 +270,7 @@ const deleteRowFromTableForStage = async (stageKey, conn, tableName, clauses) =>
         await run(conn);
         return;
     }
-    await withTransactionForStage(stageKey, run);
+    await withConnectionForStage(stageKey, run);
 };
 const createConnection = (stageValue, flavorValue) => {
     if (stageValue == null || `${stageValue}`.trim().length === 0) {

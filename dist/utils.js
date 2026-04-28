@@ -1,17 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.serializeClauseData = exports.serializeCreateData = exports.serializeUpdateData = exports.validateTableOperation = exports.getDataModel = exports.getTableDefinition = exports.getAcquireTimeoutMs = exports.getPoolConfig = exports.normalizeFlavor = exports.normalizeStage = void 0;
+exports.serializeClauseData = exports.serializeCreateData = exports.serializeUpdateData = exports.validateTableOperation = exports.getDataModel = exports.getTableDefinition = exports.getSlowQueryLogMs = exports.getAcquireTimeoutMs = exports.getPoolConfig = exports.normalizeFlavor = exports.normalizeStage = void 0;
 exports.isFatalError = isFatalError;
 const tables_1 = require("./tables");
-const DEFAULT_CONNECTION_LIMIT = 3;
-const DEFAULT_MAX_IDLE = 1;
-const DEFAULT_QUEUE_LIMIT = 25;
+const DEFAULT_CONNECTION_LIMIT = 10;
+const DEFAULT_MAX_IDLE = 5;
+const DEFAULT_QUEUE_LIMIT = 0;
 const DEFAULT_IDLE_TIMEOUT_MS = 30_000;
 const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
 const DEFAULT_ACQUIRE_TIMEOUT_MS = 8_000;
 const getPositiveInt = (value, fallback) => {
     const parsed = Number(value);
     return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+};
+const getNonNegativeInt = (value, fallback) => {
+    const parsed = Number(value);
+    return Number.isInteger(parsed) && parsed >= 0 ? parsed : fallback;
 };
 const normalizeStage = (value) => `${value}`.trim().toLowerCase();
 exports.normalizeStage = normalizeStage;
@@ -25,7 +29,7 @@ const getPoolConfig = () => {
         connectionLimit,
         maxIdle,
         idleTimeout: getPositiveInt(process.env.BLUPAWS_DB_IDLE_TIMEOUT_MS, DEFAULT_IDLE_TIMEOUT_MS),
-        queueLimit: getPositiveInt(process.env.BLUPAWS_DB_QUEUE_LIMIT, DEFAULT_QUEUE_LIMIT),
+        queueLimit: getNonNegativeInt(process.env.BLUPAWS_DB_QUEUE_LIMIT, DEFAULT_QUEUE_LIMIT),
         connectTimeout: getPositiveInt(process.env.BLUPAWS_DB_CONNECT_TIMEOUT_MS, DEFAULT_CONNECT_TIMEOUT_MS),
         enableKeepAlive: true,
         keepAliveInitialDelay: 0,
@@ -35,6 +39,15 @@ const getPoolConfig = () => {
 exports.getPoolConfig = getPoolConfig;
 const getAcquireTimeoutMs = () => getPositiveInt(process.env.BLUPAWS_DB_ACQUIRE_TIMEOUT_MS, DEFAULT_ACQUIRE_TIMEOUT_MS);
 exports.getAcquireTimeoutMs = getAcquireTimeoutMs;
+const getSlowQueryLogMs = () => {
+    const value = process.env.BLUPAWS_DB_LOG_SLOW_QUERY_MS;
+    if (value == null || value.trim().length === 0) {
+        return null;
+    }
+    const parsed = Number(value);
+    return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+};
+exports.getSlowQueryLogMs = getSlowQueryLogMs;
 function isFatalError(err) {
     const error = err;
     return (error?.fatal ||

@@ -11,9 +11,9 @@ import type {
 } from './types';
 import { tableDefinitions } from './tables';
 
-const DEFAULT_CONNECTION_LIMIT = 3;
-const DEFAULT_MAX_IDLE = 1;
-const DEFAULT_QUEUE_LIMIT = 25;
+const DEFAULT_CONNECTION_LIMIT = 10;
+const DEFAULT_MAX_IDLE = 5;
+const DEFAULT_QUEUE_LIMIT = 0;
 const DEFAULT_IDLE_TIMEOUT_MS = 30_000;
 const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
 const DEFAULT_ACQUIRE_TIMEOUT_MS = 8_000;
@@ -24,6 +24,14 @@ const getPositiveInt = (
 ): number => {
   const parsed = Number(value);
   return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+};
+
+const getNonNegativeInt = (
+  value: string | undefined,
+  fallback: number,
+): number => {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed >= 0 ? parsed : fallback;
 };
 
 export const normalizeStage = (value: unknown): Stage =>
@@ -50,7 +58,7 @@ export const getPoolConfig = () => {
       process.env.BLUPAWS_DB_IDLE_TIMEOUT_MS,
       DEFAULT_IDLE_TIMEOUT_MS,
     ),
-    queueLimit: getPositiveInt(
+    queueLimit: getNonNegativeInt(
       process.env.BLUPAWS_DB_QUEUE_LIMIT,
       DEFAULT_QUEUE_LIMIT,
     ),
@@ -69,6 +77,15 @@ export const getAcquireTimeoutMs = (): number =>
     process.env.BLUPAWS_DB_ACQUIRE_TIMEOUT_MS,
     DEFAULT_ACQUIRE_TIMEOUT_MS,
   );
+
+export const getSlowQueryLogMs = (): number | null => {
+  const value = process.env.BLUPAWS_DB_LOG_SLOW_QUERY_MS;
+  if (value == null || value.trim().length === 0) {
+    return null;
+  }
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+};
 
 export function isFatalError(err: unknown): err is FatalMysqlError {
   const error = err as FatalMysqlError;

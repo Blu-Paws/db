@@ -20,6 +20,7 @@
   "scripts": {
     "build": "tsc && node scripts/copy-json.js",
     "clean": "rm -rf dist",
+    "test": "npm run build && node --test test/*.test.js",
     "prepack": "npm run clean && npm run build"
   },
   "author": "Samarth",

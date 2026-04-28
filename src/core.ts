@@ -21,6 +21,7 @@ import type {
 import {
   getAcquireTimeoutMs,
   getPoolConfig,
+  getSlowQueryLogMs,
   getTableDefinition,
   isFatalError,
   normalizeFlavor,
@@ -33,6 +34,20 @@ import {
 
 const pools = new Map<Stage, BluPawsPool>();
 const poolPromises = new Map<Stage, Promise<BluPawsPool>>();
+
+const getElapsedMs = (startedAt: bigint): number =>
+  Number(process.hrtime.bigint() - startedAt) / 1_000_000;
+
+const logIfSlow = (operation: string, elapsedMs: number, sql?: string): void => {
+  const slowQueryLogMs = getSlowQueryLogMs();
+  if (slowQueryLogMs == null || elapsedMs < slowQueryLogMs) {
+    return;
+  }
+  const detail = sql == null ? '' : `: ${sql.replace(/\s+/g, ' ').trim()}`;
+  console.warn(
+    `[blupaws-db] Slow ${operation}: ${elapsedMs.toFixed(1)}ms${detail}`,
+  );
+};
 
 const getSecretId = (stageKey: Stage): string => `${stageKey}/RDB/mysql`;
 
@@ -85,14 +100,20 @@ const runQuery = async (
   sql: string,
   values?: QueryValues,
 ): Promise<QueryResult> => {
-  const [rows] =
-    values === undefined
-      ? await executor.query(sql)
-      : await executor.query(sql, values as any);
-  return rows as QueryResult;
+  const startedAt = process.hrtime.bigint();
+  try {
+    const [rows] =
+      values === undefined
+        ? await executor.query(sql)
+        : await executor.query(sql, values as any);
+    return rows as QueryResult;
+  } finally {
+    logIfSlow('query', getElapsedMs(startedAt), sql);
+  }
 };
 
 const acquireConnection = async (pool: Pool): Promise<PoolConnection> => {
+  const startedAt = process.hrtime.bigint();
   let timedOut = false;
   let timeout: NodeJS.Timeout | undefined;
 
@@ -118,6 +139,7 @@ const acquireConnection = async (pool: Pool): Promise<PoolConnection> => {
     if (timeout != null) {
       clearTimeout(timeout);
     }
+    logIfSlow('connection acquire', getElapsedMs(startedAt));
   }
 };
 
@@ -257,7 +279,7 @@ const updateRowTableForStage = async (
     await run(conn);
     return;
   }
-  await withTransactionForStage(stageKey, run);
+  await withConnectionForStage(stageKey, run);
 };
 
 const insertRowIntoTableForStage = async (
@@ -290,7 +312,7 @@ const insertRowIntoTableForStage = async (
   if (conn != null) {
     return run(conn);
   }
-  return withTransactionForStage(stageKey, run);
+  return withConnectionForStage(stageKey, run);
 };
 
 const insertRowsIntoTableForStage = async (
@@ -348,7 +370,7 @@ const deleteRowFromTableForStage = async (
     await run(conn);
     return;
   }
-  await withTransactionForStage(stageKey, run);
+  await withConnectionForStage(stageKey, run);
 };
 
 export const createConnection = (stageValue: Stage, flavorValue: Flavor) => {
