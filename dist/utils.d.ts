@@ -1,0 +1,23 @@
+import type { PoolConnection } from 'mysql2/promise';
+import type { DataModel, DataRow, FatalMysqlError, Stage, TableDefinition, TableOperation } from './types';
+export declare const normalizeStage: (value: unknown) => Stage;
+export declare const normalizeFlavor: (value: unknown) => string;
+export declare const getPoolConfig: () => {
+    waitForConnections: boolean;
+    connectionLimit: number;
+    maxIdle: number;
+    idleTimeout: number;
+    queueLimit: number;
+    connectTimeout: number;
+    enableKeepAlive: boolean;
+    keepAliveInitialDelay: number;
+    charset: string;
+};
+export declare const getAcquireTimeoutMs: () => number;
+export declare function isFatalError(err: unknown): err is FatalMysqlError;
+export declare const getTableDefinition: (tableName: string) => TableDefinition;
+export declare const getDataModel: (tableName: string) => DataModel;
+export declare const validateTableOperation: (tableName: string, operation: TableOperation, conn: PoolConnection, row: DataRow) => Promise<void>;
+export declare const serializeUpdateData: (model: DataModel, row: DataRow) => DataRow;
+export declare const serializeCreateData: (model: DataModel, row: DataRow) => DataRow;
+export declare const serializeClauseData: (model: DataModel, row: DataRow) => DataRow;

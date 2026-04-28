@@ -1,0 +1,40 @@
+{
+  "id": {
+    "type": "number",
+    "primary": true,
+    "autoincrement": true,
+    "required": false,
+    "updateable": false,
+    "createable": false
+  },
+  "clinic_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "entity_type": {
+    "type": "string",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "entity_id": {
+    "type": "string",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "coat_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "adjustment": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  }
+}
