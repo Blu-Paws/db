@@ -65,12 +65,6 @@
     "updateable": false,
     "required": true
   },
-  "country_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
-  },
   "country_code": {
     "type": "string",
     "createable": true,

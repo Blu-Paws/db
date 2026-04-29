@@ -15,7 +15,10 @@ const clearDistCache = () => {
   }
 };
 
-const createConnectionStub = ({ queryResults = [[{ ok: true }]], failFirstQuery = false } = {}) => {
+const createConnectionStub = ({
+  queryResults = [[{ ok: true }]],
+  failFirstQuery = false,
+} = {}) => {
   const calls = {
     configs: [],
     pools: [],
@@ -188,12 +191,15 @@ test('single-row write helpers use autocommit without implicit transactions', as
     login_status_id: 1,
     created_by: 1,
     module_id: 2,
-    country_id: 1,
     country_code: '+1',
   });
 
   assert.equal(insertId, 123);
-  await db.updateRowTable('login', { name: 'Renamed User' }, { phone: '5551234' });
+  await db.updateRowTable(
+    'login',
+    { name: 'Renamed User' },
+    { phone: '5551234' },
+  );
   await db.deleteRowFromTable('login', { phone: '5551234' });
 
   assert.equal(calls.connections.length, 3);
@@ -208,7 +214,10 @@ test('single-row write helpers use autocommit without implicit transactions', as
     calls.connections[1].queries[0].sql,
     'UPDATE login SET name = ? WHERE phone = ?',
   );
-  assert.equal(calls.connections[2].queries[0].sql, 'DELETE FROM login WHERE phone = ?');
+  assert.equal(
+    calls.connections[2].queries[0].sql,
+    'DELETE FROM login WHERE phone = ?',
+  );
 });
 
 test('helpers inside withTransaction use the provided transaction connection', async () => {
@@ -216,7 +225,12 @@ test('helpers inside withTransaction use the provided transaction connection', a
   const db = api.createConnection('dev', 'clinic');
 
   await db.withTransaction(async (conn) => {
-    await db.updateRowTable('login', { name: 'Updated User' }, { phone: '5551234' }, conn);
+    await db.updateRowTable(
+      'login',
+      { name: 'Updated User' },
+      { phone: '5551234' },
+      conn,
+    );
   });
 
   assert.equal(calls.pools[0].getConnectionCalls, 1);
@@ -226,5 +240,8 @@ test('helpers inside withTransaction use the provided transaction connection', a
   assert.equal(conn.rollbackCalls, 0);
   assert.equal(conn.releaseCalls, 1);
   assert.equal(conn.queries.length, 1);
-  assert.equal(conn.queries[0].sql, 'UPDATE login SET name = ? WHERE phone = ?');
+  assert.equal(
+    conn.queries[0].sql,
+    'UPDATE login SET name = ? WHERE phone = ?',
+  );
 });
