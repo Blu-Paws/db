@@ -48,7 +48,7 @@
     "required": true
   },
   "zip_code": {
-    "type": "string",
+    "type": "number",
     "createable": true,
     "updateable": true,
     "required": true
