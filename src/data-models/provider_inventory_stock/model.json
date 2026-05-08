@@ -1,0 +1,76 @@
+{
+  "stock_id": {
+    "type": "number",
+    "primary": true,
+    "autoincrement": true,
+    "required": false,
+    "updateable": false,
+    "createable": false
+  },
+  "variant_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "location_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "quantity_on_hand": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "reserved_quantity": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "last_counted_date": {
+    "type": "datetime",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "last_movement_date": {
+    "type": "datetime",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "status": {
+    "type": "boolean",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "created_by": {
+    "type": "number",
+    "required": false,
+    "updateable": false,
+    "createable": true
+  },
+  "updated_by": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "created_date": {
+    "type": "datetime",
+    "required": false,
+    "updateable": false,
+    "createable": true
+  },
+  "updated_date": {
+    "type": "datetime",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  }
+}

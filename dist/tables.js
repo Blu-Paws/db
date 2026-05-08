@@ -22,7 +22,9 @@ const evisit_details_notes_1 = __importDefault(require("./data-models/evisit_det
 const favourite_1 = __importDefault(require("./data-models/favourite"));
 const feedback_1 = __importDefault(require("./data-models/feedback"));
 const images_1 = __importDefault(require("./data-models/images"));
+const inventory_locations_1 = __importDefault(require("./data-models/inventory_locations"));
 const login_1 = __importDefault(require("./data-models/login"));
+const mstr_product_categories_1 = __importDefault(require("./data-models/mstr_product_categories"));
 const mstr_provider_plan_features_1 = __importDefault(require("./data-models/mstr_provider_plan_features"));
 const mstr_provider_plan_prices_1 = __importDefault(require("./data-models/mstr_provider_plan_prices"));
 const mstr_provider_plans_1 = __importDefault(require("./data-models/mstr_provider_plans"));
@@ -40,8 +42,13 @@ const provider_boardings_1 = __importDefault(require("./data-models/provider_boa
 const provider_experience_price_1 = __importDefault(require("./data-models/provider_experience_price"));
 const provider_inspection_checklist_1 = __importDefault(require("./data-models/provider_inspection_checklist"));
 const provider_inspection_checklist_questions_1 = __importDefault(require("./data-models/provider_inspection_checklist_questions"));
+const provider_inventory_movements_1 = __importDefault(require("./data-models/provider_inventory_movements"));
+const provider_inventory_stock_1 = __importDefault(require("./data-models/provider_inventory_stock"));
 const provider_package_services_1 = __importDefault(require("./data-models/provider_package_services"));
 const provider_packages_1 = __importDefault(require("./data-models/provider_packages"));
+const provider_product_channel_settings_1 = __importDefault(require("./data-models/provider_product_channel_settings"));
+const provider_product_variants_1 = __importDefault(require("./data-models/provider_product_variants"));
+const provider_products_1 = __importDefault(require("./data-models/provider_products"));
 const provider_price_base_variables_1 = __importDefault(require("./data-models/provider_price_base_variables"));
 const provider_price_coat_complexity_1 = __importDefault(require("./data-models/provider_price_coat_complexity"));
 const provider_price_life_stage_surcharges_1 = __importDefault(require("./data-models/provider_price_life_stage_surcharges"));
@@ -69,7 +76,9 @@ exports.tableDefinitions = {
     'favourite': favourite_1.default,
     'feedback': feedback_1.default,
     'images': images_1.default,
+    'inventory_locations': inventory_locations_1.default,
     'login': login_1.default,
+    'mstr_product_categories': mstr_product_categories_1.default,
     'mstr_provider_plan_features': mstr_provider_plan_features_1.default,
     'mstr_provider_plan_prices': mstr_provider_plan_prices_1.default,
     'mstr_provider_plans': mstr_provider_plans_1.default,
@@ -87,8 +96,13 @@ exports.tableDefinitions = {
     'provider_experience_price': provider_experience_price_1.default,
     'provider_inspection_checklist': provider_inspection_checklist_1.default,
     'provider_inspection_checklist_questions': provider_inspection_checklist_questions_1.default,
+    'provider_inventory_movements': provider_inventory_movements_1.default,
+    'provider_inventory_stock': provider_inventory_stock_1.default,
     'provider_package_services': provider_package_services_1.default,
     'provider_packages': provider_packages_1.default,
+    'provider_product_channel_settings': provider_product_channel_settings_1.default,
+    'provider_product_variants': provider_product_variants_1.default,
+    'provider_products': provider_products_1.default,
     'provider_price_base_variables': provider_price_base_variables_1.default,
     'provider_price_coat_complexity': provider_price_coat_complexity_1.default,
     'provider_price_life_stage_surcharges': provider_price_life_stage_surcharges_1.default,
