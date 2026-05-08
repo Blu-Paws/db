@@ -18,7 +18,6 @@ import evisitDetailsNotesTable from './data-models/evisit_details_notes';
 import favouriteTable from './data-models/favourite';
 import feedbackTable from './data-models/feedback';
 import imagesTable from './data-models/images';
-import inventoryLocationsTable from './data-models/inventory_locations';
 import loginTable from './data-models/login';
 import mstrProductCategoriesTable from './data-models/mstr_product_categories';
 import mstrProviderPlanFeaturesTable from './data-models/mstr_provider_plan_features';
@@ -38,6 +37,7 @@ import providerBoardingsTable from './data-models/provider_boardings';
 import providerExperiencePriceTable from './data-models/provider_experience_price';
 import providerInspectionChecklistTable from './data-models/provider_inspection_checklist';
 import providerInspectionChecklistQuestionsTable from './data-models/provider_inspection_checklist_questions';
+import providerInventoryLocationsTable from './data-models/provider_inventory_locations';
 import providerInventoryMovementsTable from './data-models/provider_inventory_movements';
 import providerInventoryStockTable from './data-models/provider_inventory_stock';
 import providerPackageServicesTable from './data-models/provider_package_services';
@@ -73,7 +73,6 @@ export const tableDefinitions = {
   'favourite': favouriteTable,
   'feedback': feedbackTable,
   'images': imagesTable,
-  'inventory_locations': inventoryLocationsTable,
   'login': loginTable,
   'mstr_product_categories': mstrProductCategoriesTable,
   'mstr_provider_plan_features': mstrProviderPlanFeaturesTable,
@@ -93,6 +92,7 @@ export const tableDefinitions = {
   'provider_experience_price': providerExperiencePriceTable,
   'provider_inspection_checklist': providerInspectionChecklistTable,
   'provider_inspection_checklist_questions': providerInspectionChecklistQuestionsTable,
+  'provider_inventory_locations': providerInventoryLocationsTable,
   'provider_inventory_movements': providerInventoryMovementsTable,
   'provider_inventory_stock': providerInventoryStockTable,
   'provider_package_services': providerPackageServicesTable,

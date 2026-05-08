@@ -1,5 +1,5 @@
 -- BluPaws product and inventory schema.
--- Run this after clinic, login, and inventory_locations exist.
+-- Run this after clinic and login exist.
 
 CREATE TABLE IF NOT EXISTS mstr_product_categories (
   category_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -220,6 +220,72 @@ CREATE TABLE IF NOT EXISTS provider_product_channel_settings (
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE IF NOT EXISTS provider_inventory_locations (
+  location_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  clinic_id INT NULL,
+  parent_location_id BIGINT UNSIGNED NULL,
+
+  location_code VARCHAR(64) NOT NULL,
+  location_name VARCHAR(150) NOT NULL,
+
+  location_type ENUM(
+    'country',
+    'state',
+    'city',
+    'branch',
+    'floor',
+    'room',
+    'shelf',
+    'rack',
+    'bin',
+    'vehicle',
+    'other'
+  ) NOT NULL,
+
+  full_path_code VARCHAR(500) NULL,
+
+  is_stock_location TINYINT NOT NULL DEFAULT 0,
+  sort_order INT NOT NULL DEFAULT 0,
+  status TINYINT NOT NULL DEFAULT 1,
+
+  created_by INT NULL,
+  updated_by INT NULL,
+  created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  clinic_key INT GENERATED ALWAYS AS (COALESCE(clinic_id, 0)) STORED,
+  parent_location_key BIGINT UNSIGNED GENERATED ALWAYS AS (COALESCE(parent_location_id, 0)) STORED,
+
+  PRIMARY KEY (location_id),
+
+  UNIQUE KEY uq_provider_inventory_location_sibling_code (
+    clinic_key,
+    parent_location_key,
+    location_code
+  ),
+
+  KEY idx_provider_inventory_locations_parent (parent_location_id),
+  KEY idx_provider_inventory_locations_clinic (clinic_id, location_type, status),
+  KEY idx_provider_inventory_locations_stock (clinic_id, is_stock_location, status),
+  KEY idx_provider_inventory_locations_code (location_code),
+
+  CONSTRAINT fk_provider_inventory_locations_parent
+    FOREIGN KEY (parent_location_id)
+    REFERENCES provider_inventory_locations(location_id),
+
+  CONSTRAINT fk_provider_inventory_locations_clinic
+    FOREIGN KEY (clinic_id)
+    REFERENCES clinic(clinic_id),
+
+  CONSTRAINT chk_provider_inventory_locations_stock_flag
+    CHECK (is_stock_location IN (0, 1)),
+
+  CONSTRAINT chk_provider_inventory_locations_status
+    CHECK (status IN (0, 1))
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
 CREATE TABLE IF NOT EXISTS provider_inventory_stock (
   stock_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   variant_id BIGINT UNSIGNED NOT NULL,
@@ -252,7 +318,7 @@ CREATE TABLE IF NOT EXISTS provider_inventory_stock (
 
   CONSTRAINT fk_provider_inventory_stock_location
     FOREIGN KEY (location_id)
-    REFERENCES inventory_locations(location_id),
+    REFERENCES provider_inventory_locations(location_id),
 
   CONSTRAINT chk_provider_inventory_stock_reserved
     CHECK (reserved_quantity >= 0),
@@ -329,7 +395,7 @@ CREATE TABLE IF NOT EXISTS provider_inventory_movements (
 
   CONSTRAINT fk_provider_inventory_movements_location
     FOREIGN KEY (location_id)
-    REFERENCES inventory_locations(location_id),
+    REFERENCES provider_inventory_locations(location_id),
 
   CONSTRAINT fk_provider_inventory_movements_paired
     FOREIGN KEY (paired_movement_id)

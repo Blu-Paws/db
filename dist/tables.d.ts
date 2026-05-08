@@ -18,7 +18,6 @@ export declare const tableDefinitions: {
     favourite: TableDefinition;
     feedback: TableDefinition;
     images: TableDefinition;
-    inventory_locations: TableDefinition;
     login: TableDefinition;
     mstr_product_categories: TableDefinition;
     mstr_provider_plan_features: TableDefinition;
@@ -38,6 +37,7 @@ export declare const tableDefinitions: {
     provider_experience_price: TableDefinition;
     provider_inspection_checklist: TableDefinition;
     provider_inspection_checklist_questions: TableDefinition;
+    provider_inventory_locations: TableDefinition;
     provider_inventory_movements: TableDefinition;
     provider_inventory_stock: TableDefinition;
     provider_package_services: TableDefinition;
