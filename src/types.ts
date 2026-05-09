@@ -9,7 +9,7 @@ import type {
 export type Stage = string;
 export type QueryValues = unknown[] | Record<string, unknown>;
 export type QueryResult = RowDataPacket[] | RowDataPacket[][] | ResultSetHeader;
-export type ModelFieldType = 'string' | 'number' | 'boolean' | 'datetime';
+export type ModelFieldType = 'string' | 'number' | 'datetime';
 
 export type DataModel = Record<
   string,

@@ -86,13 +86,13 @@
     "createable": true
   },
   "track_batch": {
-    "type": "boolean",
+    "type": "number",
     "required": false,
     "updateable": true,
     "createable": true
   },
   "track_expiry": {
-    "type": "boolean",
+    "type": "number",
     "required": false,
     "updateable": true,
     "createable": true
@@ -104,7 +104,7 @@
     "createable": true
   },
   "status": {
-    "type": "boolean",
+    "type": "number",
     "required": false,
     "updateable": true,
     "createable": true

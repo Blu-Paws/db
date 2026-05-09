@@ -96,7 +96,7 @@
     "required": false
   },
   "status": {
-    "type": "boolean",
+    "type": "number",
     "createable": true,
     "updateable": true,
     "required": true

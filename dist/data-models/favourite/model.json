@@ -26,7 +26,7 @@
     "createable": true
   },
   "is_active": {
-    "type": "boolean",
+    "type": "number",
     "required": true,
     "updateable": true,
     "createable": true

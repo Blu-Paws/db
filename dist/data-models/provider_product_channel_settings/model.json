@@ -20,7 +20,7 @@
     "createable": true
   },
   "is_enabled": {
-    "type": "boolean",
+    "type": "number",
     "required": false,
     "updateable": true,
     "createable": true

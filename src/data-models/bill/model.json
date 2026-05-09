@@ -48,7 +48,7 @@
     "required": true
   },
   "status": {
-    "type": "boolean",
+    "type": "number",
     "createable": true,
     "updateable": false,
     "required": true

@@ -143,12 +143,6 @@ const validators = {
     }
     return value;
   },
-  boolean: (value: unknown, key: string) => {
-    if (typeof value !== 'boolean') {
-      throw new Error(`Type of ${key} must be boolean`);
-    }
-    return value ? 1 : 0;
-  },
   datetime: (value: unknown, key: string) => {
     if (!(value instanceof Date) || Number.isNaN(value.getTime())) {
       throw new Error(`Type of ${key} must be a valid Date`);

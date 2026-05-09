@@ -50,25 +50,25 @@
     "createable": true
   },
   "is_stock_tracked": {
-    "type": "boolean",
+    "type": "number",
     "required": false,
     "updateable": true,
     "createable": true
   },
   "is_restricted": {
-    "type": "boolean",
+    "type": "number",
     "required": false,
     "updateable": true,
     "createable": true
   },
   "requires_prescription": {
-    "type": "boolean",
+    "type": "number",
     "required": false,
     "updateable": true,
     "createable": true
   },
   "allow_negative_stock": {
-    "type": "boolean",
+    "type": "number",
     "required": false,
     "updateable": true,
     "createable": true
@@ -92,7 +92,7 @@
     "createable": true
   },
   "status": {
-    "type": "boolean",
+    "type": "number",
     "required": false,
     "updateable": true,
     "createable": true

@@ -42,7 +42,7 @@
     "required": false
   },
   "is_stock_location": {
-    "type": "boolean",
+    "type": "number",
     "createable": true,
     "updateable": true,
     "required": false
@@ -54,7 +54,7 @@
     "required": false
   },
   "status": {
-    "type": "boolean",
+    "type": "number",
     "createable": true,
     "updateable": true,
     "required": false
