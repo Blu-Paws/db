@@ -20,6 +20,7 @@ import feedbackTable from './data-models/feedback';
 import imagesTable from './data-models/images';
 import loginTable from './data-models/login';
 import mstrProductCategoriesTable from './data-models/mstr_product_categories';
+import mstrProviderChannelsTable from './data-models/mstr_provider_channels';
 import mstrProviderPlanFeaturesTable from './data-models/mstr_provider_plan_features';
 import mstrProviderPlanPricesTable from './data-models/mstr_provider_plan_prices';
 import mstrProviderPlansTable from './data-models/mstr_provider_plans';
@@ -42,7 +43,7 @@ import providerInventoryMovementsTable from './data-models/provider_inventory_mo
 import providerInventoryStockTable from './data-models/provider_inventory_stock';
 import providerPackageServicesTable from './data-models/provider_package_services';
 import providerPackagesTable from './data-models/provider_packages';
-import providerProductChannelSettingsTable from './data-models/provider_product_channel_settings';
+import providerProductChannelsTable from './data-models/provider_product_channels';
 import providerProductVariantsTable from './data-models/provider_product_variants';
 import providerProductsTable from './data-models/provider_products';
 import providerPriceBaseVariablesTable from './data-models/provider_price_base_variables';
@@ -75,6 +76,7 @@ export const tableDefinitions = {
   'images': imagesTable,
   'login': loginTable,
   'mstr_product_categories': mstrProductCategoriesTable,
+  'mstr_provider_channels': mstrProviderChannelsTable,
   'mstr_provider_plan_features': mstrProviderPlanFeaturesTable,
   'mstr_provider_plan_prices': mstrProviderPlanPricesTable,
   'mstr_provider_plans': mstrProviderPlansTable,
@@ -97,7 +99,7 @@ export const tableDefinitions = {
   'provider_inventory_stock': providerInventoryStockTable,
   'provider_package_services': providerPackageServicesTable,
   'provider_packages': providerPackagesTable,
-  'provider_product_channel_settings': providerProductChannelSettingsTable,
+  'provider_product_channels': providerProductChannelsTable,
   'provider_product_variants': providerProductVariantsTable,
   'provider_products': providerProductsTable,
   'provider_price_base_variables': providerPriceBaseVariablesTable,

@@ -13,20 +13,14 @@
     "updateable": false,
     "createable": true
   },
-  "channel": {
-    "type": "string",
+  "channel_id": {
+    "type": "number",
     "required": true,
     "updateable": true,
     "createable": true
   },
   "is_enabled": {
     "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
-  },
-  "display_name": {
-    "type": "string",
     "required": false,
     "updateable": true,
     "createable": true

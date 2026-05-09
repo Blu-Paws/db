@@ -3,14 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.providerProductChannelSettingsTable = void 0;
+exports.mstrProviderChannelsTable = void 0;
 const model_json_1 = __importDefault(require("./model.json"));
-exports.providerProductChannelSettingsTable = {
-    tableName: 'provider_product_channel_settings',
+exports.mstrProviderChannelsTable = {
+    tableName: 'mstr_provider_channels',
     model: model_json_1.default,
     validateInsert: async (_conn, _row) => { },
     validateUpdate: async (_conn, _row) => { },
     validateDelete: async (_conn, _row) => { },
 };
-exports.default = exports.providerProductChannelSettingsTable;
+exports.default = exports.mstrProviderChannelsTable;
 //# sourceMappingURL=index.js.map

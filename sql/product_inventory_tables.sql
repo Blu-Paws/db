@@ -186,18 +186,31 @@ CREATE TABLE IF NOT EXISTS provider_product_variants (
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS provider_product_channel_settings (
+CREATE TABLE IF NOT EXISTS mstr_provider_channels (
+  channel_id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(45) NOT NULL,
+  description VARCHAR(245) NOT NULL,
+  status INT NOT NULL DEFAULT 1,
+
+  PRIMARY KEY (channel_id),
+  UNIQUE KEY uq_mstr_provider_channels_name (name),
+  KEY idx_mstr_provider_channels_status (status)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT IGNORE INTO mstr_provider_channels (name, description, status)
+VALUES
+  ('POS', 'Point of sale', 1),
+  ('ONLINE', 'Online sales', 1),
+  ('MOBILE', 'Mobile sales', 1);
+
+CREATE TABLE IF NOT EXISTS provider_product_channels (
   product_channel_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   product_id BIGINT UNSIGNED NOT NULL,
-
-  channel ENUM(
-    'retail',
-    'service_internal',
-    'ecommerce'
-  ) NOT NULL,
+  channel_id INT NOT NULL,
 
   is_enabled TINYINT NOT NULL DEFAULT 1,
-  display_name VARCHAR(200) NULL,
   sort_order INT NOT NULL DEFAULT 0,
 
   created_by INT NULL,
@@ -207,14 +220,18 @@ CREATE TABLE IF NOT EXISTS provider_product_channel_settings (
 
   PRIMARY KEY (product_channel_id),
 
-  UNIQUE KEY uq_provider_product_channel_settings_product_channel (product_id, channel),
-  KEY idx_provider_product_channel_settings_channel (channel, is_enabled),
+  UNIQUE KEY uq_provider_product_channels_product_channel (product_id, channel_id),
+  KEY idx_provider_product_channels_channel (channel_id, is_enabled),
 
-  CONSTRAINT fk_provider_product_channel_settings_product
+  CONSTRAINT fk_provider_product_channels_product
     FOREIGN KEY (product_id)
     REFERENCES provider_products(product_id),
 
-  CONSTRAINT chk_provider_product_channel_settings_enabled
+  CONSTRAINT fk_provider_product_channels_channel
+    FOREIGN KEY (channel_id)
+    REFERENCES mstr_provider_channels(channel_id),
+
+  CONSTRAINT chk_provider_product_channels_enabled
     CHECK (is_enabled IN (0, 1))
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4

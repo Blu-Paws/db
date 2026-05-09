@@ -24,6 +24,7 @@ const feedback_1 = __importDefault(require("./data-models/feedback"));
 const images_1 = __importDefault(require("./data-models/images"));
 const login_1 = __importDefault(require("./data-models/login"));
 const mstr_product_categories_1 = __importDefault(require("./data-models/mstr_product_categories"));
+const mstr_provider_channels_1 = __importDefault(require("./data-models/mstr_provider_channels"));
 const mstr_provider_plan_features_1 = __importDefault(require("./data-models/mstr_provider_plan_features"));
 const mstr_provider_plan_prices_1 = __importDefault(require("./data-models/mstr_provider_plan_prices"));
 const mstr_provider_plans_1 = __importDefault(require("./data-models/mstr_provider_plans"));
@@ -46,7 +47,7 @@ const provider_inventory_movements_1 = __importDefault(require("./data-models/pr
 const provider_inventory_stock_1 = __importDefault(require("./data-models/provider_inventory_stock"));
 const provider_package_services_1 = __importDefault(require("./data-models/provider_package_services"));
 const provider_packages_1 = __importDefault(require("./data-models/provider_packages"));
-const provider_product_channel_settings_1 = __importDefault(require("./data-models/provider_product_channel_settings"));
+const provider_product_channels_1 = __importDefault(require("./data-models/provider_product_channels"));
 const provider_product_variants_1 = __importDefault(require("./data-models/provider_product_variants"));
 const provider_products_1 = __importDefault(require("./data-models/provider_products"));
 const provider_price_base_variables_1 = __importDefault(require("./data-models/provider_price_base_variables"));
@@ -78,6 +79,7 @@ exports.tableDefinitions = {
     'images': images_1.default,
     'login': login_1.default,
     'mstr_product_categories': mstr_product_categories_1.default,
+    'mstr_provider_channels': mstr_provider_channels_1.default,
     'mstr_provider_plan_features': mstr_provider_plan_features_1.default,
     'mstr_provider_plan_prices': mstr_provider_plan_prices_1.default,
     'mstr_provider_plans': mstr_provider_plans_1.default,
@@ -100,7 +102,7 @@ exports.tableDefinitions = {
     'provider_inventory_stock': provider_inventory_stock_1.default,
     'provider_package_services': provider_package_services_1.default,
     'provider_packages': provider_packages_1.default,
-    'provider_product_channel_settings': provider_product_channel_settings_1.default,
+    'provider_product_channels': provider_product_channels_1.default,
     'provider_product_variants': provider_product_variants_1.default,
     'provider_products': provider_products_1.default,
     'provider_price_base_variables': provider_price_base_variables_1.default,

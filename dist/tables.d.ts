@@ -20,6 +20,7 @@ export declare const tableDefinitions: {
     images: TableDefinition;
     login: TableDefinition;
     mstr_product_categories: TableDefinition;
+    mstr_provider_channels: TableDefinition;
     mstr_provider_plan_features: TableDefinition;
     mstr_provider_plan_prices: TableDefinition;
     mstr_provider_plans: TableDefinition;
@@ -42,7 +43,7 @@ export declare const tableDefinitions: {
     provider_inventory_stock: TableDefinition;
     provider_package_services: TableDefinition;
     provider_packages: TableDefinition;
-    provider_product_channel_settings: TableDefinition;
+    provider_product_channels: TableDefinition;
     provider_product_variants: TableDefinition;
     provider_products: TableDefinition;
     provider_price_base_variables: TableDefinition;
