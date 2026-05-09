@@ -186,20 +186,20 @@ CREATE TABLE IF NOT EXISTS provider_product_variants (
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS mstr_provider_channels (
+CREATE TABLE IF NOT EXISTS mstr_provider_product_channels (
   channel_id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(45) NOT NULL,
   description VARCHAR(245) NOT NULL,
   status INT NOT NULL DEFAULT 1,
 
   PRIMARY KEY (channel_id),
-  UNIQUE KEY uq_mstr_provider_channels_name (name),
-  KEY idx_mstr_provider_channels_status (status)
+  UNIQUE KEY uq_mstr_provider_product_channels_name (name),
+  KEY idx_mstr_provider_product_channels_status (status)
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT IGNORE INTO mstr_provider_channels (name, description, status)
+INSERT IGNORE INTO mstr_provider_product_channels (name, description, status)
 VALUES
   ('POS', 'Point of sale', 1),
   ('ONLINE', 'Online sales', 1),
@@ -229,7 +229,7 @@ CREATE TABLE IF NOT EXISTS provider_product_channels (
 
   CONSTRAINT fk_provider_product_channels_channel
     FOREIGN KEY (channel_id)
-    REFERENCES mstr_provider_channels(channel_id),
+    REFERENCES mstr_provider_product_channels(channel_id),
 
   CONSTRAINT chk_provider_product_channels_enabled
     CHECK (is_enabled IN (0, 1))

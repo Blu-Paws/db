@@ -20,7 +20,7 @@ import feedbackTable from './data-models/feedback';
 import imagesTable from './data-models/images';
 import loginTable from './data-models/login';
 import mstrProductCategoriesTable from './data-models/mstr_product_categories';
-import mstrProviderChannelsTable from './data-models/mstr_provider_channels';
+import mstrProviderProductChannelsTable from './data-models/mstr_provider_product_channels';
 import mstrProviderPlanFeaturesTable from './data-models/mstr_provider_plan_features';
 import mstrProviderPlanPricesTable from './data-models/mstr_provider_plan_prices';
 import mstrProviderPlansTable from './data-models/mstr_provider_plans';
@@ -76,7 +76,7 @@ export const tableDefinitions = {
   'images': imagesTable,
   'login': loginTable,
   'mstr_product_categories': mstrProductCategoriesTable,
-  'mstr_provider_channels': mstrProviderChannelsTable,
+  'mstr_provider_product_channels': mstrProviderProductChannelsTable,
   'mstr_provider_plan_features': mstrProviderPlanFeaturesTable,
   'mstr_provider_plan_prices': mstrProviderPlanPricesTable,
   'mstr_provider_plans': mstrProviderPlansTable,

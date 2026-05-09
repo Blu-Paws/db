@@ -24,7 +24,7 @@ const feedback_1 = __importDefault(require("./data-models/feedback"));
 const images_1 = __importDefault(require("./data-models/images"));
 const login_1 = __importDefault(require("./data-models/login"));
 const mstr_product_categories_1 = __importDefault(require("./data-models/mstr_product_categories"));
-const mstr_provider_channels_1 = __importDefault(require("./data-models/mstr_provider_channels"));
+const mstr_provider_product_channels_1 = __importDefault(require("./data-models/mstr_provider_product_channels"));
 const mstr_provider_plan_features_1 = __importDefault(require("./data-models/mstr_provider_plan_features"));
 const mstr_provider_plan_prices_1 = __importDefault(require("./data-models/mstr_provider_plan_prices"));
 const mstr_provider_plans_1 = __importDefault(require("./data-models/mstr_provider_plans"));
@@ -79,7 +79,7 @@ exports.tableDefinitions = {
     'images': images_1.default,
     'login': login_1.default,
     'mstr_product_categories': mstr_product_categories_1.default,
-    'mstr_provider_channels': mstr_provider_channels_1.default,
+    'mstr_provider_product_channels': mstr_provider_product_channels_1.default,
     'mstr_provider_plan_features': mstr_provider_plan_features_1.default,
     'mstr_provider_plan_prices': mstr_provider_plan_prices_1.default,
     'mstr_provider_plans': mstr_provider_plans_1.default,
