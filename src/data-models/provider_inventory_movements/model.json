@@ -7,6 +7,12 @@
     "updateable": false,
     "createable": false
   },
+  "clinic_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
   "variant_id": {
     "type": "number",
     "required": true,
@@ -15,7 +21,19 @@
   },
   "location_id": {
     "type": "number",
-    "required": true,
+    "required": false,
+    "updateable": false,
+    "createable": true
+  },
+  "from_location_id": {
+    "type": "number",
+    "required": false,
+    "updateable": false,
+    "createable": true
+  },
+  "to_location_id": {
+    "type": "number",
+    "required": false,
     "updateable": false,
     "createable": true
   },
@@ -43,7 +61,7 @@
     "updateable": false,
     "createable": true
   },
-  "batch_no": {
+  "batch_id": {
     "type": "string",
     "required": false,
     "updateable": false,

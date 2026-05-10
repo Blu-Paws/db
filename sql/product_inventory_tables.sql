@@ -305,8 +305,10 @@ CREATE TABLE IF NOT EXISTS provider_inventory_locations (
 
 CREATE TABLE IF NOT EXISTS provider_inventory_stock (
   stock_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  clinic_id INT NOT NULL,
   variant_id BIGINT UNSIGNED NOT NULL,
   location_id BIGINT UNSIGNED NOT NULL,
+  batch_id VARCHAR(100) NOT NULL DEFAULT '',
 
   quantity_on_hand DECIMAL(12,3) NOT NULL DEFAULT 0,
   reserved_quantity DECIMAL(12,3) NOT NULL DEFAULT 0,
@@ -323,11 +325,11 @@ CREATE TABLE IF NOT EXISTS provider_inventory_stock (
 
   PRIMARY KEY (stock_id),
 
-  UNIQUE KEY uq_provider_inventory_stock_variant_location (variant_id, location_id),
+  UNIQUE KEY uq_provider_inventory_stock_balance (clinic_id, location_id, variant_id, batch_id),
 
-  KEY idx_provider_inventory_stock_location (location_id, status),
-  KEY idx_provider_inventory_stock_variant (variant_id, status),
-  KEY idx_provider_inventory_stock_available (variant_id, location_id, quantity_on_hand, reserved_quantity),
+  KEY idx_provider_inventory_stock_location (clinic_id, location_id, status),
+  KEY idx_provider_inventory_stock_variant (clinic_id, variant_id, status),
+  KEY idx_provider_inventory_stock_available (clinic_id, variant_id, location_id, batch_id, quantity_on_hand, reserved_quantity),
 
   CONSTRAINT fk_provider_inventory_stock_variant
     FOREIGN KEY (variant_id)
@@ -351,31 +353,29 @@ CREATE TABLE IF NOT EXISTS provider_inventory_stock (
 
 CREATE TABLE IF NOT EXISTS provider_inventory_movements (
   movement_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  clinic_id INT NOT NULL,
   variant_id BIGINT UNSIGNED NOT NULL,
-  location_id BIGINT UNSIGNED NOT NULL,
+  location_id BIGINT UNSIGNED NULL,
+  from_location_id BIGINT UNSIGNED NULL,
+  to_location_id BIGINT UNSIGNED NULL,
 
   movement_type ENUM(
-    'opening_balance',
-    'purchase',
-    'retail_sale',
-    'ecommerce_sale',
-    'appointment_consumption',
-    'adjustment_in',
-    'adjustment_out',
-    'transfer_in',
-    'transfer_out',
-    'return_in',
-    'return_out',
-    'waste',
-    'damage',
-    'expiry'
+    'STOCK_IN',
+    'SALE_RETURN',
+    'ADJUSTMENT_IN',
+    'SALE',
+    'SERVICE_CONSUMPTION',
+    'DAMAGE',
+    'EXPIRED',
+    'ADJUSTMENT_OUT',
+    'TRANSFER'
   ) NOT NULL,
 
   quantity DECIMAL(12,3) NOT NULL,
   unit_cost DECIMAL(12,2) NULL,
   unit_price DECIMAL(12,2) NULL,
 
-  batch_no VARCHAR(100) NULL,
+  batch_id VARCHAR(100) NULL,
   expiry_date DATE NULL,
 
   reference_type ENUM(
@@ -399,10 +399,12 @@ CREATE TABLE IF NOT EXISTS provider_inventory_movements (
 
   PRIMARY KEY (movement_id),
 
-  KEY idx_provider_inventory_movements_variant_location (variant_id, location_id),
-  KEY idx_provider_inventory_movements_location_date (location_id, created_date),
-  KEY idx_provider_inventory_movements_variant_date (variant_id, created_date),
-  KEY idx_provider_inventory_movements_type_date (movement_type, created_date),
+  KEY idx_provider_inventory_movements_variant_location (clinic_id, variant_id, location_id),
+  KEY idx_provider_inventory_movements_from_location_date (clinic_id, from_location_id, created_date),
+  KEY idx_provider_inventory_movements_to_location_date (clinic_id, to_location_id, created_date),
+  KEY idx_provider_inventory_movements_location_date (clinic_id, location_id, created_date),
+  KEY idx_provider_inventory_movements_variant_date (clinic_id, variant_id, created_date),
+  KEY idx_provider_inventory_movements_type_date (clinic_id, movement_type, created_date),
   KEY idx_provider_inventory_movements_reference (reference_type, reference_id),
   KEY idx_provider_inventory_movements_paired (paired_movement_id),
 
@@ -412,6 +414,14 @@ CREATE TABLE IF NOT EXISTS provider_inventory_movements (
 
   CONSTRAINT fk_provider_inventory_movements_location
     FOREIGN KEY (location_id)
+    REFERENCES provider_inventory_locations(location_id),
+
+  CONSTRAINT fk_provider_inventory_movements_from_location
+    FOREIGN KEY (from_location_id)
+    REFERENCES provider_inventory_locations(location_id),
+
+  CONSTRAINT fk_provider_inventory_movements_to_location
+    FOREIGN KEY (to_location_id)
     REFERENCES provider_inventory_locations(location_id),
 
   CONSTRAINT fk_provider_inventory_movements_paired

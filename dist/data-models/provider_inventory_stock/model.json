@@ -7,6 +7,12 @@
     "updateable": false,
     "createable": false
   },
+  "clinic_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
   "variant_id": {
     "type": "number",
     "required": true,
@@ -16,6 +22,12 @@
   "location_id": {
     "type": "number",
     "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "batch_id": {
+    "type": "string",
+    "required": false,
     "updateable": false,
     "createable": true
   },
