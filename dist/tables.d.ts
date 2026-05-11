@@ -35,6 +35,7 @@ export declare const tableDefinitions: {
     promotion_rules: TableDefinition;
     provider_boarding_prices: TableDefinition;
     provider_boardings: TableDefinition;
+    provider_exceptions: TableDefinition;
     provider_experience_price: TableDefinition;
     provider_inspection_checklist: TableDefinition;
     provider_inspection_checklist_questions: TableDefinition;
@@ -50,6 +51,7 @@ export declare const tableDefinitions: {
     provider_price_coat_complexity: TableDefinition;
     provider_price_life_stage_surcharges: TableDefinition;
     provider_price_specialist_surcharges: TableDefinition;
+    provider_schedules: TableDefinition;
     provider_subscriptions: TableDefinition;
     provider_subscriptions_history: TableDefinition;
     session: TableDefinition;

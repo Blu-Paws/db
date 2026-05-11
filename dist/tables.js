@@ -39,6 +39,7 @@ const promotion_1 = __importDefault(require("./data-models/promotion"));
 const promotion_rules_1 = __importDefault(require("./data-models/promotion_rules"));
 const provider_boarding_prices_1 = __importDefault(require("./data-models/provider_boarding_prices"));
 const provider_boardings_1 = __importDefault(require("./data-models/provider_boardings"));
+const provider_exceptions_1 = __importDefault(require("./data-models/provider_exceptions"));
 const provider_experience_price_1 = __importDefault(require("./data-models/provider_experience_price"));
 const provider_inspection_checklist_1 = __importDefault(require("./data-models/provider_inspection_checklist"));
 const provider_inspection_checklist_questions_1 = __importDefault(require("./data-models/provider_inspection_checklist_questions"));
@@ -54,6 +55,7 @@ const provider_price_base_variables_1 = __importDefault(require("./data-models/p
 const provider_price_coat_complexity_1 = __importDefault(require("./data-models/provider_price_coat_complexity"));
 const provider_price_life_stage_surcharges_1 = __importDefault(require("./data-models/provider_price_life_stage_surcharges"));
 const provider_price_specialist_surcharges_1 = __importDefault(require("./data-models/provider_price_specialist_surcharges"));
+const provider_schedules_1 = __importDefault(require("./data-models/provider_schedules"));
 const provider_subscriptions_1 = __importDefault(require("./data-models/provider_subscriptions"));
 const provider_subscriptions_history_1 = __importDefault(require("./data-models/provider_subscriptions_history"));
 const session_1 = __importDefault(require("./data-models/session"));
@@ -94,6 +96,7 @@ exports.tableDefinitions = {
     'promotion_rules': promotion_rules_1.default,
     'provider_boarding_prices': provider_boarding_prices_1.default,
     'provider_boardings': provider_boardings_1.default,
+    'provider_exceptions': provider_exceptions_1.default,
     'provider_experience_price': provider_experience_price_1.default,
     'provider_inspection_checklist': provider_inspection_checklist_1.default,
     'provider_inspection_checklist_questions': provider_inspection_checklist_questions_1.default,
@@ -109,6 +112,7 @@ exports.tableDefinitions = {
     'provider_price_coat_complexity': provider_price_coat_complexity_1.default,
     'provider_price_life_stage_surcharges': provider_price_life_stage_surcharges_1.default,
     'provider_price_specialist_surcharges': provider_price_specialist_surcharges_1.default,
+    'provider_schedules': provider_schedules_1.default,
     'provider_subscriptions': provider_subscriptions_1.default,
     'provider_subscriptions_history': provider_subscriptions_history_1.default,
     'session': session_1.default,
