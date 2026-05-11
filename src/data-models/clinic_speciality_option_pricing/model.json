@@ -54,5 +54,17 @@
     "required": true,
     "updateable": false,
     "createable": true
+  },
+  "duration_minutes": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "role_type_required": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
   }
 }

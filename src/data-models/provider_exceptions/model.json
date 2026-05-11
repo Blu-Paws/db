@@ -1,0 +1,56 @@
+{
+  "id": {
+    "type": "number",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "user_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "clinic_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "exception_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "day_of_week": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "start_time": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "end_time": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "timezone": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "is_available": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  }
+}

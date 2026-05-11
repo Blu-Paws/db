@@ -35,6 +35,7 @@ import promotionTable from './data-models/promotion';
 import promotionRulesTable from './data-models/promotion_rules';
 import providerBoardingPricesTable from './data-models/provider_boarding_prices';
 import providerBoardingsTable from './data-models/provider_boardings';
+import providerExceptionsTable from './data-models/provider_exceptions';
 import providerExperiencePriceTable from './data-models/provider_experience_price';
 import providerInspectionChecklistTable from './data-models/provider_inspection_checklist';
 import providerInspectionChecklistQuestionsTable from './data-models/provider_inspection_checklist_questions';
@@ -50,6 +51,7 @@ import providerPriceBaseVariablesTable from './data-models/provider_price_base_v
 import providerPriceCoatComplexityTable from './data-models/provider_price_coat_complexity';
 import providerPriceLifeStageSurchargesTable from './data-models/provider_price_life_stage_surcharges';
 import providerPriceSpecialistSurchargesTable from './data-models/provider_price_specialist_surcharges';
+import providerSchedulesTable from './data-models/provider_schedules';
 import providerSubscriptionsTable from './data-models/provider_subscriptions';
 import providerSubscriptionsHistoryTable from './data-models/provider_subscriptions_history';
 import sessionTable from './data-models/session';
@@ -91,6 +93,7 @@ export const tableDefinitions = {
   'promotion_rules': promotionRulesTable,
   'provider_boarding_prices': providerBoardingPricesTable,
   'provider_boardings': providerBoardingsTable,
+  'provider_exceptions': providerExceptionsTable,
   'provider_experience_price': providerExperiencePriceTable,
   'provider_inspection_checklist': providerInspectionChecklistTable,
   'provider_inspection_checklist_questions': providerInspectionChecklistQuestionsTable,
@@ -106,6 +109,7 @@ export const tableDefinitions = {
   'provider_price_coat_complexity': providerPriceCoatComplexityTable,
   'provider_price_life_stage_surcharges': providerPriceLifeStageSurchargesTable,
   'provider_price_specialist_surcharges': providerPriceSpecialistSurchargesTable,
+  'provider_schedules': providerSchedulesTable,
   'provider_subscriptions': providerSubscriptionsTable,
   'provider_subscriptions_history': providerSubscriptionsHistoryTable,
   'session': sessionTable,
