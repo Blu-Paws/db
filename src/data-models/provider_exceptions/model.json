@@ -21,7 +21,7 @@
     "type": "datetime",
     "createable": true,
     "updateable": true,
-    "required": true
+    "required": false
   },
   "day_of_week": {
     "type": "number",
