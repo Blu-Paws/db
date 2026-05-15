@@ -25,18 +25,6 @@
     "updateable": true,
     "createable": true
   },
-  "valid_from": {
-    "type": "datetime",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "valit_to": {
-    "type": "datetime",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
   "status": {
     "type": "number",
     "required": true,
