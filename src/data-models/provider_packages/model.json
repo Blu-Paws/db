@@ -66,12 +66,6 @@
     "updateable": true,
     "createable": true
   },
-  "role_id": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
-  },
   "duration_minutes": {
     "type": "number",
     "required": true,
