@@ -25,18 +25,6 @@
     "updateable": true,
     "createable": true
   },
-  "valid_from": {
-    "type": "datetime",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "valit_to": {
-    "type": "datetime",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
   "status": {
     "type": "number",
     "required": true,
@@ -56,12 +44,6 @@
     "createable": true
   },
   "duration_minutes": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "role_type_required": {
     "type": "number",
     "required": true,
     "updateable": true,

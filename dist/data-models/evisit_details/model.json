@@ -121,7 +121,7 @@
   },
   "vitals_id": {
     "type": "number",
-    "createable": false,
+    "createable": true,
     "updateable": true,
     "required": false
   },
