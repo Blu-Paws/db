@@ -64,11 +64,5 @@
     "createable": true,
     "updateable": false,
     "required": true
-  },
-  "type_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
   }
 }
