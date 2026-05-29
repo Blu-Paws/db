@@ -43,7 +43,7 @@
     "updateable": true,
     "createable": true
   },
-  "duration": {
+  "duration_minutes": {
     "type": "number",
     "required": false,
     "updateable": true,
