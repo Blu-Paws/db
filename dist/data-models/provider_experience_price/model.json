@@ -43,6 +43,12 @@
     "updateable": true,
     "createable": true
   },
+  "duration": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
   "radius": {
     "type": "number",
     "required": false,
