@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import mysql, { PoolConnection, RowDataPacket } from 'mysql2/promise';
 import type { DataRow, Flavor, QueryResult, QueryValues, Stage } from './types';
 export declare const createConnection: (stageValue: Stage, flavorValue: Flavor) => {
@@ -8,3 +9,5 @@ export declare const createConnection: (stageValue: Stage, flavorValue: Flavor) 
     updateRowTable: (tableName: string, row: DataRow, clauses: DataRow, conn?: PoolConnection | null) => Promise<void>;
     deleteRowFromTable: (tableName: string, clauses: DataRow, conn?: PoolConnection | null) => Promise<void>;
 };
+export declare const createJWTToken: (stageValue: Stage, payload: Record<string, string | number>) => Promise<string>;
+export declare const verityJWTToken: (stageValue: Stage, token: string) => Promise<string | jwt.JwtPayload>;

@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import mysql, {
   Pool,
   Pool as MysqlPool,
@@ -38,7 +39,11 @@ const poolPromises = new Map<Stage, Promise<BluPawsPool>>();
 const getElapsedMs = (startedAt: bigint): number =>
   Number(process.hrtime.bigint() - startedAt) / 1_000_000;
 
-const logIfSlow = (operation: string, elapsedMs: number, sql?: string): void => {
+const logIfSlow = (
+  operation: string,
+  elapsedMs: number,
+  sql?: string,
+): void => {
   const slowQueryLogMs = getSlowQueryLogMs();
   if (slowQueryLogMs == null || elapsedMs < slowQueryLogMs) {
     return;
@@ -50,6 +55,20 @@ const logIfSlow = (operation: string, elapsedMs: number, sql?: string): void => 
 };
 
 const getSecretId = (stageKey: Stage): string => `${stageKey}/RDB/mysql`;
+
+const getJWTSecretKey = async (stageKey: Stage): Promise<string> => {
+  const client = new SecretsManagerClient({
+    region: process.env.AWS_REGION || 'us-east-2',
+  });
+  const response = await client.send(
+    new GetSecretValueCommand({
+      SecretId: 'private/keys',
+      VersionStage: 'AWSCURRENT',
+    }),
+  );
+  const json = JSON.parse(response.SecretString ?? '{}');
+  return json[`JWT_SECRET_${stageKey.toUpperCase()}`] as string;
+};
 
 const getDBDetails = async (stageKey: Stage) => {
   const client = new SecretsManagerClient({
@@ -118,11 +137,14 @@ const acquireConnection = async (pool: Pool): Promise<PoolConnection> => {
   let timeout: NodeJS.Timeout | undefined;
 
   const connectionPromise = pool.getConnection();
-  connectionPromise.then((conn) => {
-    if (timedOut) {
-      conn.release();
-    }
-  }, () => {});
+  connectionPromise.then(
+    (conn) => {
+      if (timedOut) {
+        conn.release();
+      }
+    },
+    () => {},
+  );
 
   const timeoutPromise = new Promise<never>((_, reject) => {
     timeout = setTimeout(() => {
@@ -414,4 +436,19 @@ export const createConnection = (stageValue: Stage, flavorValue: Flavor) => {
       conn?: PoolConnection | null,
     ) => deleteRowFromTableForStage(stageKey, conn, tableName, clauses),
   };
+};
+
+export const createJWTToken = async (
+  stageValue: Stage,
+  payload: Record<string, string | number>,
+) => {
+  const secret = await getJWTSecretKey(stageValue);
+  const token = jwt.sign(payload, secret, { expiresIn: '15m' });
+  return token;
+};
+
+export const verityJWTToken = async (stageValue: Stage, token: string) => {
+  const jwtSecret = await getJWTSecretKey(stageValue);
+  const decoded = jwt.verify(token, jwtSecret);
+  return decoded;
 };

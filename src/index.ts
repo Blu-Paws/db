@@ -1,9 +1,3 @@
-export type {
-  DataRow,
-  Flavor,
-  QueryResult,
-  QueryValues,
-  Stage,
-} from './types';
+export type { DataRow, Flavor, QueryResult, QueryValues, Stage } from './types';
 
-export { createConnection } from './core';
+export { createConnection, createJWTToken, verityJWTToken } from './core';
