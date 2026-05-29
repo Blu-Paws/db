@@ -3,7 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createConnection = void 0;
+exports.verityJWTToken = exports.createJWTToken = exports.createConnection = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const promise_1 = __importDefault(require("mysql2/promise"));
 const client_secrets_manager_1 = require("@aws-sdk/client-secrets-manager");
 const utils_1 = require("./utils");
@@ -19,6 +20,17 @@ const logIfSlow = (operation, elapsedMs, sql) => {
     console.warn(`[blupaws-db] Slow ${operation}: ${elapsedMs.toFixed(1)}ms${detail}`);
 };
 const getSecretId = (stageKey) => `${stageKey}/RDB/mysql`;
+const getJWTSecretKey = async (stageKey) => {
+    const client = new client_secrets_manager_1.SecretsManagerClient({
+        region: process.env.AWS_REGION || 'us-east-2',
+    });
+    const response = await client.send(new client_secrets_manager_1.GetSecretValueCommand({
+        SecretId: 'private/keys',
+        VersionStage: 'AWSCURRENT',
+    }));
+    const json = JSON.parse(response.SecretString ?? '{}');
+    return json[`JWT_SECRET_${stageKey.toUpperCase()}`];
+};
 const getDBDetails = async (stageKey) => {
     const client = new client_secrets_manager_1.SecretsManagerClient({
         region: process.env.AWS_REGION || 'us-east-2',
@@ -291,4 +303,16 @@ const createConnection = (stageValue, flavorValue) => {
     };
 };
 exports.createConnection = createConnection;
+const createJWTToken = async (stageValue, payload) => {
+    const secret = await getJWTSecretKey(stageValue);
+    const token = jsonwebtoken_1.default.sign(payload, secret, { expiresIn: '15m' });
+    return token;
+};
+exports.createJWTToken = createJWTToken;
+const verityJWTToken = async (stageValue, token) => {
+    const jwtSecret = await getJWTSecretKey(stageValue);
+    const decoded = jsonwebtoken_1.default.verify(token, jwtSecret);
+    return decoded;
+};
+exports.verityJWTToken = verityJWTToken;
 //# sourceMappingURL=core.js.map
