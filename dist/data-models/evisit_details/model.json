@@ -1,182 +1,182 @@
 {
-    "evisit_id": {
-        "type": "number",
-        "createable": false,
-        "updateable": false,
-        "required": false
-    },
-    "pet_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "clinic_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "address_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "assigned_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "allow_past_visit": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "visit_status_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": true
-    },
-    "visit_type_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "time_block_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": true
-    },
-    "promotion_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "request_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "evisit_end_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "evisit_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "followup_date": {
-        "type": "datetime",
-        "createable": false,
-        "updateable": true,
-        "required": false
-    },
-    "request_notes": {
-        "type": "string",
-        "createable": false,
-        "updateable": true,
-        "required": false
-    },
-    "diagnosys": {
-        "type": "string",
-        "createable": false,
-        "updateable": true,
-        "required": false
-    },
-    "issue_details": {
-        "type": "string",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "issue_summary": {
-        "type": "string",
-        "createable": false,
-        "updateable": true,
-        "required": false
-    },
-    "followup_notes": {
-        "type": "string",
-        "createable": false,
-        "updateable": true,
-        "required": false
-    },
-    "notes": {
-        "type": "string",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "vitals_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "issue_type_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "pet_history_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "evisit_phone_no": {
-        "type": "string",
-        "createable": false,
-        "updateable": false,
-        "required": false
-    },
-    "feedback_id": {
-        "type": "number",
-        "createable": false,
-        "updateable": false,
-        "required": false
-    },
-    "create_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "created_by": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "updated_by": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": true
-    },
-    "updated_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": true,
-        "required": true
-    },
-    "status": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": true
-    }
+  "evisit_id": {
+    "type": "number",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "pet_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "clinic_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "address_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "assigned_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "allow_past_visit": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "visit_status_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "visit_type_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "time_block_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "promotion_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "request_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "evisit_end_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "evisit_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "followup_date": {
+    "type": "datetime",
+    "createable": false,
+    "updateable": true,
+    "required": false
+  },
+  "request_notes": {
+    "type": "string",
+    "createable": false,
+    "updateable": true,
+    "required": false
+  },
+  "diagnosys": {
+    "type": "string",
+    "createable": false,
+    "updateable": true,
+    "required": false
+  },
+  "issue_details": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "issue_summary": {
+    "type": "string",
+    "createable": false,
+    "updateable": true,
+    "required": false
+  },
+  "followup_notes": {
+    "type": "string",
+    "createable": false,
+    "updateable": true,
+    "required": false
+  },
+  "notes": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "vitals_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "issue_type_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "pet_history_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "evisit_phone_no": {
+    "type": "string",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "feedback_id": {
+    "type": "number",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "create_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "created_by": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "updated_by": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "updated_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "status": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  }
 }

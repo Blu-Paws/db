@@ -1,38 +1,38 @@
 {
-    "activation_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "clinic_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "clinic_status_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "status": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "created_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "created_by": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    }
+  "activation_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "clinic_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "clinic_status_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "status": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "created_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "created_by": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  }
 }

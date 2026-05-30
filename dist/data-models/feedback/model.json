@@ -1,56 +1,56 @@
 {
-    "feedback_id": {
-        "type": "number",
-        "createable": false,
-        "updateable": false,
-        "required": false
-    },
-    "module_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "refer_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "comments": {
-        "type": "string",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "comment_reply": {
-        "type": "string",
-        "createable": false,
-        "updateable": true,
-        "required": false
-    },
-    "rating": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "status": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "created_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "created_by": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    }
+  "feedback_id": {
+    "type": "number",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "module_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "refer_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "comments": {
+    "type": "string",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "comment_reply": {
+    "type": "string",
+    "createable": false,
+    "updateable": true,
+    "required": false
+  },
+  "rating": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "status": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "created_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "created_by": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  }
 }

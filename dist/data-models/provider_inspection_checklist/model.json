@@ -1,38 +1,38 @@
 {
-    "question_id": {
-        "type": "number",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "evisit_id": {
-        "type": "number",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "module_id": {
-        "type": "number",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "answer": {
-        "type": "string",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "created_by": {
-        "type": "number",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "create_date": {
-        "type": "datetime",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    }
+  "question_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "evisit_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "module_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "answer": {
+    "type": "string",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "created_by": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "create_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  }
 }

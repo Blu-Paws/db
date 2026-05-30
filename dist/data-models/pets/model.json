@@ -1,104 +1,104 @@
 {
-    "pet_id": {
-        "type": "number",
-        "createable": false,
-        "updateable": false,
-        "required": false
-    },
-    "login_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "pet_name": {
-        "type": "string",
-        "createable": true,
-        "updateable": true,
-        "required": true
-    },
-    "pet_type_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "gender_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "breed_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "dob": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "notes": {
-        "type": "string",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "likes": {
-        "type": "string",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "dislikes": {
-        "type": "string",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "create_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "created_by": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "status": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": true
-    },
-    "deceased_date": {
-        "type": "datetime",
-        "createable": false,
-        "updateable": true,
-        "required": false
-    },
-    "pet_status": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": true
-    },
-    "updated_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": true,
-        "required": true
-    },
-    "updated_by": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": true
-    }
+  "pet_id": {
+    "type": "number",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "login_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "pet_name": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "pet_type_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "gender_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "breed_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "dob": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "notes": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "likes": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "dislikes": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "create_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "created_by": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "status": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "deceased_date": {
+    "type": "datetime",
+    "createable": false,
+    "updateable": true,
+    "required": false
+  },
+  "pet_status": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "updated_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "updated_by": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  }
 }

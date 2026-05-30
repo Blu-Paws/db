@@ -1,58 +1,58 @@
 {
-    "product_channel_id": {
-        "type": "number",
-        "primary": true,
-        "autoincrement": true,
-        "required": false,
-        "updateable": false,
-        "createable": false
-    },
-    "product_id": {
-        "type": "number",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "channel_id": {
-        "type": "number",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "is_enabled": {
-        "type": "number",
-        "required": false,
-        "updateable": true,
-        "createable": true
-    },
-    "sort_order": {
-        "type": "number",
-        "required": false,
-        "updateable": true,
-        "createable": true
-    },
-    "created_by": {
-        "type": "number",
-        "required": false,
-        "updateable": false,
-        "createable": true
-    },
-    "updated_by": {
-        "type": "number",
-        "required": false,
-        "updateable": true,
-        "createable": true
-    },
-    "created_date": {
-        "type": "datetime",
-        "required": false,
-        "updateable": false,
-        "createable": true
-    },
-    "updated_date": {
-        "type": "datetime",
-        "required": false,
-        "updateable": true,
-        "createable": true
-    }
+  "product_channel_id": {
+    "type": "number",
+    "primary": true,
+    "autoincrement": true,
+    "required": false,
+    "updateable": false,
+    "createable": false
+  },
+  "product_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "channel_id": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "is_enabled": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "sort_order": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "created_by": {
+    "type": "number",
+    "required": false,
+    "updateable": false,
+    "createable": true
+  },
+  "updated_by": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "created_date": {
+    "type": "datetime",
+    "required": false,
+    "updateable": false,
+    "createable": true
+  },
+  "updated_date": {
+    "type": "datetime",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  }
 }

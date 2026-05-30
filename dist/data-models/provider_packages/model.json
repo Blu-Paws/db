@@ -1,75 +1,75 @@
 {
-    "package_id": {
-        "type": "string",
-        "primary": true,
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "package_name": {
-        "type": "string",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "clinic_id": {
-        "type": "number",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "status": {
-        "type": "number",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "created_by": {
-        "type": "number",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "create_date": {
-        "type": "datetime",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "updated_by": {
-        "type": "number",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "update_date": {
-        "type": "datetime",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "price": {
-        "type": "number",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "price_original": {
-        "type": "number",
-        "required": false,
-        "updateable": true,
-        "createable": true
-    },
-    "experiences": {
-        "type": "string",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "duration_minutes": {
-        "type": "number",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    }
+  "package_id": {
+    "type": "string",
+    "primary": true,
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "package_name": {
+    "type": "string",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "clinic_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "status": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "created_by": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "create_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "updated_by": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "update_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "price": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "price_original": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "experiences": {
+    "type": "string",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "duration_minutes": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  }
 }

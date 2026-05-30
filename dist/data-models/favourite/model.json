@@ -1,52 +1,52 @@
 {
-    "fav_id": {
-        "type": "number",
-        "primary": true,
-        "autoincrement": true,
-        "required": false,
-        "updateable": false,
-        "createable": false
-    },
-    "login_id": {
-        "type": "number",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "module_id": {
-        "type": "number",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "fav_key": {
-        "type": "number",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "is_active": {
-        "type": "number",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "created_by": {
-        "type": "number",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "created_date": {
-        "type": "datetime",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "modified_date": {
-        "type": "datetime",
-        "required": false,
-        "updateable": true,
-        "createable": false
-    }
+  "fav_id": {
+    "type": "number",
+    "primary": true,
+    "autoincrement": true,
+    "required": false,
+    "updateable": false,
+    "createable": false
+  },
+  "login_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "module_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "fav_key": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "is_active": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "created_by": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "created_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "modified_date": {
+    "type": "datetime",
+    "required": false,
+    "updateable": true,
+    "createable": false
+  }
 }

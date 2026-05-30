@@ -1,94 +1,94 @@
 {
-    "question_id": {
-        "type": "number",
-        "primary": true,
-        "autoincrement": true,
-        "required": false,
-        "updateable": false,
-        "createable": false
-    },
-    "clinic_id": {
-        "type": "number",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "module_id": {
-        "type": "number",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "display_order": {
-        "type": "number",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "question": {
-        "type": "string",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "question_type": {
-        "type": "string",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "required": {
-        "type": "number",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "options": {
-        "type": "string",
-        "required": false,
-        "updateable": true,
-        "createable": true
-    },
-    "min": {
-        "type": "number",
-        "required": false,
-        "updateable": true,
-        "createable": true
-    },
-    "max": {
-        "type": "number",
-        "required": false,
-        "updateable": true,
-        "createable": true
-    },
-    "status": {
-        "type": "number",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "created_by": {
-        "type": "number",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "create_date": {
-        "type": "datetime",
-        "required": true,
-        "updateable": false,
-        "createable": true
-    },
-    "updated_by": {
-        "type": "number",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    },
-    "update_date": {
-        "type": "datetime",
-        "required": true,
-        "updateable": true,
-        "createable": true
-    }
+  "question_id": {
+    "type": "number",
+    "primary": true,
+    "autoincrement": true,
+    "required": false,
+    "updateable": false,
+    "createable": false
+  },
+  "clinic_id": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "module_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "display_order": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "question": {
+    "type": "string",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "question_type": {
+    "type": "string",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "required": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "options": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "min": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "max": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "status": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "created_by": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "create_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "updated_by": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "update_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  }
 }

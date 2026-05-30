@@ -1,128 +1,128 @@
 {
-    "pay_hist_id": {
-        "type": "number",
-        "createable": false,
-        "updateable": false,
-        "required": false
-    },
-    "pay_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "description": {
-        "type": "string",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "visit_type_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "evisit_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "amount": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "paystatus_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "payment_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "promotion_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "payment_id": {
-        "type": "string",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "payment_comments": {
-        "type": "string",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "paymenttype_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "order_id": {
-        "type": "string",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "tax": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "service_fee": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "discount": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "status": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "created_by": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "create_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "update_by": {
-        "type": "number",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    },
-    "updated_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": true,
-        "required": false
-    }
+  "pay_hist_id": {
+    "type": "number",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "pay_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "description": {
+    "type": "string",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "visit_type_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "evisit_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "amount": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "paystatus_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "payment_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "promotion_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "payment_id": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "payment_comments": {
+    "type": "string",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "paymenttype_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "order_id": {
+    "type": "string",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "tax": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "service_fee": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "discount": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "status": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "created_by": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "create_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "update_by": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "updated_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  }
 }

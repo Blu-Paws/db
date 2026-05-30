@@ -1,44 +1,44 @@
 {
-    "session_id": {
-        "type": "number",
-        "createable": false,
-        "updateable": false,
-        "required": false
-    },
-    "login_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "token": {
-        "type": "string",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "start_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "module_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "device_id": {
-        "type": "string",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "last_touch_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": true,
-        "required": true
-    }
+  "session_id": {
+    "type": "number",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "login_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "token": {
+    "type": "string",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "start_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "module_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "device_id": {
+    "type": "string",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "last_touch_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  }
 }

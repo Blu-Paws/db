@@ -1,68 +1,68 @@
 {
-    "bill_no": {
-        "type": "number",
-        "createable": false,
-        "updateable": false,
-        "required": false
-    },
-    "visit_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "pay_id": {
-        "type": "string",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "pay_desc": {
-        "type": "string",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "quantity": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "pay_amt": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "created_date": {
-        "type": "datetime",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "created_by": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "status": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    },
-    "type_id": {
-        "type": "number",
-        "createable": true,
-        "updateable": false,
-        "required": false
-    },
-    "type": {
-        "type": "string",
-        "createable": true,
-        "updateable": false,
-        "required": true
-    }
+  "bill_no": {
+    "type": "number",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "visit_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "pay_id": {
+    "type": "string",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "pay_desc": {
+    "type": "string",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "quantity": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "pay_amt": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "created_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "created_by": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "status": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "type_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "type": {
+    "type": "string",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  }
 }
