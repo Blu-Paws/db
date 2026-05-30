@@ -1,56 +1,56 @@
 {
-  "subscription_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
-  },
-  "clinic_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
-  },
-  "plan_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
-  },
-  "start_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": false
-  },
-  "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
-  },
-  "razorpay_subscription_id": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
-  },
-  "period": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
-  },
-  "order_id": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
-  },
-  "payment_id": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
-  }
+    "subscription_id": {
+        "type": "number",
+        "createable": true,
+        "updateable": false,
+        "required": false
+    },
+    "clinic_id": {
+        "type": "number",
+        "createable": true,
+        "updateable": false,
+        "required": false
+    },
+    "plan_id": {
+        "type": "number",
+        "createable": true,
+        "updateable": false,
+        "required": false
+    },
+    "start_date": {
+        "type": "datetime",
+        "createable": true,
+        "updateable": false,
+        "required": false
+    },
+    "status": {
+        "type": "number",
+        "createable": true,
+        "updateable": false,
+        "required": false
+    },
+    "razorpay_subscription_id": {
+        "type": "string",
+        "createable": true,
+        "updateable": false,
+        "required": false
+    },
+    "period": {
+        "type": "string",
+        "createable": true,
+        "updateable": false,
+        "required": false
+    },
+    "order_id": {
+        "type": "string",
+        "createable": true,
+        "updateable": false,
+        "required": false
+    },
+    "payment_id": {
+        "type": "string",
+        "createable": true,
+        "updateable": false,
+        "required": false
+    }
 }

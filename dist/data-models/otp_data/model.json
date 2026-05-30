@@ -1,70 +1,70 @@
 {
-  "id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
-  },
-  "otp": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "create_date": {
-    "type": "datetime",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "created_by": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "otp_token": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "country_code": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "mobile_number": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "device_id": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "email_address": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "name": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "purpose": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  }
+    "id": {
+        "type": "number",
+        "primary": true,
+        "autoincrement": true,
+        "required": false,
+        "updateable": false,
+        "createable": false
+    },
+    "otp": {
+        "type": "string",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "create_date": {
+        "type": "datetime",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "created_by": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "otp_token": {
+        "type": "string",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "country_code": {
+        "type": "string",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "mobile_number": {
+        "type": "string",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "device_id": {
+        "type": "string",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "email_address": {
+        "type": "string",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "name": {
+        "type": "string",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "purpose": {
+        "type": "string",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    }
 }

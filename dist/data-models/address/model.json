@@ -1,82 +1,82 @@
 {
-  "address_id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
-  },
-  "module_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "key_value": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "address1": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "address2": {
-    "type": "string",
-    "required": false,
-    "updateable": true,
-    "createable": true
-  },
-  "zipcode": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "city": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "state": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "country_code": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "location_coordinate": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "status": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "create_date": {
-    "type": "datetime",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "created_by": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  }
+    "address_id": {
+        "type": "number",
+        "primary": true,
+        "autoincrement": true,
+        "required": false,
+        "updateable": false,
+        "createable": false
+    },
+    "module_id": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "key_value": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "address1": {
+        "type": "string",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    },
+    "address2": {
+        "type": "string",
+        "required": false,
+        "updateable": true,
+        "createable": true
+    },
+    "zipcode": {
+        "type": "number",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    },
+    "city": {
+        "type": "string",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    },
+    "state": {
+        "type": "string",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    },
+    "country_code": {
+        "type": "string",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    },
+    "location_coordinate": {
+        "type": "string",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    },
+    "status": {
+        "type": "number",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "create_date": {
+        "type": "datetime",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "created_by": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    }
 }

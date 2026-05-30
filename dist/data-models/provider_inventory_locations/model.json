@@ -1,98 +1,98 @@
 {
-  "location_id": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
-  },
-  "clinic_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": false
-  },
-  "parent_location_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": false
-  },
-  "location_code": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": true
-  },
-  "location_name": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": true
-  },
-  "location_type": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": true
-  },
-  "full_path_code": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": false
-  },
-  "is_stock_location": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": false
-  },
-  "sort_order": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": false
-  },
-  "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": false
-  },
-  "created_by": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
-  },
-  "updated_by": {
-    "type": "number",
-    "createable": false,
-    "updateable": true,
-    "required": false
-  },
-  "created_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": false
-  },
-  "updated_date": {
-    "type": "datetime",
-    "createable": false,
-    "updateable": true,
-    "required": false
-  },
-  "clinic_key": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
-  },
-  "parent_location_key": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
-  }
+    "location_id": {
+        "type": "number",
+        "createable": false,
+        "updateable": false,
+        "required": false
+    },
+    "clinic_id": {
+        "type": "number",
+        "createable": true,
+        "updateable": true,
+        "required": false
+    },
+    "parent_location_id": {
+        "type": "number",
+        "createable": true,
+        "updateable": true,
+        "required": false
+    },
+    "location_code": {
+        "type": "string",
+        "createable": true,
+        "updateable": true,
+        "required": true
+    },
+    "location_name": {
+        "type": "string",
+        "createable": true,
+        "updateable": true,
+        "required": true
+    },
+    "location_type": {
+        "type": "string",
+        "createable": true,
+        "updateable": true,
+        "required": true
+    },
+    "full_path_code": {
+        "type": "string",
+        "createable": true,
+        "updateable": true,
+        "required": false
+    },
+    "is_stock_location": {
+        "type": "number",
+        "createable": true,
+        "updateable": true,
+        "required": false
+    },
+    "sort_order": {
+        "type": "number",
+        "createable": true,
+        "updateable": true,
+        "required": false
+    },
+    "status": {
+        "type": "number",
+        "createable": true,
+        "updateable": true,
+        "required": false
+    },
+    "created_by": {
+        "type": "number",
+        "createable": true,
+        "updateable": false,
+        "required": false
+    },
+    "updated_by": {
+        "type": "number",
+        "createable": false,
+        "updateable": true,
+        "required": false
+    },
+    "created_date": {
+        "type": "datetime",
+        "createable": true,
+        "updateable": false,
+        "required": false
+    },
+    "updated_date": {
+        "type": "datetime",
+        "createable": false,
+        "updateable": true,
+        "required": false
+    },
+    "clinic_key": {
+        "type": "number",
+        "createable": false,
+        "updateable": false,
+        "required": false
+    },
+    "parent_location_key": {
+        "type": "number",
+        "createable": false,
+        "updateable": false,
+        "required": false
+    }
 }

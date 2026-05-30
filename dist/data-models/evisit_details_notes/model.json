@@ -1,50 +1,50 @@
 {
-  "notes_id": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
-  },
-  "evisit_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
-  },
-  "notes": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
-  },
-  "created_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": true
-  },
-  "created_by": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
-  },
-  "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
-  },
-  "note_status": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
-  },
-  "notes_type": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
-  }
+    "notes_id": {
+        "type": "number",
+        "createable": false,
+        "updateable": false,
+        "required": false
+    },
+    "evisit_id": {
+        "type": "number",
+        "createable": true,
+        "updateable": false,
+        "required": true
+    },
+    "notes": {
+        "type": "string",
+        "createable": true,
+        "updateable": false,
+        "required": false
+    },
+    "created_date": {
+        "type": "datetime",
+        "createable": true,
+        "updateable": false,
+        "required": true
+    },
+    "created_by": {
+        "type": "number",
+        "createable": true,
+        "updateable": false,
+        "required": true
+    },
+    "status": {
+        "type": "number",
+        "createable": true,
+        "updateable": false,
+        "required": true
+    },
+    "note_status": {
+        "type": "number",
+        "createable": true,
+        "updateable": false,
+        "required": true
+    },
+    "notes_type": {
+        "type": "string",
+        "createable": true,
+        "updateable": false,
+        "required": false
+    }
 }

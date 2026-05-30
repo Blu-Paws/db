@@ -1,112 +1,112 @@
 {
-  "pet_hist_id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
-  },
-  "pet_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "login_id": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "pet_name": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "pet_type_id": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "gender_id": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "breed_id": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "dob": {
-    "type": "datetime",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "notes": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "likes": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "dislikes": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "create_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "created_by": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "status": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "deceased_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "pet_status": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "updated_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "updated_by": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  }
+    "pet_hist_id": {
+        "type": "number",
+        "primary": true,
+        "autoincrement": true,
+        "required": false,
+        "updateable": false,
+        "createable": false
+    },
+    "pet_id": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "login_id": {
+        "type": "number",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "pet_name": {
+        "type": "string",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "pet_type_id": {
+        "type": "number",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "gender_id": {
+        "type": "number",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "breed_id": {
+        "type": "number",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "dob": {
+        "type": "datetime",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "notes": {
+        "type": "string",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "likes": {
+        "type": "string",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "dislikes": {
+        "type": "string",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "create_date": {
+        "type": "datetime",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "created_by": {
+        "type": "number",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "status": {
+        "type": "number",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "deceased_date": {
+        "type": "datetime",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "pet_status": {
+        "type": "number",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "updated_date": {
+        "type": "datetime",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    },
+    "updated_by": {
+        "type": "number",
+        "required": false,
+        "updateable": false,
+        "createable": true
+    }
 }

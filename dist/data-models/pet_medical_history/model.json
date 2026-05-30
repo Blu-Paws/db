@@ -1,52 +1,52 @@
 {
-  "id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
-  },
-  "pet_history_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "pet_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "medical_history_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "description": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "created_date": {
-    "type": "datetime",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "created_by": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "status": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  }
+    "id": {
+        "type": "number",
+        "primary": true,
+        "autoincrement": true,
+        "required": false,
+        "updateable": false,
+        "createable": false
+    },
+    "pet_history_id": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "pet_id": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "medical_history_id": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "description": {
+        "type": "string",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "created_date": {
+        "type": "datetime",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "created_by": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "status": {
+        "type": "number",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    }
 }

@@ -1,70 +1,70 @@
 {
-  "boarding_id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
-  },
-  "boarding_type_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "clinic_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "name": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "description": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "capacity": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "status": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "created_by": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "create_date": {
-    "type": "datetime",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "updated_by": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "update_date": {
-    "type": "datetime",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  }
+    "boarding_id": {
+        "type": "number",
+        "primary": true,
+        "autoincrement": true,
+        "required": false,
+        "updateable": false,
+        "createable": false
+    },
+    "boarding_type_id": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "clinic_id": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "name": {
+        "type": "string",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    },
+    "description": {
+        "type": "string",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    },
+    "capacity": {
+        "type": "number",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    },
+    "status": {
+        "type": "number",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    },
+    "created_by": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "create_date": {
+        "type": "datetime",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "updated_by": {
+        "type": "number",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    },
+    "update_date": {
+        "type": "datetime",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    }
 }

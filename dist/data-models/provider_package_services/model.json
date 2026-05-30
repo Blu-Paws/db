@@ -1,14 +1,14 @@
 {
-  "package_id": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "service_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  }
+    "package_id": {
+        "type": "string",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "service_id": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    }
 }

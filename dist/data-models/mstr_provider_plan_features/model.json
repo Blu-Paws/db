@@ -1,14 +1,14 @@
 {
-  "plan_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "feature_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
-  }
+    "plan_id": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    },
+    "feature_id": {
+        "type": "number",
+        "required": true,
+        "updateable": false,
+        "createable": true
+    }
 }

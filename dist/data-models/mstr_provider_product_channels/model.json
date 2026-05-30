@@ -1,28 +1,28 @@
 {
-  "channel_id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
-  },
-  "name": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "description": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
-  },
-  "status": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
-  }
+    "channel_id": {
+        "type": "number",
+        "primary": true,
+        "autoincrement": true,
+        "required": false,
+        "updateable": false,
+        "createable": false
+    },
+    "name": {
+        "type": "string",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    },
+    "description": {
+        "type": "string",
+        "required": true,
+        "updateable": true,
+        "createable": true
+    },
+    "status": {
+        "type": "number",
+        "required": false,
+        "updateable": true,
+        "createable": true
+    }
 }
