@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verityJWTToken = exports.createJWTToken = exports.createConnection = void 0;
+exports.createRefreshToken = exports.verityJWTToken = exports.createJWTToken = exports.createConnection = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const promise_1 = __importDefault(require("mysql2/promise"));
 const client_secrets_manager_1 = require("@aws-sdk/client-secrets-manager");
@@ -303,9 +303,9 @@ const createConnection = (stageValue, flavorValue) => {
     };
 };
 exports.createConnection = createConnection;
-const createJWTToken = async (stageValue, payload) => {
+const createJWTToken = async (stageValue, payload, expiresIn) => {
     const secret = await getJWTSecretKey(stageValue);
-    const token = jsonwebtoken_1.default.sign(payload, secret, { expiresIn: '15m' });
+    const token = jsonwebtoken_1.default.sign(payload, secret, { expiresIn });
     return token;
 };
 exports.createJWTToken = createJWTToken;
@@ -315,4 +315,13 @@ const verityJWTToken = async (stageValue, token) => {
     return decoded;
 };
 exports.verityJWTToken = verityJWTToken;
+const createRefreshToken = async (stageValue, loginId, expiresIn) => {
+    const jwtSecret = await getJWTSecretKey(stageValue);
+    const refreshToken = jsonwebtoken_1.default.sign({ loginId }, jwtSecret, {
+        algorithm: 'RS256',
+        expiresIn: expiresIn,
+    });
+    return refreshToken;
+};
+exports.createRefreshToken = createRefreshToken;
 //# sourceMappingURL=core.js.map
