@@ -20,41 +20,33 @@ const logIfSlow = (operation, elapsedMs, sql) => {
     console.warn(`[blupaws-db] Slow ${operation}: ${elapsedMs.toFixed(1)}ms${detail}`);
 };
 const getSecretId = (stageKey) => `${stageKey}/RDB/mysql`;
-const getJWTSecrets = async () => {
+const secrets = {};
+const getAWSSecret = async (SecretId) => {
+    if (secrets[SecretId] != null) {
+        return secrets[SecretId];
+    }
     const client = new client_secrets_manager_1.SecretsManagerClient({
-        region: process.env.AWS_REGION || 'us-east-2',
+        region: 'us-east-2',
     });
     const response = await client.send(new client_secrets_manager_1.GetSecretValueCommand({
-        SecretId: 'private/keys',
+        SecretId,
         VersionStage: 'AWSCURRENT',
     }));
     const json = JSON.parse(response.SecretString ?? '{}');
+    secrets[SecretId] = json;
     return json;
 };
-const getJWTSecretKey = async (stageKey) => {
-    const json = await getJWTSecrets();
-    return json[`JWT_SECRET_${stageKey.toUpperCase()}`];
-};
-const getJWTPrivateKey = async (stageKey) => {
-    const json = await getJWTSecrets();
-    return json[`JWT_PRIVATE_KEY_${stageKey.toUpperCase()}`];
-};
-const getJWTPublicKey = async (stageKey) => {
-    const json = await getJWTSecrets();
-    return json[`JWT_PUBLIC_KEY_${stageKey.toUpperCase()}`];
-};
 const getDBDetails = async (stageKey) => {
-    const client = new client_secrets_manager_1.SecretsManagerClient({
-        region: process.env.AWS_REGION || 'us-east-2',
-    });
-    const response = await client.send(new client_secrets_manager_1.GetSecretValueCommand({
-        SecretId: getSecretId(stageKey),
-        VersionStage: 'AWSCURRENT',
-    }));
+    const secretId = getSecretId(stageKey);
+    const json = await getAWSSecret(secretId);
     return {
-        ...JSON.parse(response.SecretString ?? '{}'),
+        ...json,
         ...(0, utils_1.getPoolConfig)(),
     };
+};
+const getJWTSecret = async (stageKey, key) => {
+    const json = await getAWSSecret('private/keys');
+    return json[`${key}_${stageKey.toUpperCase()}`];
 };
 const clearPool = async (stageKey) => {
     const pool = pools.get(stageKey);
@@ -316,7 +308,7 @@ const createConnection = (stageValue, flavorValue) => {
 };
 exports.createConnection = createConnection;
 const createJWTToken = async (stageValue, payload, expiresIn) => {
-    const secret = await getJWTSecretKey(stageValue);
+    const secret = await getJWTSecret(stageValue, 'JWT_SECRET');
     const token = jsonwebtoken_1.default.sign(payload, secret, {
         algorithm: 'HS256',
         expiresIn,
@@ -325,7 +317,7 @@ const createJWTToken = async (stageValue, payload, expiresIn) => {
 };
 exports.createJWTToken = createJWTToken;
 const verifyJWTToken = async (stageValue, token) => {
-    const secret = await getJWTSecretKey(stageValue);
+    const secret = await getJWTSecret(stageValue, 'JWT_SECRET');
     const decoded = jsonwebtoken_1.default.verify(token, secret, {
         algorithms: ['HS256'],
     });
@@ -333,7 +325,7 @@ const verifyJWTToken = async (stageValue, token) => {
 };
 exports.verifyJWTToken = verifyJWTToken;
 const createRefreshToken = async (stageValue, payload, expiresIn) => {
-    const privateKey = await getJWTPrivateKey(stageValue);
+    const privateKey = await getJWTSecret(stageValue, 'JWT_PRIVATE_KEY');
     const refreshToken = jsonwebtoken_1.default.sign(payload, privateKey.replace(/\\n/g, '\n'), {
         algorithm: 'RS256',
         expiresIn: expiresIn,
@@ -342,7 +334,7 @@ const createRefreshToken = async (stageValue, payload, expiresIn) => {
 };
 exports.createRefreshToken = createRefreshToken;
 const verifyRefreshToken = async (stageValue, token) => {
-    const publicKey = await getJWTPublicKey(stageValue);
+    const publicKey = await getJWTSecret(stageValue, 'JWT_PUBLIC_KEY');
     const decoded = jsonwebtoken_1.default.verify(token, publicKey.replace(/\\n/g, '\n'), {
         algorithms: ['RS256'],
     });

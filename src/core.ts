@@ -56,49 +56,38 @@ const logIfSlow = (
 
 const getSecretId = (stageKey: Stage): string => `${stageKey}/RDB/mysql`;
 
-const getJWTSecrets = async (): Promise<Record<string, string>> => {
+const secrets: Record<string, any> = {};
+
+const getAWSSecret = async (SecretId: string) => {
+  if (secrets[SecretId] != null) {
+    return secrets[SecretId];
+  }
   const client = new SecretsManagerClient({
-    region: process.env.AWS_REGION || 'us-east-2',
+    region: 'us-east-2',
   });
   const response = await client.send(
     new GetSecretValueCommand({
-      SecretId: 'private/keys',
+      SecretId,
       VersionStage: 'AWSCURRENT',
     }),
   );
   const json = JSON.parse(response.SecretString ?? '{}');
+  secrets[SecretId] = json;
   return json;
 };
 
-const getJWTSecretKey = async (stageKey: Stage): Promise<string> => {
-  const json = await getJWTSecrets();
-  return json[`JWT_SECRET_${stageKey.toUpperCase()}`] as string;
-};
-
-const getJWTPrivateKey = async (stageKey: Stage): Promise<string> => {
-  const json = await getJWTSecrets();
-  return json[`JWT_PRIVATE_KEY_${stageKey.toUpperCase()}`] as string;
-};
-
-const getJWTPublicKey = async (stageKey: Stage): Promise<string> => {
-  const json = await getJWTSecrets();
-  return json[`JWT_PUBLIC_KEY_${stageKey.toUpperCase()}`] as string;
-};
-
 const getDBDetails = async (stageKey: Stage) => {
-  const client = new SecretsManagerClient({
-    region: process.env.AWS_REGION || 'us-east-2',
-  });
-  const response = await client.send(
-    new GetSecretValueCommand({
-      SecretId: getSecretId(stageKey),
-      VersionStage: 'AWSCURRENT',
-    }),
-  );
+  const secretId = getSecretId(stageKey);
+  const json = await getAWSSecret(secretId);
   return {
-    ...JSON.parse(response.SecretString ?? '{}'),
+    ...json,
     ...getPoolConfig(),
   };
+};
+
+const getJWTSecret = async (stageKey: Stage, key: string): Promise<string> => {
+  const json = await getAWSSecret('private/keys');
+  return json[`${key}_${stageKey.toUpperCase()}`] as string;
 };
 
 const clearPool = async (stageKey: Stage): Promise<void> => {
@@ -458,7 +447,7 @@ export const createJWTToken = async (
   payload: Record<string, string | number>,
   expiresIn: any,
 ) => {
-  const secret = await getJWTSecretKey(stageValue);
+  const secret = await getJWTSecret(stageValue, 'JWT_SECRET');
   const token = jwt.sign(payload, secret, {
     algorithm: 'HS256',
     expiresIn,
@@ -467,7 +456,7 @@ export const createJWTToken = async (
 };
 
 export const verifyJWTToken = async (stageValue: Stage, token: string) => {
-  const secret = await getJWTSecretKey(stageValue);
+  const secret = await getJWTSecret(stageValue, 'JWT_SECRET');
   const decoded = jwt.verify(token, secret, {
     algorithms: ['HS256'],
   });
@@ -479,7 +468,7 @@ export const createRefreshToken = async (
   payload: Record<string, string | number>,
   expiresIn: any,
 ) => {
-  const privateKey = await getJWTPrivateKey(stageValue);
+  const privateKey = await getJWTSecret(stageValue, 'JWT_PRIVATE_KEY');
   const refreshToken = jwt.sign(payload, privateKey.replace(/\\n/g, '\n'), {
     algorithm: 'RS256',
     expiresIn: expiresIn,
@@ -488,7 +477,7 @@ export const createRefreshToken = async (
 };
 
 export const verifyRefreshToken = async (stageValue: Stage, token: string) => {
-  const publicKey = await getJWTPublicKey(stageValue);
+  const publicKey = await getJWTSecret(stageValue, 'JWT_PUBLIC_KEY');
   const decoded = jwt.verify(token, publicKey.replace(/\\n/g, '\n'), {
     algorithms: ['RS256'],
   });
