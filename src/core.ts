@@ -35,6 +35,7 @@ import {
 
 const pools = new Map<Stage, BluPawsPool>();
 const poolPromises = new Map<Stage, Promise<BluPawsPool>>();
+const secrets: Record<string, any> = {};
 
 const getElapsedMs = (startedAt: bigint): number =>
   Number(process.hrtime.bigint() - startedAt) / 1_000_000;
@@ -54,12 +55,9 @@ const logIfSlow = (
   );
 };
 
-const getSecretId = (stageKey: Stage): string => `${stageKey}/RDB/mysql`;
-
-const secrets: Record<string, any> = {};
-
 const getAWSSecret = async (SecretId: string) => {
   if (secrets[SecretId] != null) {
+    console.log(`Reading cached secret for secret ID: ${SecretId}`);
     return secrets[SecretId];
   }
   const client = new SecretsManagerClient({
@@ -77,8 +75,7 @@ const getAWSSecret = async (SecretId: string) => {
 };
 
 const getDBDetails = async (stageKey: Stage) => {
-  const secretId = getSecretId(stageKey);
-  const json = await getAWSSecret(secretId);
+  const json = await getAWSSecret(`${stageKey}/RDB/mysql`);
   return {
     ...json,
     ...getPoolConfig(),
