@@ -56,7 +56,7 @@ const logIfSlow = (
 
 const getSecretId = (stageKey: Stage): string => `${stageKey}/RDB/mysql`;
 
-const getJWTSecretKey = async (stageKey: Stage): Promise<string> => {
+const getJWTSecrets = async (): Promise<Record<string, string>> => {
   const client = new SecretsManagerClient({
     region: process.env.AWS_REGION || 'us-east-2',
   });
@@ -67,7 +67,22 @@ const getJWTSecretKey = async (stageKey: Stage): Promise<string> => {
     }),
   );
   const json = JSON.parse(response.SecretString ?? '{}');
+  return json;
+};
+
+const getJWTSecretKey = async (stageKey: Stage): Promise<string> => {
+  const json = await getJWTSecrets();
   return json[`JWT_SECRET_${stageKey.toUpperCase()}`] as string;
+};
+
+const getJWTPrivateKey = async (stageKey: Stage): Promise<string> => {
+  const json = await getJWTSecrets();
+  return json[`JWT_PRIVATE_KEY_${stageKey.toUpperCase()}`] as string;
+};
+
+const getJWTPublicKey = async (stageKey: Stage): Promise<string> => {
+  const json = await getJWTSecrets();
+  return json[`JWT_PUBLIC_KEY_${stageKey.toUpperCase()}`] as string;
 };
 
 const getDBDetails = async (stageKey: Stage) => {
@@ -444,13 +459,18 @@ export const createJWTToken = async (
   expiresIn: any,
 ) => {
   const secret = await getJWTSecretKey(stageValue);
-  const token = jwt.sign(payload, secret, { expiresIn });
+  const token = jwt.sign(payload, secret, {
+    algorithm: 'HS256',
+    expiresIn,
+  });
   return token;
 };
 
-export const verityJWTToken = async (stageValue: Stage, token: string) => {
-  const jwtSecret = await getJWTSecretKey(stageValue);
-  const decoded = jwt.verify(token, jwtSecret);
+export const verifyJWTToken = async (stageValue: Stage, token: string) => {
+  const secret = await getJWTSecretKey(stageValue);
+  const decoded = jwt.verify(token, secret, {
+    algorithms: ['HS256'],
+  });
   return decoded;
 };
 
@@ -459,10 +479,18 @@ export const createRefreshToken = async (
   loginId: string,
   expiresIn: any,
 ) => {
-  const jwtSecret = await getJWTSecretKey(stageValue);
-  const refreshToken = jwt.sign({ loginId }, jwtSecret, {
+  const privateKey = await getJWTPrivateKey(stageValue);
+  const refreshToken = jwt.sign({ loginId }, privateKey.replace(/\\n/g, '\n'), {
     algorithm: 'RS256',
     expiresIn: expiresIn,
   });
   return refreshToken;
+};
+
+export const verifyRefreshToken = async (stageValue: Stage, token: string) => {
+  const publicKey = await getJWTPublicKey(stageValue);
+  const decoded = jwt.verify(token, publicKey.replace(/\\n/g, '\n'), {
+    algorithms: ['RS256'],
+  });
+  return decoded;
 };
