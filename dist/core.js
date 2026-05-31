@@ -332,9 +332,9 @@ const verifyJWTToken = async (stageValue, token) => {
     return decoded;
 };
 exports.verifyJWTToken = verifyJWTToken;
-const createRefreshToken = async (stageValue, loginId, expiresIn) => {
+const createRefreshToken = async (stageValue, payload, expiresIn) => {
     const privateKey = await getJWTPrivateKey(stageValue);
-    const refreshToken = jsonwebtoken_1.default.sign({ loginId }, privateKey.replace(/\\n/g, '\n'), {
+    const refreshToken = jsonwebtoken_1.default.sign(payload, privateKey.replace(/\\n/g, '\n'), {
         algorithm: 'RS256',
         expiresIn: expiresIn,
     });

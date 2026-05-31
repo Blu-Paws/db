@@ -476,11 +476,11 @@ export const verifyJWTToken = async (stageValue: Stage, token: string) => {
 
 export const createRefreshToken = async (
   stageValue: Stage,
-  loginId: string,
+  payload: Record<string, string | number>,
   expiresIn: any,
 ) => {
   const privateKey = await getJWTPrivateKey(stageValue);
-  const refreshToken = jwt.sign({ loginId }, privateKey.replace(/\\n/g, '\n'), {
+  const refreshToken = jwt.sign(payload, privateKey.replace(/\\n/g, '\n'), {
     algorithm: 'RS256',
     expiresIn: expiresIn,
   });
