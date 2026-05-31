@@ -441,9 +441,10 @@ export const createConnection = (stageValue: Stage, flavorValue: Flavor) => {
 export const createJWTToken = async (
   stageValue: Stage,
   payload: Record<string, string | number>,
+  expiresIn: any,
 ) => {
   const secret = await getJWTSecretKey(stageValue);
-  const token = jwt.sign(payload, secret, { expiresIn: '15m' });
+  const token = jwt.sign(payload, secret, { expiresIn });
   return token;
 };
 
@@ -451,4 +452,17 @@ export const verityJWTToken = async (stageValue: Stage, token: string) => {
   const jwtSecret = await getJWTSecretKey(stageValue);
   const decoded = jwt.verify(token, jwtSecret);
   return decoded;
+};
+
+export const createRefreshToken = async (
+  stageValue: Stage,
+  loginId: string,
+  expiresIn: any,
+) => {
+  const jwtSecret = await getJWTSecretKey(stageValue);
+  const refreshToken = jwt.sign({ loginId }, jwtSecret, {
+    algorithm: 'RS256',
+    expiresIn: expiresIn,
+  });
+  return refreshToken;
 };
