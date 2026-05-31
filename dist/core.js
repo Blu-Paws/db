@@ -10,6 +10,7 @@ const client_secrets_manager_1 = require("@aws-sdk/client-secrets-manager");
 const utils_1 = require("./utils");
 const pools = new Map();
 const poolPromises = new Map();
+const secrets = {};
 const getElapsedMs = (startedAt) => Number(process.hrtime.bigint() - startedAt) / 1_000_000;
 const logIfSlow = (operation, elapsedMs, sql) => {
     const slowQueryLogMs = (0, utils_1.getSlowQueryLogMs)();
@@ -19,10 +20,9 @@ const logIfSlow = (operation, elapsedMs, sql) => {
     const detail = sql == null ? '' : `: ${sql.replace(/\s+/g, ' ').trim()}`;
     console.warn(`[blupaws-db] Slow ${operation}: ${elapsedMs.toFixed(1)}ms${detail}`);
 };
-const getSecretId = (stageKey) => `${stageKey}/RDB/mysql`;
-const secrets = {};
 const getAWSSecret = async (SecretId) => {
     if (secrets[SecretId] != null) {
+        console.log(`Reading cached secret for secret ID: ${SecretId}`);
         return secrets[SecretId];
     }
     const client = new client_secrets_manager_1.SecretsManagerClient({
@@ -37,8 +37,7 @@ const getAWSSecret = async (SecretId) => {
     return json;
 };
 const getDBDetails = async (stageKey) => {
-    const secretId = getSecretId(stageKey);
-    const json = await getAWSSecret(secretId);
+    const json = await getAWSSecret(`${stageKey}/RDB/mysql`);
     return {
         ...json,
         ...(0, utils_1.getPoolConfig)(),
