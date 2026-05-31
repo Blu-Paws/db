@@ -3,6 +3,7 @@ export type { DataRow, Flavor, QueryResult, QueryValues, Stage } from './types';
 export {
   createConnection,
   createJWTToken,
-  verityJWTToken,
+  verifyJWTToken,
   createRefreshToken,
+  verifyRefreshToken,
 } from './core';

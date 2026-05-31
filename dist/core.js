@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createRefreshToken = exports.verityJWTToken = exports.createJWTToken = exports.createConnection = void 0;
+exports.verifyRefreshToken = exports.createRefreshToken = exports.verifyJWTToken = exports.createJWTToken = exports.createConnection = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const promise_1 = __importDefault(require("mysql2/promise"));
 const client_secrets_manager_1 = require("@aws-sdk/client-secrets-manager");
@@ -20,7 +20,7 @@ const logIfSlow = (operation, elapsedMs, sql) => {
     console.warn(`[blupaws-db] Slow ${operation}: ${elapsedMs.toFixed(1)}ms${detail}`);
 };
 const getSecretId = (stageKey) => `${stageKey}/RDB/mysql`;
-const getJWTSecretKey = async (stageKey) => {
+const getJWTSecrets = async () => {
     const client = new client_secrets_manager_1.SecretsManagerClient({
         region: process.env.AWS_REGION || 'us-east-2',
     });
@@ -29,7 +29,19 @@ const getJWTSecretKey = async (stageKey) => {
         VersionStage: 'AWSCURRENT',
     }));
     const json = JSON.parse(response.SecretString ?? '{}');
+    return json;
+};
+const getJWTSecretKey = async (stageKey) => {
+    const json = await getJWTSecrets();
     return json[`JWT_SECRET_${stageKey.toUpperCase()}`];
+};
+const getJWTPrivateKey = async (stageKey) => {
+    const json = await getJWTSecrets();
+    return json[`JWT_PRIVATE_KEY_${stageKey.toUpperCase()}`];
+};
+const getJWTPublicKey = async (stageKey) => {
+    const json = await getJWTSecrets();
+    return json[`JWT_PUBLIC_KEY_${stageKey.toUpperCase()}`];
 };
 const getDBDetails = async (stageKey) => {
     const client = new client_secrets_manager_1.SecretsManagerClient({
@@ -305,23 +317,36 @@ const createConnection = (stageValue, flavorValue) => {
 exports.createConnection = createConnection;
 const createJWTToken = async (stageValue, payload, expiresIn) => {
     const secret = await getJWTSecretKey(stageValue);
-    const token = jsonwebtoken_1.default.sign(payload, secret, { expiresIn });
+    const token = jsonwebtoken_1.default.sign(payload, secret, {
+        algorithm: 'HS256',
+        expiresIn,
+    });
     return token;
 };
 exports.createJWTToken = createJWTToken;
-const verityJWTToken = async (stageValue, token) => {
-    const jwtSecret = await getJWTSecretKey(stageValue);
-    const decoded = jsonwebtoken_1.default.verify(token, jwtSecret);
+const verifyJWTToken = async (stageValue, token) => {
+    const secret = await getJWTSecretKey(stageValue);
+    const decoded = jsonwebtoken_1.default.verify(token, secret, {
+        algorithms: ['HS256'],
+    });
     return decoded;
 };
-exports.verityJWTToken = verityJWTToken;
+exports.verifyJWTToken = verifyJWTToken;
 const createRefreshToken = async (stageValue, loginId, expiresIn) => {
-    const jwtSecret = await getJWTSecretKey(stageValue);
-    const refreshToken = jsonwebtoken_1.default.sign({ loginId }, jwtSecret, {
+    const privateKey = await getJWTPrivateKey(stageValue);
+    const refreshToken = jsonwebtoken_1.default.sign({ loginId }, privateKey.replace(/\\n/g, '\n'), {
         algorithm: 'RS256',
         expiresIn: expiresIn,
     });
     return refreshToken;
 };
 exports.createRefreshToken = createRefreshToken;
+const verifyRefreshToken = async (stageValue, token) => {
+    const publicKey = await getJWTPublicKey(stageValue);
+    const decoded = jsonwebtoken_1.default.verify(token, publicKey.replace(/\\n/g, '\n'), {
+        algorithms: ['RS256'],
+    });
+    return decoded;
+};
+exports.verifyRefreshToken = verifyRefreshToken;
 //# sourceMappingURL=core.js.map
