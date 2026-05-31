@@ -22,6 +22,7 @@ const evisit_details_notes_1 = __importDefault(require("./data-models/evisit_det
 const favourite_1 = __importDefault(require("./data-models/favourite"));
 const feedback_1 = __importDefault(require("./data-models/feedback"));
 const images_1 = __importDefault(require("./data-models/images"));
+const integrator_bookings_1 = __importDefault(require("./data-models/integrator_bookings"));
 const login_1 = __importDefault(require("./data-models/login"));
 const mstr_product_categories_1 = __importDefault(require("./data-models/mstr_product_categories"));
 const mstr_provider_product_channels_1 = __importDefault(require("./data-models/mstr_provider_product_channels"));
@@ -79,6 +80,7 @@ exports.tableDefinitions = {
     'favourite': favourite_1.default,
     'feedback': feedback_1.default,
     'images': images_1.default,
+    'integrator_bookings': integrator_bookings_1.default,
     'login': login_1.default,
     'mstr_product_categories': mstr_product_categories_1.default,
     'mstr_provider_product_channels': mstr_provider_product_channels_1.default,

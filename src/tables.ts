@@ -18,6 +18,7 @@ import evisitDetailsNotesTable from './data-models/evisit_details_notes';
 import favouriteTable from './data-models/favourite';
 import feedbackTable from './data-models/feedback';
 import imagesTable from './data-models/images';
+import integratorBookingsTable from './data-models/integrator_bookings';
 import loginTable from './data-models/login';
 import mstrProductCategoriesTable from './data-models/mstr_product_categories';
 import mstrProviderProductChannelsTable from './data-models/mstr_provider_product_channels';
@@ -76,6 +77,7 @@ export const tableDefinitions = {
   'favourite': favouriteTable,
   'feedback': feedbackTable,
   'images': imagesTable,
+  'integrator_bookings': integratorBookingsTable,
   'login': loginTable,
   'mstr_product_categories': mstrProductCategoriesTable,
   'mstr_provider_product_channels': mstrProviderProductChannelsTable,

@@ -18,6 +18,7 @@ export declare const tableDefinitions: {
     favourite: TableDefinition;
     feedback: TableDefinition;
     images: TableDefinition;
+    integrator_bookings: TableDefinition;
     login: TableDefinition;
     mstr_product_categories: TableDefinition;
     mstr_provider_product_channels: TableDefinition;
