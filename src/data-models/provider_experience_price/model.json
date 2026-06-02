@@ -52,7 +52,7 @@
   "radius": {
     "type": "number",
     "required": false,
-    "updateable": false,
+    "updateable": true,
     "createable": true
   },
   "status": {
