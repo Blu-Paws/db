@@ -29,6 +29,12 @@
     "updateable": true,
     "createable": true
   },
+  "customer_id": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
   "evisit_id": {
     "type": "string",
     "required": false,
