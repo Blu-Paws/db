@@ -71,5 +71,11 @@
     "required": true,
     "updateable": true,
     "createable": true
+  },
+  "description": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
   }
 }
