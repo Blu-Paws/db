@@ -98,7 +98,7 @@
   "status": {
     "type": "number",
     "createable": true,
-    "updateable": false,
+    "updateable": true,
     "required": true
   },
   "created_by": {
