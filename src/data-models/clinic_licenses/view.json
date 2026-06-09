@@ -1,0 +1,58 @@
+{
+  "license_id": {
+    "type": "number",
+    "primary": true,
+    "autoincrement": true,
+    "required": false,
+    "updateable": false,
+    "createable": true
+  },
+  "clinic_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "status": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "create_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "created_by": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "license_type_id": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "expiry_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "license_name": {
+    "type": "string",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "is_primary": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  }
+}

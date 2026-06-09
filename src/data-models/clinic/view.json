@@ -1,0 +1,134 @@
+{
+  "clinic_id": {
+    "type": "number",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "name": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "alternate_contact_phone": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "alternate_contact_name": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "clinic_status_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "location_coordinates": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "address1": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "address2": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "zip_code": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "phone": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "clinic_email": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "country_code": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "about_us": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "website": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "approval_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "timezone": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "status": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "create_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "modified_date": {
+    "type": "datetime",
+    "createable": false,
+    "updateable": true,
+    "required": false
+  },
+  "modified_by": {
+    "type": "number",
+    "createable": false,
+    "updateable": true,
+    "required": false
+  },
+  "created_by": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "stripe_customer_id": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  }
+}

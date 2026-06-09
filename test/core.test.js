@@ -186,7 +186,7 @@ test('single-row write helpers use autocommit without implicit transactions', as
   const insertId = await db.insertRowIntoTable('login', {
     name: 'Test User',
     create_date: new Date('2026-01-01T00:00:00Z'),
-    status: true,
+    status: 1,
     phone: '5551234',
     login_status_id: 1,
     created_by: 1,
@@ -218,6 +218,50 @@ test('single-row write helpers use autocommit without implicit transactions', as
     calls.connections[2].queries[0].sql,
     'DELETE FROM login WHERE phone = ?',
   );
+});
+
+test('read helpers select table view fields with validated clauses', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{ login_id: 123, phone: '5551234' }],
+      [
+        { login_id: 123, phone: '5551234' },
+        { login_id: 456, phone: '5555678' },
+      ],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('login', { phone: '5551234' });
+  const rows = await db.getRowsFromTable('login', { login_status_id: 1 });
+
+  assert.deepEqual(row, { login_id: 123, phone: '5551234' });
+  assert.deepEqual(rows, [
+    { login_id: 123, phone: '5551234' },
+    { login_id: 456, phone: '5555678' },
+  ]);
+  assert.equal(calls.connections.length, 2);
+  assert.equal(
+    calls.connections[0].queries[0].sql,
+    'SELECT login_id,email,name,password,create_date,status,phone,force_change_password,login_status_id,created_by,module_id,country_code FROM login WHERE phone = ? LIMIT 1',
+  );
+  assert.deepEqual(calls.connections[0].queries[0].values, ['5551234']);
+  assert.equal(
+    calls.connections[1].queries[0].sql,
+    'SELECT login_id,email,name,password,create_date,status,phone,force_change_password,login_status_id,created_by,module_id,country_code FROM login WHERE login_status_id = ?',
+  );
+  assert.deepEqual(calls.connections[1].queries[0].values, [1]);
+});
+
+test('getRowFromTable returns null when no row matches', async () => {
+  const { api } = createConnectionStub({
+    queryResults: [[]],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('login', { phone: '5551234' });
+
+  assert.equal(row, null);
 });
 
 test('helpers inside withTransaction use the provided transaction connection', async () => {

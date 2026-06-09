@@ -38,6 +38,8 @@ stage secret does not exist, the package throws.
 - `db.withTransaction(callback)`
 - `db.insertRowIntoTable(tableName, row, conn?)`
 - `db.insertRowsIntoTable(tableName, rows, conn?)`
+- `db.getRowFromTable(tableName, clauses, conn?)`
+- `db.getRowsFromTable(tableName, clauses, conn?)`
 - `db.updateRowTable(tableName, row, clauses, conn?)`
 - `db.deleteRowFromTable(tableName, clauses, conn?)`
 
@@ -54,6 +56,16 @@ const pets = await db.query(
   [loginId],
 );
 ```
+
+Use the table read helpers when the query should select the fields from the
+table's `view.json` and validate `WHERE` clauses against its model.
+
+```js
+const pet = await db.getRowFromTable('pets', { pet_id: petId });
+const pets = await db.getRowsFromTable('pets', { login_id: loginId });
+```
+
+`getRowFromTable(...)` adds `LIMIT 1` and returns `null` when no row matches.
 
 ## Writes
 
@@ -108,12 +120,15 @@ Shared table models live in `src/data-models`. Each table has its own folder:
 
 ```txt
 src/data-models/<table_name>/model.json
+src/data-models/<table_name>/view.json
 src/data-models/<table_name>/index.ts
 ```
 
 `model.json` contains the common field metadata used for type checks and
-create/update support. `index.ts` contains the internal table definition, an
-exported table type, and three internal validator hooks:
+create/update support. `view.json` contains the fields selected by
+`getRowFromTable(...)` and `getRowsFromTable(...)`. `index.ts` contains the
+internal table definition, an exported table type, and three internal validator
+hooks:
 
 - `validateInsert(conn, row)`
 - `validateUpdate(conn, row)`

@@ -270,6 +270,22 @@ const assertHasFields = (data: DataRow, action: string, tableName: string) => {
   }
 };
 
+const getViewStatement = (tableName: string): string => {
+  const table = getTableDefinition(tableName);
+  const fields = Object.keys(table.view);
+  if (fields.length === 0) {
+    throw new Error(`No view fields provided for ${tableName}`);
+  }
+  return fields.join(',');
+};
+
+const getWhereData = (tableName: string, clauses: DataRow): DataRow => {
+  const table = getTableDefinition(tableName);
+  const whereData = serializeClauseData(table.model, clauses);
+  assertHasFields(whereData, 'where', tableName);
+  return whereData;
+};
+
 const updateRowTableForStage = async (
   stageKey: Stage,
   conn: PoolConnection | null | undefined,
@@ -280,9 +296,8 @@ const updateRowTableForStage = async (
   const table = getTableDefinition(tableName);
   const model = table.model;
   const data = serializeUpdateData(model, row);
-  const whereData = serializeClauseData(model, clauses);
+  const whereData = getWhereData(tableName, clauses);
   assertHasFields(data, 'update', tableName);
-  assertHasFields(whereData, 'where', tableName);
 
   const updateStatement = Object.keys(data)
     .map((x) => `${x} = ?`)
@@ -375,9 +390,7 @@ const deleteRowFromTableForStage = async (
   tableName: string,
   clauses: DataRow,
 ): Promise<void> => {
-  const table = getTableDefinition(tableName);
-  const whereData = serializeClauseData(table.model, clauses);
-  assertHasFields(whereData, 'where', tableName);
+  const whereData = getWhereData(tableName, clauses);
 
   const whereStatement = Object.keys(whereData)
     .map((x) => `${x} = ?`)
@@ -394,6 +407,42 @@ const deleteRowFromTableForStage = async (
     return;
   }
   await withConnectionForStage(stageKey, run);
+};
+
+const getRowsFromTableForStage = async (
+  stageKey: Stage,
+  conn: PoolConnection | null | undefined,
+  tableName: string,
+  clauses: DataRow,
+): Promise<DataRow[]> => {
+  getTableDefinition(tableName);
+  const selectStatement = getViewStatement(tableName);
+  const whereData = getWhereData(tableName, clauses);
+  const whereStatement = Object.keys(whereData)
+    .map((x) => `${x} = ?`)
+    .join(' AND ');
+  const values = Object.values(whereData);
+  const sql = `SELECT ${selectStatement} FROM ${tableName} WHERE ${whereStatement}`;
+  const rows = await queryForStage<RowDataPacket[]>(stageKey, sql, values, conn);
+  return rows as DataRow[];
+};
+
+const getRowFromTableForStage = async (
+  stageKey: Stage,
+  conn: PoolConnection | null | undefined,
+  tableName: string,
+  clauses: DataRow,
+): Promise<DataRow | null> => {
+  getTableDefinition(tableName);
+  const selectStatement = getViewStatement(tableName);
+  const whereData = getWhereData(tableName, clauses);
+  const whereStatement = Object.keys(whereData)
+    .map((x) => `${x} = ?`)
+    .join(' AND ');
+  const values = Object.values(whereData);
+  const sql = `SELECT ${selectStatement} FROM ${tableName} WHERE ${whereStatement} LIMIT 1`;
+  const rows = await queryForStage<RowDataPacket[]>(stageKey, sql, values, conn);
+  return (rows[0] as DataRow | undefined) ?? null;
 };
 
 export const createConnection = (stageValue: Stage, flavorValue: Flavor) => {
@@ -425,6 +474,16 @@ export const createConnection = (stageValue: Stage, flavorValue: Flavor) => {
       rows: DataRow[],
       conn?: PoolConnection | null,
     ) => insertRowsIntoTableForStage(stageKey, conn, tableName, rows),
+    getRowFromTable: (
+      tableName: string,
+      clauses: DataRow,
+      conn?: PoolConnection | null,
+    ) => getRowFromTableForStage(stageKey, conn, tableName, clauses),
+    getRowsFromTable: (
+      tableName: string,
+      clauses: DataRow,
+      conn?: PoolConnection | null,
+    ) => getRowsFromTableForStage(stageKey, conn, tableName, clauses),
     updateRowTable: (
       tableName: string,
       row: DataRow,

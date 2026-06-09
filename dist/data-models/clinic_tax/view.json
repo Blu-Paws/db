@@ -1,0 +1,64 @@
+{
+  "tax_id": {
+    "type": "number",
+    "primary": true,
+    "autoincrement": true,
+    "required": false,
+    "updateable": false,
+    "createable": false
+  },
+  "clinic_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "tax_name": {
+    "type": "string",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "percentage": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "linked_tax_id": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "start_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "to_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "created_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "created_by": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "status": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  }
+}

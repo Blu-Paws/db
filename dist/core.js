@@ -199,13 +199,26 @@ const assertHasFields = (data, action, tableName) => {
         throw new Error(`No ${action} fields provided for ${tableName}`);
     }
 };
+const getViewStatement = (tableName) => {
+    const table = (0, utils_1.getTableDefinition)(tableName);
+    const fields = Object.keys(table.view);
+    if (fields.length === 0) {
+        throw new Error(`No view fields provided for ${tableName}`);
+    }
+    return fields.join(',');
+};
+const getWhereData = (tableName, clauses) => {
+    const table = (0, utils_1.getTableDefinition)(tableName);
+    const whereData = (0, utils_1.serializeClauseData)(table.model, clauses);
+    assertHasFields(whereData, 'where', tableName);
+    return whereData;
+};
 const updateRowTableForStage = async (stageKey, conn, tableName, row, clauses) => {
     const table = (0, utils_1.getTableDefinition)(tableName);
     const model = table.model;
     const data = (0, utils_1.serializeUpdateData)(model, row);
-    const whereData = (0, utils_1.serializeClauseData)(model, clauses);
+    const whereData = getWhereData(tableName, clauses);
     assertHasFields(data, 'update', tableName);
-    assertHasFields(whereData, 'where', tableName);
     const updateStatement = Object.keys(data)
         .map((x) => `${x} = ?`)
         .join(', ');
@@ -269,9 +282,7 @@ const insertRowsIntoTableForStage = async (stageKey, conn, tableName, rows) => {
     await withTransactionForStage(stageKey, run);
 };
 const deleteRowFromTableForStage = async (stageKey, conn, tableName, clauses) => {
-    const table = (0, utils_1.getTableDefinition)(tableName);
-    const whereData = (0, utils_1.serializeClauseData)(table.model, clauses);
-    assertHasFields(whereData, 'where', tableName);
+    const whereData = getWhereData(tableName, clauses);
     const whereStatement = Object.keys(whereData)
         .map((x) => `${x} = ?`)
         .join(' AND ');
@@ -287,6 +298,30 @@ const deleteRowFromTableForStage = async (stageKey, conn, tableName, clauses) =>
     }
     await withConnectionForStage(stageKey, run);
 };
+const getRowsFromTableForStage = async (stageKey, conn, tableName, clauses) => {
+    (0, utils_1.getTableDefinition)(tableName);
+    const selectStatement = getViewStatement(tableName);
+    const whereData = getWhereData(tableName, clauses);
+    const whereStatement = Object.keys(whereData)
+        .map((x) => `${x} = ?`)
+        .join(' AND ');
+    const values = Object.values(whereData);
+    const sql = `SELECT ${selectStatement} FROM ${tableName} WHERE ${whereStatement}`;
+    const rows = await queryForStage(stageKey, sql, values, conn);
+    return rows;
+};
+const getRowFromTableForStage = async (stageKey, conn, tableName, clauses) => {
+    (0, utils_1.getTableDefinition)(tableName);
+    const selectStatement = getViewStatement(tableName);
+    const whereData = getWhereData(tableName, clauses);
+    const whereStatement = Object.keys(whereData)
+        .map((x) => `${x} = ?`)
+        .join(' AND ');
+    const values = Object.values(whereData);
+    const sql = `SELECT ${selectStatement} FROM ${tableName} WHERE ${whereStatement} LIMIT 1`;
+    const rows = await queryForStage(stageKey, sql, values, conn);
+    return rows[0] ?? null;
+};
 const createConnection = (stageValue, flavorValue) => {
     if (stageValue == null || `${stageValue}`.trim().length === 0) {
         throw new Error('Stage is required');
@@ -301,6 +336,8 @@ const createConnection = (stageValue, flavorValue) => {
         withTransaction: (callback) => withTransactionForStage(stageKey, callback),
         insertRowIntoTable: (tableName, row, conn) => insertRowIntoTableForStage(stageKey, conn, tableName, row),
         insertRowsIntoTable: (tableName, rows, conn) => insertRowsIntoTableForStage(stageKey, conn, tableName, rows),
+        getRowFromTable: (tableName, clauses, conn) => getRowFromTableForStage(stageKey, conn, tableName, clauses),
+        getRowsFromTable: (tableName, clauses, conn) => getRowsFromTableForStage(stageKey, conn, tableName, clauses),
         updateRowTable: (tableName, row, clauses, conn) => updateRowTableForStage(stageKey, conn, tableName, row, clauses),
         deleteRowFromTable: (tableName, clauses, conn) => deleteRowFromTableForStage(stageKey, conn, tableName, clauses),
     };

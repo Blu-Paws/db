@@ -1,0 +1,64 @@
+{
+  "id": {
+    "type": "number",
+    "primary": true,
+    "autoincrement": true,
+    "required": false,
+    "updateable": false,
+    "createable": false
+  },
+  "clinic_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "entity_type": {
+    "type": "string",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "entity_id": {
+    "type": "string",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "pet_type_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "name": {
+    "type": "string",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "min_weight": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "max_weight": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "adjustment": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "sort_order": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  }
+}

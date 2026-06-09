@@ -1,0 +1,74 @@
+{
+  "vitals_id": {
+    "type": "number",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "pet_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "coat_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "weight": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "height": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "valid_from": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "valid_to": {
+    "type": "datetime",
+    "createable": false,
+    "updateable": true,
+    "required": false
+  },
+  "created_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "created_by": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": true
+  },
+  "updated_by": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "updated_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "status": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  }
+}

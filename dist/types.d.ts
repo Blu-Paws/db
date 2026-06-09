@@ -23,6 +23,7 @@ export type TableValidator<T extends DataRow = DataRow> = (conn: PoolConnection,
 export type TableDefinition<T extends DataRow = DataRow> = {
     tableName: string;
     model: DataModel;
+    view: DataModel;
     validateInsert: TableValidator<T>;
     validateUpdate: TableValidator<T>;
     validateDelete: TableValidator<T>;

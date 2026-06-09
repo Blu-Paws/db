@@ -1,0 +1,68 @@
+{
+  "subscription_id": {
+    "type": "number",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "clinic_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "plan_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "start_date": {
+    "type": "datetime",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "end_date": {
+    "type": "datetime",
+    "createable": false,
+    "updateable": true,
+    "required": false
+  },
+  "status": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "period": {
+    "type": "string",
+    "createable": true,
+    "updateable": false,
+    "required": false
+  },
+  "razorpay_subscription_id": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "stripe_subscription_id": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "order_id": {
+    "type": "string",
+    "createable": false,
+    "updateable": true,
+    "required": false
+  },
+  "payment_id": {
+    "type": "string",
+    "createable": false,
+    "updateable": true,
+    "required": false
+  }
+}

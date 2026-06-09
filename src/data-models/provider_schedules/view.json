@@ -1,0 +1,86 @@
+{
+  "id": {
+    "type": "number",
+    "createable": false,
+    "updateable": false,
+    "required": false
+  },
+  "user_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "clinic_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "entity_type": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "entity_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "rule_type": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "exception_scope": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "exception_date": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "day_of_week": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "start_time": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "end_time": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
+  "timezone": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "is_available": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "is_active": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  }
+}

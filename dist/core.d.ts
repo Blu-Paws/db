@@ -6,6 +6,8 @@ export declare const createConnection: (stageValue: Stage, flavorValue: Flavor) 
     withTransaction: <T>(callback: (conn: PoolConnection) => Promise<T>) => Promise<T>;
     insertRowIntoTable: (tableName: string, row: DataRow, conn?: PoolConnection | null) => Promise<number>;
     insertRowsIntoTable: (tableName: string, rows: DataRow[], conn?: PoolConnection | null) => Promise<void>;
+    getRowFromTable: (tableName: string, clauses: DataRow, conn?: PoolConnection | null) => Promise<DataRow | null>;
+    getRowsFromTable: (tableName: string, clauses: DataRow, conn?: PoolConnection | null) => Promise<DataRow[]>;
     updateRowTable: (tableName: string, row: DataRow, clauses: DataRow, conn?: PoolConnection | null) => Promise<void>;
     deleteRowFromTable: (tableName: string, clauses: DataRow, conn?: PoolConnection | null) => Promise<void>;
 };

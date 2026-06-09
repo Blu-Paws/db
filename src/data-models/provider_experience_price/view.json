@@ -1,0 +1,88 @@
+{
+  "experience_price_id": {
+    "type": "number",
+    "primary": true,
+    "autoincrement": true,
+    "required": false,
+    "updateable": false,
+    "createable": false
+  },
+  "clinic_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "visit_type_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "specialist_id": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "price": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "price_original": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "variant": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "duration_minutes": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "radius": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "status": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "create_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "update_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "created_by": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "updated_by": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  }
+}

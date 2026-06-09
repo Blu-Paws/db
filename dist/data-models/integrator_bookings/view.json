@@ -1,0 +1,86 @@
+{
+  "id": {
+    "type": "number",
+    "required": false,
+    "updateable": false,
+    "createable": false
+  },
+  "integrator_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "clinic_id": {
+    "type": "number",
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "integrator_booking_id": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "integrator_customer_id": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "customer_id": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "evisit_id": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "assigned_id": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "integrator_assigned_id": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "integrator_status": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "square_version": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "created_at": {
+    "type": "datetime",
+    "required": false,
+    "updateable": false,
+    "createable": true
+  },
+  "updated_at": {
+    "type": "datetime",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "last_sync_error": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  }
+}
