@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyRefreshToken = exports.createRefreshToken = exports.verifyJWTToken = exports.createJWTToken = exports.createConnection = void 0;
+exports.getAuthenticatedUserDetails = exports.verifyRefreshToken = exports.createRefreshToken = exports.verifyJWTToken = exports.createJWTToken = exports.createConnection = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const promise_1 = __importDefault(require("mysql2/promise"));
 const client_secrets_manager_1 = require("@aws-sdk/client-secrets-manager");
@@ -377,4 +377,46 @@ const verifyRefreshToken = async (stageValue, token) => {
     return decoded;
 };
 exports.verifyRefreshToken = verifyRefreshToken;
+const getAuthenticatedUserDetails = async (stageValue, headers) => {
+    const { 'x-api-key': blupawsApiKey, Authorization } = headers;
+    if (blupawsApiKey == null || Authorization == null) {
+        return {
+            error: 'Authentication headers are missing',
+        };
+    }
+    try {
+        if (blupawsApiKey != null) {
+            const [providerKey] = await queryForStage(stageValue, 'select integrator_id, clinic_id, flavor from vw_provider_api_keys where api_key = ?', [blupawsApiKey]);
+            if (providerKey?.clinic_id != null) {
+                const [clinic] = await queryForStage(stageValue, 'select * from vw_clinic where clinic_id = ?', [providerKey.clinic_id]);
+                if (clinic != null) {
+                    return {
+                        clinic,
+                        user: {
+                            login_id: providerKey.integrator_id,
+                            ...providerKey,
+                        },
+                    };
+                }
+            }
+            return {
+                error: 'Invalid api key',
+            };
+        }
+        else if (Authorization != null) {
+            const jwtToken = headers.Authorization.substring(7);
+            const user = await (0, exports.verifyJWTToken)(stageValue, jwtToken);
+            return { user };
+        }
+    }
+    catch (e) {
+        return {
+            error: e.message,
+        };
+    }
+    return {
+        error: 'User not found',
+    };
+};
+exports.getAuthenticatedUserDetails = getAuthenticatedUserDetails;
 //# sourceMappingURL=core.js.map

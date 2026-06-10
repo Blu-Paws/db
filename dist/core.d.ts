@@ -15,3 +15,21 @@ export declare const createJWTToken: (stageValue: Stage, payload: Record<string,
 export declare const verifyJWTToken: (stageValue: Stage, token: string) => Promise<string | jwt.JwtPayload>;
 export declare const createRefreshToken: (stageValue: Stage, payload: Record<string, string | number>, expiresIn: any) => Promise<string>;
 export declare const verifyRefreshToken: (stageValue: Stage, token: string) => Promise<string | jwt.JwtPayload>;
+export declare const getAuthenticatedUserDetails: (stageValue: Stage, headers: Record<string, string>) => Promise<{
+    clinic: mysql.RowDataPacket;
+    user: {
+        constructor: {
+            name: "RowDataPacket";
+        };
+        login_id: any;
+    };
+    error?: undefined;
+} | {
+    user: string | jwt.JwtPayload;
+    clinic?: undefined;
+    error?: undefined;
+} | {
+    error: any;
+    clinic?: undefined;
+    user?: undefined;
+}>;

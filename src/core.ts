@@ -423,7 +423,12 @@ const getRowsFromTableForStage = async (
     .join(' AND ');
   const values = Object.values(whereData);
   const sql = `SELECT ${selectStatement} FROM ${tableName} WHERE ${whereStatement}`;
-  const rows = await queryForStage<RowDataPacket[]>(stageKey, sql, values, conn);
+  const rows = await queryForStage<RowDataPacket[]>(
+    stageKey,
+    sql,
+    values,
+    conn,
+  );
   return rows as DataRow[];
 };
 
@@ -441,7 +446,12 @@ const getRowFromTableForStage = async (
     .join(' AND ');
   const values = Object.values(whereData);
   const sql = `SELECT ${selectStatement} FROM ${tableName} WHERE ${whereStatement} LIMIT 1`;
-  const rows = await queryForStage<RowDataPacket[]>(stageKey, sql, values, conn);
+  const rows = await queryForStage<RowDataPacket[]>(
+    stageKey,
+    sql,
+    values,
+    conn,
+  );
   return (rows[0] as DataRow | undefined) ?? null;
 };
 
@@ -538,4 +548,55 @@ export const verifyRefreshToken = async (stageValue: Stage, token: string) => {
     algorithms: ['RS256'],
   });
   return decoded;
+};
+
+export const getAuthenticatedUserDetails = async (
+  stageValue: Stage,
+  headers: Record<string, string>,
+) => {
+  const { 'x-api-key': blupawsApiKey, Authorization } = headers;
+  if (blupawsApiKey == null || Authorization == null) {
+    return {
+      error: 'Authentication headers are missing',
+    };
+  }
+  try {
+    if (blupawsApiKey != null) {
+      const [providerKey] = await queryForStage(
+        stageValue,
+        'select integrator_id, clinic_id, flavor from vw_provider_api_keys where api_key = ?',
+        [blupawsApiKey],
+      );
+      if (providerKey?.clinic_id != null) {
+        const [clinic] = await queryForStage(
+          stageValue,
+          'select * from vw_clinic where clinic_id = ?',
+          [providerKey.clinic_id],
+        );
+        if (clinic != null) {
+          return {
+            clinic,
+            user: {
+              login_id: providerKey.integrator_id,
+              ...providerKey,
+            },
+          };
+        }
+      }
+      return {
+        error: 'Invalid api key',
+      };
+    } else if (Authorization != null) {
+      const jwtToken = headers.Authorization.substring(7);
+      const user = await verifyJWTToken(stageValue, jwtToken);
+      return { user };
+    }
+  } catch (e: any) {
+    return {
+      error: e.message,
+    };
+  }
+  return {
+    error: 'User not found',
+  };
 };

@@ -6,4 +6,5 @@ export {
   verifyJWTToken,
   createRefreshToken,
   verifyRefreshToken,
+  getAuthenticatedUserDetails,
 } from './core';
