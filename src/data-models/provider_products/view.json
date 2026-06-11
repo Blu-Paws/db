@@ -1,130 +1,65 @@
 {
   "product_id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   },
   "clinic_id": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "category_id": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "product_code": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "product_name": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "description": {
-    "type": "string",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "brand_name": {
-    "type": "string",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "product_type": {
-    "type": "string",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "is_stock_tracked": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "is_restricted": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "requires_prescription": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "allow_negative_stock": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "tax_id": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "default_unit_of_measure": {
-    "type": "string",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "image_id": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "status": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "created_by": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "updated_by": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "created_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "datetime"
   },
   "updated_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "datetime"
   },
   "clinic_key": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   }
 }

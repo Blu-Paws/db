@@ -1,118 +1,59 @@
 {
   "movement_id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   },
   "clinic_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "variant_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "location_id": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "from_location_id": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "to_location_id": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "movement_type": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "quantity": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "unit_cost": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "unit_price": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "batch_id": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "expiry_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "datetime"
   },
   "reference_type": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "reference_id": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "reference_no": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "paired_movement_id": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "notes": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "created_by": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "created_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "datetime"
   }
 }

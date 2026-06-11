@@ -1,107 +1,53 @@
 {
   "clinic_lead_id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   },
   "name": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "location_coordinates": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "address1": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "address2": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "zip_code": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "phone": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "clinic_email": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "password": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "create_date": {
-    "type": "datetime",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "datetime"
   },
   "country_code": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "about_us": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "website": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "timezone": {
-    "type": "string",
-    "autoincrement": false,
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "owner_name": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "owner_email": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "owner_phone": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   }
 }

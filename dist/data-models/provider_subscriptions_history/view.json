@@ -1,56 +1,29 @@
 {
   "subscription_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "clinic_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "plan_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "start_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "datetime"
   },
   "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "razorpay_subscription_id": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "string"
   },
   "period": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "string"
   },
   "order_id": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "string"
   },
   "payment_id": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "string"
   }
 }

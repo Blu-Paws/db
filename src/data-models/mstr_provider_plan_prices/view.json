@@ -1,38 +1,20 @@
 {
   "plan_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "price": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "price_original": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "period": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "razorpay_plan_id": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "stripe_price_id": {
-    "type": "string",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   }
 }

@@ -1,182 +1,92 @@
 {
   "evisit_history_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "evisit_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "pet_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "clinic_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "assigned_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "allow_past_visit": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "visit_status_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "visit_type_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "time_block_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "promotion_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "request_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "datetime"
   },
   "evisit_end_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "datetime"
   },
   "evisit_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "datetime"
   },
   "followup_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "datetime"
   },
   "request_notes": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "string"
   },
   "diagnosys": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "string"
   },
   "issue_details": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "string"
   },
   "issue_summary": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "string"
   },
   "followup_notes": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "string"
   },
   "notes": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "string"
   },
   "vitals_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "issue_type_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "pet_history_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "evisit_phone_no": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "string"
   },
   "feedback_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "create_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "datetime"
   },
   "created_by": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "updated_by": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "updated_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "datetime"
   },
   "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   }
 }

@@ -1,52 +1,26 @@
 {
   "id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   },
   "pet_history_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "pet_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "medical_history_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "description": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "created_date": {
-    "type": "datetime",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "datetime"
   },
   "created_by": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "status": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   }
 }

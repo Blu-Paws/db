@@ -29,6 +29,7 @@ const mstr_provider_product_channels_1 = __importDefault(require("./data-models/
 const mstr_provider_plan_features_1 = __importDefault(require("./data-models/mstr_provider_plan_features"));
 const mstr_provider_plan_prices_1 = __importDefault(require("./data-models/mstr_provider_plan_prices"));
 const mstr_provider_plans_1 = __importDefault(require("./data-models/mstr_provider_plans"));
+const mstr_status_1 = __importDefault(require("./data-models/mstr_status"));
 const otp_data_1 = __importDefault(require("./data-models/otp_data"));
 const payment_details_1 = __importDefault(require("./data-models/payment_details"));
 const payment_details_history_1 = __importDefault(require("./data-models/payment_details_history"));
@@ -87,6 +88,7 @@ exports.tableDefinitions = {
     'mstr_provider_plan_features': mstr_provider_plan_features_1.default,
     'mstr_provider_plan_prices': mstr_provider_plan_prices_1.default,
     'mstr_provider_plans': mstr_provider_plans_1.default,
+    'mstr_status': mstr_status_1.default,
     'otp_data': otp_data_1.default,
     'payment_details': payment_details_1.default,
     'payment_details_history': payment_details_history_1.default,

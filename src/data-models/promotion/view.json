@@ -1,98 +1,50 @@
 {
   "promotion_id": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "promotion_code": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "string"
   },
   "title": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "string"
   },
   "description": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "string"
   },
   "clinic_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "discount_type": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "string"
   },
   "discount_value": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "percentage": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "source": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "string"
   },
   "promotion_start_date": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "string"
   },
   "promotion_end_date": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "string"
   },
   "usage_limit": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "per_user_limit": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "created_by": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "create_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "datetime"
   }
 }

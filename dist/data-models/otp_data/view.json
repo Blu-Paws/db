@@ -1,70 +1,35 @@
 {
   "id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   },
   "otp": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "create_date": {
-    "type": "datetime",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "datetime"
   },
   "created_by": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "otp_token": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "country_code": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "mobile_number": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "device_id": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "email_address": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "name": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "purpose": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   }
 }

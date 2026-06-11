@@ -15,6 +15,8 @@ import type {
   BluPawsPool,
   DataRow,
   Flavor,
+  GetRowsOptions,
+  GetRowsResult,
   QueryResult,
   QueryValues,
   Stage,
@@ -270,13 +272,65 @@ const assertHasFields = (data: DataRow, action: string, tableName: string) => {
   }
 };
 
-const getViewStatement = (tableName: string): string => {
+const getViewQueryParts = (
+  tableName: string,
+): { selectStatement: string; joinStatement: string } => {
   const table = getTableDefinition(tableName);
-  const fields = Object.keys(table.view);
+  const fields = Object.entries(table.view);
   if (fields.length === 0) {
     throw new Error(`No view fields provided for ${tableName}`);
   }
-  return fields.join(',');
+
+  const selectStatements: string[] = [];
+  const joins = new Map<string, string>();
+  for (const [fieldName, field] of fields) {
+    const association = field.association;
+    if (association == null) {
+      selectStatements.push(`${tableName}.${fieldName} AS ${fieldName}`);
+      continue;
+    }
+
+    const targetTable = getTableDefinition(association.tableName);
+    const targetSelectField = association.targetSelectField ?? fieldName;
+    if (table.model[association.sourceField] == null) {
+      throw new Error(
+        `Unknown source field ${association.sourceField} for ${tableName}.${fieldName}`,
+      );
+    }
+    if (targetTable.model[association.targetField] == null) {
+      throw new Error(
+        `Unknown target field ${association.targetField} for ${tableName}.${fieldName}`,
+      );
+    }
+    if (targetTable.model[targetSelectField] == null) {
+      throw new Error(
+        `Unknown target select field ${targetSelectField} for ${tableName}.${fieldName}`,
+      );
+    }
+
+    const joinType = association.joinType ?? 'LEFT';
+    if (joinType !== 'LEFT' && joinType !== 'INNER') {
+      throw new Error(
+        `Unsupported join type ${joinType} for ${tableName}.${fieldName}`,
+      );
+    }
+
+    const alias =
+      association.alias ?? `${association.tableName}_${association.targetField}`;
+    const join = `${joinType} JOIN ${association.tableName} AS ${alias} ON ${tableName}.${association.sourceField} = ${alias}.${association.targetField}`;
+    const existingJoin = joins.get(alias);
+    if (existingJoin != null && existingJoin !== join) {
+      throw new Error(`Conflicting join alias ${alias} for ${tableName}`);
+    }
+    joins.set(alias, join);
+    selectStatements.push(`${alias}.${targetSelectField} AS ${fieldName}`);
+  }
+
+  return {
+    selectStatement: selectStatements.join(','),
+    joinStatement:
+      joins.size === 0 ? '' : ` ${Array.from(joins.values()).join(' ')}`,
+  };
 };
 
 const getWhereData = (tableName: string, clauses: DataRow): DataRow => {
@@ -284,6 +338,38 @@ const getWhereData = (tableName: string, clauses: DataRow): DataRow => {
   const whereData = serializeClauseData(table.model, clauses);
   assertHasFields(whereData, 'where', tableName);
   return whereData;
+};
+
+const getWhereStatement = (whereData: DataRow, tableName?: string): string =>
+  Object.keys(whereData)
+    .map((x) => `${tableName == null ? '' : `${tableName}.`}${x} = ?`)
+    .join(' AND ');
+
+const normalizePaginationValue = (
+  value: number | undefined,
+  fallback: number,
+  fieldName: string,
+): number => {
+  if (value === undefined) {
+    return fallback;
+  }
+  if (!Number.isInteger(value) || value < 0) {
+    throw new Error(`${fieldName} must be a non-negative integer`);
+  }
+  return value;
+};
+
+const resolveGetRowsArgs = (
+  optionsOrConn?: GetRowsOptions | PoolConnection | null,
+  conn?: PoolConnection | null,
+): { options: GetRowsOptions; conn?: PoolConnection | null } => {
+  if (
+    optionsOrConn != null &&
+    typeof (optionsOrConn as PoolConnection).query === 'function'
+  ) {
+    return { options: {}, conn: optionsOrConn as PoolConnection };
+  }
+  return { options: (optionsOrConn ?? {}) as GetRowsOptions, conn };
 };
 
 const updateRowTableForStage = async (
@@ -303,9 +389,7 @@ const updateRowTableForStage = async (
     .map((x) => `${x} = ?`)
     .join(', ');
   const values = Object.values(data);
-  const whereStatement = Object.keys(whereData)
-    .map((x) => `${x} = ?`)
-    .join(' AND ');
+  const whereStatement = getWhereStatement(whereData);
   Object.values(whereData).forEach((x) => values.push(x));
   const sql = `UPDATE ${tableName} SET ${updateStatement} WHERE ${whereStatement}`;
   const run = async (activeConn: PoolConnection) => {
@@ -392,9 +476,7 @@ const deleteRowFromTableForStage = async (
 ): Promise<void> => {
   const whereData = getWhereData(tableName, clauses);
 
-  const whereStatement = Object.keys(whereData)
-    .map((x) => `${x} = ?`)
-    .join(' AND ');
+  const whereStatement = getWhereStatement(whereData);
   const values = Object.values(whereData);
   const sql = `DELETE FROM ${tableName} WHERE ${whereStatement}`;
   const run = async (activeConn: PoolConnection) => {
@@ -414,22 +496,58 @@ const getRowsFromTableForStage = async (
   conn: PoolConnection | null | undefined,
   tableName: string,
   clauses: DataRow,
-): Promise<DataRow[]> => {
+  options: GetRowsOptions = {},
+): Promise<GetRowsResult> => {
   getTableDefinition(tableName);
-  const selectStatement = getViewStatement(tableName);
+  const { selectStatement, joinStatement } = getViewQueryParts(tableName);
   const whereData = getWhereData(tableName, clauses);
-  const whereStatement = Object.keys(whereData)
-    .map((x) => `${x} = ?`)
-    .join(' AND ');
+  const whereStatement = getWhereStatement(whereData, tableName);
   const values = Object.values(whereData);
-  const sql = `SELECT ${selectStatement} FROM ${tableName} WHERE ${whereStatement}`;
-  const rows = await queryForStage<RowDataPacket[]>(
-    stageKey,
-    sql,
-    values,
-    conn,
-  );
-  return rows as DataRow[];
+  const offset = normalizePaginationValue(options.offset, 0, 'offset');
+  const limit =
+    options.limit === undefined
+      ? undefined
+      : normalizePaginationValue(options.limit, 0, 'limit');
+
+  if (offset > 0 && limit === undefined) {
+    throw new Error('limit is required when offset is provided');
+  }
+
+  let sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${whereStatement}`;
+  const rowValues = [...values];
+  if (limit !== undefined) {
+    sql = `${sql} LIMIT ? OFFSET ?`;
+    rowValues.push(limit, offset);
+  }
+
+  const countSql = `SELECT COUNT(*) AS count FROM ${tableName} WHERE ${whereStatement}`;
+  const run = async (activeConn: PoolConnection): Promise<GetRowsResult> => {
+    const countRows = await queryForStage<RowDataPacket[]>(
+      stageKey,
+      countSql,
+      values,
+      activeConn,
+    );
+    const rows = await queryForStage<RowDataPacket[]>(
+      stageKey,
+      sql,
+      rowValues,
+      activeConn,
+    );
+    const count = Number((countRows[0] as DataRow | undefined)?.count ?? 0);
+    const items = rows as DataRow[];
+    return {
+      offset,
+      limit: limit ?? items.length,
+      items,
+      count,
+    };
+  };
+
+  if (conn != null) {
+    return run(conn);
+  }
+  return withConnectionForStage(stageKey, run);
 };
 
 const getRowFromTableForStage = async (
@@ -439,13 +557,11 @@ const getRowFromTableForStage = async (
   clauses: DataRow,
 ): Promise<DataRow | null> => {
   getTableDefinition(tableName);
-  const selectStatement = getViewStatement(tableName);
+  const { selectStatement, joinStatement } = getViewQueryParts(tableName);
   const whereData = getWhereData(tableName, clauses);
-  const whereStatement = Object.keys(whereData)
-    .map((x) => `${x} = ?`)
-    .join(' AND ');
+  const whereStatement = getWhereStatement(whereData, tableName);
   const values = Object.values(whereData);
-  const sql = `SELECT ${selectStatement} FROM ${tableName} WHERE ${whereStatement} LIMIT 1`;
+  const sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${whereStatement} LIMIT 1`;
   const rows = await queryForStage<RowDataPacket[]>(
     stageKey,
     sql,
@@ -492,8 +608,18 @@ export const createConnection = (stageValue: Stage, flavorValue: Flavor) => {
     getRowsFromTable: (
       tableName: string,
       clauses: DataRow,
+      optionsOrConn?: GetRowsOptions | PoolConnection | null,
       conn?: PoolConnection | null,
-    ) => getRowsFromTableForStage(stageKey, conn, tableName, clauses),
+    ) => {
+      const args = resolveGetRowsArgs(optionsOrConn, conn);
+      return getRowsFromTableForStage(
+        stageKey,
+        args.conn,
+        tableName,
+        clauses,
+        args.options,
+      );
+    },
     updateRowTable: (
       tableName: string,
       row: DataRow,

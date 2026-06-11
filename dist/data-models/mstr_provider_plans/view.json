@@ -1,40 +1,20 @@
 {
   "plan_id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   },
   "country_code": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "plan_name": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "description": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "stripe_product_id": {
-    "type": "string",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "status": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   }
 }

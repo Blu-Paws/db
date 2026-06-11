@@ -1,58 +1,29 @@
 {
   "id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   },
   "clinic_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "entity_type": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "entity_id": {
-    "type": "string",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "name": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "min_age_years": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "max_age_years": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "adjustment": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "sort_order": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   }
 }

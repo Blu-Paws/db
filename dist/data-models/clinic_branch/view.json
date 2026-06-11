@@ -1,40 +1,20 @@
 {
   "branch_id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   },
   "clinic_branch_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "clinic_parent_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "status": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "created_date": {
-    "type": "datetime",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "datetime"
   },
   "created_by": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   }
 }

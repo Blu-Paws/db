@@ -1,44 +1,23 @@
 {
   "session_id": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "login_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "token": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "string"
   },
   "start_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "datetime"
   },
   "module_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "device_id": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "string"
   },
   "last_touch_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "datetime"
   }
 }

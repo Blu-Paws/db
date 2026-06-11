@@ -3,15 +3,41 @@ export type Stage = string;
 export type QueryValues = unknown[] | Record<string, unknown>;
 export type QueryResult = RowDataPacket[] | RowDataPacket[][] | ResultSetHeader;
 export type ModelFieldType = 'string' | 'number' | 'datetime';
-export type DataModel = Record<string, {
+export type DataModelField = {
+    autoincrement?: boolean;
     createable?: boolean;
+    primary?: boolean;
     updateable?: boolean;
     required?: boolean;
     type: ModelFieldType;
-}>;
+};
+export type DataModel = Record<string, DataModelField>;
 export type DataRow = Record<string, unknown>;
 export type Flavor = string;
 export type TableOperation = 'insert' | 'update' | 'delete';
+export type ViewAssociation = {
+    tableName: string;
+    sourceField: string;
+    targetField: string;
+    targetSelectField?: string;
+    alias?: string;
+    joinType?: 'LEFT' | 'INNER';
+};
+export type ViewModelField = {
+    association?: ViewAssociation;
+    type: ModelFieldType;
+};
+export type ViewModel = Record<string, ViewModelField>;
+export type GetRowsOptions = {
+    offset?: number;
+    limit?: number;
+};
+export type GetRowsResult<T extends DataRow = DataRow> = {
+    offset: number;
+    limit: number;
+    items: T[];
+    count: number;
+};
 export type FatalMysqlError = QueryError & {
     fatal?: boolean;
 };
@@ -23,7 +49,7 @@ export type TableValidator<T extends DataRow = DataRow> = (conn: PoolConnection,
 export type TableDefinition<T extends DataRow = DataRow> = {
     tableName: string;
     model: DataModel;
-    view: DataModel;
+    view: ViewModel;
     validateInsert: TableValidator<T>;
     validateUpdate: TableValidator<T>;
     validateDelete: TableValidator<T>;

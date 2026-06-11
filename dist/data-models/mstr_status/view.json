@@ -1,0 +1,17 @@
+{
+  "status_id": {
+    "type": "number"
+  },
+  "status_name": {
+    "type": "string"
+  },
+  "description": {
+    "type": "string"
+  },
+  "module_id": {
+    "type": "number"
+  },
+  "status": {
+    "type": "number"
+  }
+}

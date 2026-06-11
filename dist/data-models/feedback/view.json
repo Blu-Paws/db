@@ -1,56 +1,29 @@
 {
   "feedback_id": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "module_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "refer_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "comments": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "string"
   },
   "comment_reply": {
-    "type": "string",
-    "createable": false,
-    "updateable": true,
-    "required": false
+    "type": "string"
   },
   "rating": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "created_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "datetime"
   },
   "created_by": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   }
 }

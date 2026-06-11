@@ -25,6 +25,7 @@ import mstrProviderProductChannelsTable from './data-models/mstr_provider_produc
 import mstrProviderPlanFeaturesTable from './data-models/mstr_provider_plan_features';
 import mstrProviderPlanPricesTable from './data-models/mstr_provider_plan_prices';
 import mstrProviderPlansTable from './data-models/mstr_provider_plans';
+import mstrStatusTable from './data-models/mstr_status';
 import otpDataTable from './data-models/otp_data';
 import paymentDetailsTable from './data-models/payment_details';
 import paymentDetailsHistoryTable from './data-models/payment_details_history';
@@ -84,6 +85,7 @@ export const tableDefinitions = {
   'mstr_provider_plan_features': mstrProviderPlanFeaturesTable,
   'mstr_provider_plan_prices': mstrProviderPlanPricesTable,
   'mstr_provider_plans': mstrProviderPlansTable,
+  'mstr_status': mstrStatusTable,
   'otp_data': otpDataTable,
   'payment_details': paymentDetailsTable,
   'payment_details_history': paymentDetailsHistoryTable,

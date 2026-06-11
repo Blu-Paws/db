@@ -1,58 +1,29 @@
 {
   "product_channel_id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   },
   "product_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "channel_id": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "is_enabled": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "sort_order": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "created_by": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "updated_by": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "created_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "datetime"
   },
   "updated_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "datetime"
   }
 }

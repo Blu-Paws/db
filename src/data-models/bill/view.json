@@ -1,68 +1,35 @@
 {
   "bill_no": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "visit_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "pay_id": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "string"
   },
   "pay_desc": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "string"
   },
   "quantity": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "pay_amt": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "created_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "datetime"
   },
   "created_by": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "type_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "type": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "string"
   }
 }

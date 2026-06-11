@@ -1,44 +1,23 @@
 {
   "promotion_rules_id": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "promotion_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "promotion_type_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "rule_value": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "string"
   },
   "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "created_by": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "created_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "datetime"
   }
 }

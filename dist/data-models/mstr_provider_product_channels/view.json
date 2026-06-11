@@ -1,28 +1,14 @@
 {
   "channel_id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   },
   "name": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "description": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "status": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   }
 }

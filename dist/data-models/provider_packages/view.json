@@ -1,81 +1,41 @@
 {
   "package_id": {
-    "type": "string",
-    "primary": true,
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "package_name": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "clinic_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "status": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "created_by": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "create_date": {
-    "type": "datetime",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "datetime"
   },
   "updated_by": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "update_date": {
-    "type": "datetime",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "datetime"
   },
   "price": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "price_original": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "experiences": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "duration_minutes": {
-    "type": "number",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "description": {
-    "type": "string",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   }
 }

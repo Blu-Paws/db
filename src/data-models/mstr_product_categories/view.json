@@ -1,76 +1,38 @@
 {
   "category_id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   },
   "parent_category_id": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "category_code": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "category_name": {
-    "type": "string",
-    "required": true,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "description": {
-    "type": "string",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "string"
   },
   "sort_order": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "status": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "created_by": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "updated_by": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "created_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "datetime"
   },
   "updated_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "datetime"
   },
   "parent_category_key": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   }
 }

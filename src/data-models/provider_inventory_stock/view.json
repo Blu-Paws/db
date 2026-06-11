@@ -1,88 +1,44 @@
 {
   "stock_id": {
-    "type": "number",
-    "primary": true,
-    "autoincrement": true,
-    "required": false,
-    "updateable": false,
-    "createable": false
+    "type": "number"
   },
   "clinic_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "variant_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "location_id": {
-    "type": "number",
-    "required": true,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "batch_id": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "string"
   },
   "quantity_on_hand": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "reserved_quantity": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "last_counted_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "datetime"
   },
   "last_movement_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "datetime"
   },
   "status": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "created_by": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "number"
   },
   "updated_by": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "number"
   },
   "created_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": false,
-    "createable": true
+    "type": "datetime"
   },
   "updated_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": true,
-    "createable": true
+    "type": "datetime"
   }
 }

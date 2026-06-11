@@ -1,86 +1,44 @@
 {
   "clinic_availability_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "clinic_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "type": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "string"
   },
   "T1": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "T2": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "T3": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "T4": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "start_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "datetime"
   },
   "end_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "datetime"
   },
   "updated_date": {
-    "type": "datetime",
-    "createable": false,
-    "updateable": true,
-    "required": false
+    "type": "datetime"
   },
   "created_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "datetime"
   },
   "created_by": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "notes": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "string"
   }
 }

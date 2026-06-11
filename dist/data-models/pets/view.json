@@ -1,104 +1,64 @@
 {
   "pet_id": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "login_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "pet_name": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "string"
   },
   "pet_type_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "gender_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "breed_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "number"
   },
   "dob": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "datetime"
   },
   "notes": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "string"
   },
   "likes": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "string"
   },
   "dislikes": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "string"
   },
   "create_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "datetime"
   },
   "created_by": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "deceased_date": {
-    "type": "datetime",
-    "createable": false,
-    "updateable": true,
-    "required": false
+    "type": "datetime"
   },
   "pet_status": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
+  },
+  "status_name": {
+    "type": "string",
+    "association": {
+      "tableName": "mstr_status",
+      "sourceField": "pet_status",
+      "targetField": "status_id",
+      "targetSelectField": "status_name",
+      "alias": "pet_status_mstr_status",
+      "joinType": "LEFT"
+    }
   },
   "updated_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "datetime"
   },
   "updated_by": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   }
 }

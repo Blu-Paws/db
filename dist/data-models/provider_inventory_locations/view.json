@@ -1,98 +1,50 @@
 {
   "location_id": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "clinic_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "number"
   },
   "parent_location_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "number"
   },
   "location_code": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "string"
   },
   "location_name": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "string"
   },
   "location_type": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "string"
   },
   "full_path_code": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "string"
   },
   "is_stock_location": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "number"
   },
   "sort_order": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "number"
   },
   "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "number"
   },
   "created_by": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "updated_by": {
-    "type": "number",
-    "createable": false,
-    "updateable": true,
-    "required": false
+    "type": "number"
   },
   "created_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "datetime"
   },
   "updated_date": {
-    "type": "datetime",
-    "createable": false,
-    "updateable": true,
-    "required": false
+    "type": "datetime"
   },
   "clinic_key": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "parent_location_key": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
+    "type": "number"
   }
 }

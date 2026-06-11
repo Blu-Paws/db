@@ -39,7 +39,7 @@ stage secret does not exist, the package throws.
 - `db.insertRowIntoTable(tableName, row, conn?)`
 - `db.insertRowsIntoTable(tableName, rows, conn?)`
 - `db.getRowFromTable(tableName, clauses, conn?)`
-- `db.getRowsFromTable(tableName, clauses, conn?)`
+- `db.getRowsFromTable(tableName, clauses, options?, conn?)`
 - `db.updateRowTable(tableName, row, clauses, conn?)`
 - `db.deleteRowFromTable(tableName, clauses, conn?)`
 
@@ -62,10 +62,24 @@ table's `view.json` and validate `WHERE` clauses against its model.
 
 ```js
 const pet = await db.getRowFromTable('pets', { pet_id: petId });
-const pets = await db.getRowsFromTable('pets', { login_id: loginId });
+const pets = await db.getRowsFromTable(
+  'pets',
+  { login_id: loginId },
+  { offset: 0, limit: 25 },
+);
 ```
 
 `getRowFromTable(...)` adds `LIMIT 1` and returns `null` when no row matches.
+`getRowsFromTable(...)` returns paged metadata and rows in `items`:
+
+```js
+{
+  offset: 0,
+  limit: 25,
+  items: [],
+  count: 0,
+}
+```
 
 ## Writes
 
@@ -124,11 +138,12 @@ src/data-models/<table_name>/view.json
 src/data-models/<table_name>/index.ts
 ```
 
-`model.json` contains the common field metadata used for type checks and
-create/update support. `view.json` contains the fields selected by
-`getRowFromTable(...)` and `getRowsFromTable(...)`. `index.ts` contains the
-internal table definition, an exported table type, and three internal validator
-hooks:
+`model.json` is the `DataModel`: it contains the field metadata used for type
+checks and create/update support. `view.json` is the `ViewModel`: it contains
+the fields selected by `getRowFromTable(...)` and `getRowsFromTable(...)`; it is
+read-only projection metadata and does not include create/update or constraint
+flags. `index.ts` contains the internal table definition, an exported table
+type, and three internal validator hooks:
 
 - `validateInsert(conn, row)`
 - `validateUpdate(conn, row)`
@@ -137,6 +152,10 @@ hooks:
 The validator hooks are currently no-ops. Add table-specific rules there later.
 If a validator throws or returns `false`, the write helper rejects the operation
 before mutating the table.
+
+Only view fields can define an `association` to select one field from another
+table. The read helpers add the join only when that associated field is present
+in the view select list.
 
 The initial model set was generated from all handler-local data models under
 the `aws` workspace. Conflicting definitions were merged permissively so the

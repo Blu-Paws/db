@@ -1,44 +1,23 @@
 {
   "profile_map_id": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "clinic_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "login_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "role_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "role_start_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": true,
-    "required": false
+    "type": "datetime"
   },
   "role_end_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "datetime"
   },
   "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   }
 }

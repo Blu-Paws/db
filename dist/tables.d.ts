@@ -25,6 +25,7 @@ export declare const tableDefinitions: {
     mstr_provider_plan_features: TableDefinition;
     mstr_provider_plan_prices: TableDefinition;
     mstr_provider_plans: TableDefinition;
+    mstr_status: TableDefinition;
     otp_data: TableDefinition;
     payment_details: TableDefinition;
     payment_details_history: TableDefinition;

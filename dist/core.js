@@ -199,19 +199,73 @@ const assertHasFields = (data, action, tableName) => {
         throw new Error(`No ${action} fields provided for ${tableName}`);
     }
 };
-const getViewStatement = (tableName) => {
+const getViewQueryParts = (tableName) => {
     const table = (0, utils_1.getTableDefinition)(tableName);
-    const fields = Object.keys(table.view);
+    const fields = Object.entries(table.view);
     if (fields.length === 0) {
         throw new Error(`No view fields provided for ${tableName}`);
     }
-    return fields.join(',');
+    const selectStatements = [];
+    const joins = new Map();
+    for (const [fieldName, field] of fields) {
+        const association = field.association;
+        if (association == null) {
+            selectStatements.push(`${tableName}.${fieldName} AS ${fieldName}`);
+            continue;
+        }
+        const targetTable = (0, utils_1.getTableDefinition)(association.tableName);
+        const targetSelectField = association.targetSelectField ?? fieldName;
+        if (table.model[association.sourceField] == null) {
+            throw new Error(`Unknown source field ${association.sourceField} for ${tableName}.${fieldName}`);
+        }
+        if (targetTable.model[association.targetField] == null) {
+            throw new Error(`Unknown target field ${association.targetField} for ${tableName}.${fieldName}`);
+        }
+        if (targetTable.model[targetSelectField] == null) {
+            throw new Error(`Unknown target select field ${targetSelectField} for ${tableName}.${fieldName}`);
+        }
+        const joinType = association.joinType ?? 'LEFT';
+        if (joinType !== 'LEFT' && joinType !== 'INNER') {
+            throw new Error(`Unsupported join type ${joinType} for ${tableName}.${fieldName}`);
+        }
+        const alias = association.alias ?? `${association.tableName}_${association.targetField}`;
+        const join = `${joinType} JOIN ${association.tableName} AS ${alias} ON ${tableName}.${association.sourceField} = ${alias}.${association.targetField}`;
+        const existingJoin = joins.get(alias);
+        if (existingJoin != null && existingJoin !== join) {
+            throw new Error(`Conflicting join alias ${alias} for ${tableName}`);
+        }
+        joins.set(alias, join);
+        selectStatements.push(`${alias}.${targetSelectField} AS ${fieldName}`);
+    }
+    return {
+        selectStatement: selectStatements.join(','),
+        joinStatement: joins.size === 0 ? '' : ` ${Array.from(joins.values()).join(' ')}`,
+    };
 };
 const getWhereData = (tableName, clauses) => {
     const table = (0, utils_1.getTableDefinition)(tableName);
     const whereData = (0, utils_1.serializeClauseData)(table.model, clauses);
     assertHasFields(whereData, 'where', tableName);
     return whereData;
+};
+const getWhereStatement = (whereData, tableName) => Object.keys(whereData)
+    .map((x) => `${tableName == null ? '' : `${tableName}.`}${x} = ?`)
+    .join(' AND ');
+const normalizePaginationValue = (value, fallback, fieldName) => {
+    if (value === undefined) {
+        return fallback;
+    }
+    if (!Number.isInteger(value) || value < 0) {
+        throw new Error(`${fieldName} must be a non-negative integer`);
+    }
+    return value;
+};
+const resolveGetRowsArgs = (optionsOrConn, conn) => {
+    if (optionsOrConn != null &&
+        typeof optionsOrConn.query === 'function') {
+        return { options: {}, conn: optionsOrConn };
+    }
+    return { options: (optionsOrConn ?? {}), conn };
 };
 const updateRowTableForStage = async (stageKey, conn, tableName, row, clauses) => {
     const table = (0, utils_1.getTableDefinition)(tableName);
@@ -223,9 +277,7 @@ const updateRowTableForStage = async (stageKey, conn, tableName, row, clauses) =
         .map((x) => `${x} = ?`)
         .join(', ');
     const values = Object.values(data);
-    const whereStatement = Object.keys(whereData)
-        .map((x) => `${x} = ?`)
-        .join(' AND ');
+    const whereStatement = getWhereStatement(whereData);
     Object.values(whereData).forEach((x) => values.push(x));
     const sql = `UPDATE ${tableName} SET ${updateStatement} WHERE ${whereStatement}`;
     const run = async (activeConn) => {
@@ -283,9 +335,7 @@ const insertRowsIntoTableForStage = async (stageKey, conn, tableName, rows) => {
 };
 const deleteRowFromTableForStage = async (stageKey, conn, tableName, clauses) => {
     const whereData = getWhereData(tableName, clauses);
-    const whereStatement = Object.keys(whereData)
-        .map((x) => `${x} = ?`)
-        .join(' AND ');
+    const whereStatement = getWhereStatement(whereData);
     const values = Object.values(whereData);
     const sql = `DELETE FROM ${tableName} WHERE ${whereStatement}`;
     const run = async (activeConn) => {
@@ -298,27 +348,50 @@ const deleteRowFromTableForStage = async (stageKey, conn, tableName, clauses) =>
     }
     await withConnectionForStage(stageKey, run);
 };
-const getRowsFromTableForStage = async (stageKey, conn, tableName, clauses) => {
+const getRowsFromTableForStage = async (stageKey, conn, tableName, clauses, options = {}) => {
     (0, utils_1.getTableDefinition)(tableName);
-    const selectStatement = getViewStatement(tableName);
+    const { selectStatement, joinStatement } = getViewQueryParts(tableName);
     const whereData = getWhereData(tableName, clauses);
-    const whereStatement = Object.keys(whereData)
-        .map((x) => `${x} = ?`)
-        .join(' AND ');
+    const whereStatement = getWhereStatement(whereData, tableName);
     const values = Object.values(whereData);
-    const sql = `SELECT ${selectStatement} FROM ${tableName} WHERE ${whereStatement}`;
-    const rows = await queryForStage(stageKey, sql, values, conn);
-    return rows;
+    const offset = normalizePaginationValue(options.offset, 0, 'offset');
+    const limit = options.limit === undefined
+        ? undefined
+        : normalizePaginationValue(options.limit, 0, 'limit');
+    if (offset > 0 && limit === undefined) {
+        throw new Error('limit is required when offset is provided');
+    }
+    let sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${whereStatement}`;
+    const rowValues = [...values];
+    if (limit !== undefined) {
+        sql = `${sql} LIMIT ? OFFSET ?`;
+        rowValues.push(limit, offset);
+    }
+    const countSql = `SELECT COUNT(*) AS count FROM ${tableName} WHERE ${whereStatement}`;
+    const run = async (activeConn) => {
+        const countRows = await queryForStage(stageKey, countSql, values, activeConn);
+        const rows = await queryForStage(stageKey, sql, rowValues, activeConn);
+        const count = Number(countRows[0]?.count ?? 0);
+        const items = rows;
+        return {
+            offset,
+            limit: limit ?? items.length,
+            items,
+            count,
+        };
+    };
+    if (conn != null) {
+        return run(conn);
+    }
+    return withConnectionForStage(stageKey, run);
 };
 const getRowFromTableForStage = async (stageKey, conn, tableName, clauses) => {
     (0, utils_1.getTableDefinition)(tableName);
-    const selectStatement = getViewStatement(tableName);
+    const { selectStatement, joinStatement } = getViewQueryParts(tableName);
     const whereData = getWhereData(tableName, clauses);
-    const whereStatement = Object.keys(whereData)
-        .map((x) => `${x} = ?`)
-        .join(' AND ');
+    const whereStatement = getWhereStatement(whereData, tableName);
     const values = Object.values(whereData);
-    const sql = `SELECT ${selectStatement} FROM ${tableName} WHERE ${whereStatement} LIMIT 1`;
+    const sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${whereStatement} LIMIT 1`;
     const rows = await queryForStage(stageKey, sql, values, conn);
     return rows[0] ?? null;
 };
@@ -337,7 +410,10 @@ const createConnection = (stageValue, flavorValue) => {
         insertRowIntoTable: (tableName, row, conn) => insertRowIntoTableForStage(stageKey, conn, tableName, row),
         insertRowsIntoTable: (tableName, rows, conn) => insertRowsIntoTableForStage(stageKey, conn, tableName, rows),
         getRowFromTable: (tableName, clauses, conn) => getRowFromTableForStage(stageKey, conn, tableName, clauses),
-        getRowsFromTable: (tableName, clauses, conn) => getRowsFromTableForStage(stageKey, conn, tableName, clauses),
+        getRowsFromTable: (tableName, clauses, optionsOrConn, conn) => {
+            const args = resolveGetRowsArgs(optionsOrConn, conn);
+            return getRowsFromTableForStage(stageKey, args.conn, tableName, clauses, args.options);
+        },
         updateRowTable: (tableName, row, clauses, conn) => updateRowTableForStage(stageKey, conn, tableName, row, clauses),
         deleteRowFromTable: (tableName, clauses, conn) => deleteRowFromTableForStage(stageKey, conn, tableName, clauses),
     };

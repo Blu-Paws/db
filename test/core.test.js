@@ -1,5 +1,7 @@
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const Module = require('node:module');
+const path = require('node:path');
 const test = require('node:test');
 
 const distModules = [
@@ -145,6 +147,59 @@ test.afterEach(() => {
   clearDistCache();
 });
 
+test('view models omit write and constraint metadata', () => {
+  const bannedKeys = [
+    'primary',
+    'autoincrement',
+    'required',
+    'updateable',
+    'createable',
+  ];
+  const dataModelsRoot = path.resolve(__dirname, '..', 'dist', 'data-models');
+
+  for (const entry of fs.readdirSync(dataModelsRoot, { withFileTypes: true })) {
+    if (!entry.isDirectory()) {
+      continue;
+    }
+    const viewPath = path.join(dataModelsRoot, entry.name, 'view.json');
+    if (!fs.existsSync(viewPath)) {
+      continue;
+    }
+    const view = JSON.parse(fs.readFileSync(viewPath, 'utf8'));
+    for (const [fieldName, metadata] of Object.entries(view)) {
+      for (const key of bannedKeys) {
+        assert.equal(
+          Object.prototype.hasOwnProperty.call(metadata, key),
+          false,
+          `${entry.name}.${fieldName} should not include ${key}`,
+        );
+      }
+    }
+  }
+});
+
+test('data models do not define view associations', () => {
+  const dataModelsRoot = path.resolve(__dirname, '..', 'dist', 'data-models');
+
+  for (const entry of fs.readdirSync(dataModelsRoot, { withFileTypes: true })) {
+    if (!entry.isDirectory()) {
+      continue;
+    }
+    const modelPath = path.join(dataModelsRoot, entry.name, 'model.json');
+    if (!fs.existsSync(modelPath)) {
+      continue;
+    }
+    const model = JSON.parse(fs.readFileSync(modelPath, 'utf8'));
+    for (const [fieldName, metadata] of Object.entries(model)) {
+      assert.equal(
+        Object.prototype.hasOwnProperty.call(metadata, 'association'),
+        false,
+        `${entry.name}.${fieldName} should not include association`,
+      );
+    }
+  }
+});
+
 test('query acquires and releases a pooled connection', async () => {
   const { api, calls } = createConnectionStub();
   const db = api.createConnection('dev', 'clinic');
@@ -221,9 +276,12 @@ test('single-row write helpers use autocommit without implicit transactions', as
 });
 
 test('read helpers select table view fields with validated clauses', async () => {
+  const loginSelect =
+    'login.login_id AS login_id,login.email AS email,login.name AS name,login.password AS password,login.create_date AS create_date,login.status AS status,login.phone AS phone,login.force_change_password AS force_change_password,login.login_status_id AS login_status_id,login.created_by AS created_by,login.module_id AS module_id,login.country_code AS country_code';
   const { api, calls } = createConnectionStub({
     queryResults: [
       [{ login_id: 123, phone: '5551234' }],
+      [{ count: 2 }],
       [
         { login_id: 123, phone: '5551234' },
         { login_id: 456, phone: '5555678' },
@@ -233,24 +291,107 @@ test('read helpers select table view fields with validated clauses', async () =>
   const db = api.createConnection('dev', 'clinic');
 
   const row = await db.getRowFromTable('login', { phone: '5551234' });
-  const rows = await db.getRowsFromTable('login', { login_status_id: 1 });
+  const rows = await db.getRowsFromTable(
+    'login',
+    { login_status_id: 1 },
+    { offset: 10, limit: 25 },
+  );
 
   assert.deepEqual(row, { login_id: 123, phone: '5551234' });
-  assert.deepEqual(rows, [
-    { login_id: 123, phone: '5551234' },
-    { login_id: 456, phone: '5555678' },
-  ]);
+  assert.deepEqual(rows, {
+    offset: 10,
+    limit: 25,
+    items: [
+      { login_id: 123, phone: '5551234' },
+      { login_id: 456, phone: '5555678' },
+    ],
+    count: 2,
+  });
   assert.equal(calls.connections.length, 2);
   assert.equal(
     calls.connections[0].queries[0].sql,
-    'SELECT login_id,email,name,password,create_date,status,phone,force_change_password,login_status_id,created_by,module_id,country_code FROM login WHERE phone = ? LIMIT 1',
+    `SELECT ${loginSelect} FROM login WHERE login.phone = ? LIMIT 1`,
   );
+  assert.equal(calls.connections[0].queries[0].sql.includes('JOIN'), false);
   assert.deepEqual(calls.connections[0].queries[0].values, ['5551234']);
   assert.equal(
     calls.connections[1].queries[0].sql,
-    'SELECT login_id,email,name,password,create_date,status,phone,force_change_password,login_status_id,created_by,module_id,country_code FROM login WHERE login_status_id = ?',
+    'SELECT COUNT(*) AS count FROM login WHERE login.login_status_id = ?',
   );
   assert.deepEqual(calls.connections[1].queries[0].values, [1]);
+  assert.equal(
+    calls.connections[1].queries[1].sql,
+    `SELECT ${loginSelect} FROM login WHERE login.login_status_id = ? LIMIT ? OFFSET ?`,
+  );
+  assert.equal(calls.connections[1].queries[1].sql.includes('JOIN'), false);
+  assert.deepEqual(calls.connections[1].queries[1].values, [1, 25, 10]);
+});
+
+test('pet reads join mstr_status only for the associated status_name view field', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{ pet_id: 123, pet_status: 1, status_name: 'Active' }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('pets', { pet_id: 123 });
+
+  assert.deepEqual(row, {
+    pet_id: 123,
+    pet_status: 1,
+    status_name: 'Active',
+  });
+  assert.equal(calls.connections.length, 1);
+  const sql = calls.connections[0].queries[0].sql;
+  assert.match(
+    sql,
+    /pet_status_mstr_status\.status_name AS status_name/,
+  );
+  assert.match(
+    sql,
+    /LEFT JOIN mstr_status AS pet_status_mstr_status ON pets\.pet_status = pet_status_mstr_status\.status_id/,
+  );
+  assert.equal(sql.includes('pet_status_mstr_status.description'), false);
+  assert.equal(sql.endsWith('WHERE pets.pet_id = ? LIMIT 1'), true);
+});
+
+test('getRowsFromTable supports transaction connection as the third argument', async () => {
+  const loginSelect =
+    'login.login_id AS login_id,login.email AS email,login.name AS name,login.password AS password,login.create_date AS create_date,login.status AS status,login.phone AS phone,login.force_change_password AS force_change_password,login.login_status_id AS login_status_id,login.created_by AS created_by,login.module_id AS module_id,login.country_code AS country_code';
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{ count: 1 }],
+      [{ login_id: 123, phone: '5551234' }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  await db.withTransaction(async (conn) => {
+    const rows = await db.getRowsFromTable(
+      'login',
+      { login_status_id: 1 },
+      conn,
+    );
+
+    assert.deepEqual(rows, {
+      offset: 0,
+      limit: 1,
+      items: [{ login_id: 123, phone: '5551234' }],
+      count: 1,
+    });
+  });
+
+  assert.equal(calls.connections.length, 1);
+  assert.equal(calls.connections[0].queries.length, 2);
+  assert.equal(
+    calls.connections[0].queries[0].sql,
+    'SELECT COUNT(*) AS count FROM login WHERE login.login_status_id = ?',
+  );
+  assert.equal(
+    calls.connections[0].queries[1].sql,
+    `SELECT ${loginSelect} FROM login WHERE login.login_status_id = ?`,
+  );
 });
 
 test('getRowFromTable returns null when no row matches', async () => {

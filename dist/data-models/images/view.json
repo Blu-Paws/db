@@ -1,56 +1,29 @@
 {
   "image_id": {
-    "type": "number",
-    "createable": false,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "module_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   },
   "key_value": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": false
+    "type": "number"
   },
   "image_desc": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "string"
   },
   "image_path": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "string"
   },
   "Image_type": {
-    "type": "string",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "string"
   },
   "status": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
+    "type": "number"
   },
   "create_date": {
-    "type": "datetime",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "datetime"
   },
   "created_by": {
-    "type": "number",
-    "createable": true,
-    "updateable": false,
-    "required": true
+    "type": "number"
   }
 }
