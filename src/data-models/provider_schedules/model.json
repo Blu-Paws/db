@@ -5,12 +5,6 @@
     "updateable": false,
     "required": false
   },
-  "user_id": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": true
-  },
   "clinic_id": {
     "type": "number",
     "createable": true,
@@ -20,13 +14,13 @@
   "entity_type": {
     "type": "string",
     "createable": true,
-    "updateable": true,
+    "updateable": false,
     "required": false
   },
   "entity_id": {
     "type": "number",
     "createable": true,
-    "updateable": true,
+    "updateable": false,
     "required": false
   },
   "rule_type": {
@@ -65,19 +59,7 @@
     "updateable": true,
     "required": true
   },
-  "timezone": {
-    "type": "string",
-    "createable": true,
-    "updateable": true,
-    "required": false
-  },
-  "is_available": {
-    "type": "number",
-    "createable": true,
-    "updateable": true,
-    "required": false
-  },
-  "is_active": {
+  "status": {
     "type": "number",
     "createable": true,
     "updateable": true,
