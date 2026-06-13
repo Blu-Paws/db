@@ -1,0 +1,11 @@
+{
+  "gender_id": {
+    "type": "number"
+  },
+  "name": {
+    "type": "string"
+  },
+  "status": {
+    "type": "number"
+  }
+}

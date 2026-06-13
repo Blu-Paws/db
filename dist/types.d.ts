@@ -18,7 +18,9 @@ export type TableOperation = 'insert' | 'update' | 'delete';
 export type ViewAssociation = {
     tableName: string;
     sourceField: string;
+    sourceAlias?: string;
     targetField: string;
+    targetFilters?: DataRow;
     targetSelectField?: string;
     alias?: string;
     joinType?: 'LEFT' | 'INNER';
@@ -27,7 +29,13 @@ export type ViewModelField = {
     association?: ViewAssociation;
     type: ModelFieldType;
 };
-export type ViewModel = Record<string, ViewModelField>;
+export type ViewModelMeta = {
+    where?: DataRow;
+};
+export type ViewModel = {
+    [key: string]: ViewModelField | ViewModelMeta | undefined;
+    __meta?: ViewModelMeta;
+};
 export type GetRowsOptions = {
     offset?: number;
     limit?: number;

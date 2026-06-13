@@ -1,0 +1,20 @@
+{
+  "pet_type_id": {
+    "type": "number"
+  },
+  "name": {
+    "type": "string"
+  },
+  "status": {
+    "type": "number"
+  },
+  "created_by": {
+    "type": "number"
+  },
+  "created_date": {
+    "type": "number"
+  },
+  "image_src": {
+    "type": "number"
+  }
+}

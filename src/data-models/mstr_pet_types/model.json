@@ -1,0 +1,40 @@
+{
+  "pet_type_id": {
+    "type": "number",
+    "primary": true,
+    "autoincrement": true,
+    "required": false,
+    "updateable": false,
+    "createable": true
+  },
+  "name": {
+    "type": "string",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "status": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "created_by": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "created_date": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "image_src": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  }
+}

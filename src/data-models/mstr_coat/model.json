@@ -1,0 +1,28 @@
+{
+  "coat_id": {
+    "type": "number",
+    "primary": true,
+    "autoincrement": true,
+    "required": false,
+    "updateable": false,
+    "createable": true
+  },
+  "name": {
+    "type": "string",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "description": {
+    "type": "string",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "status": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  }
+}

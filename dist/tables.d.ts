@@ -20,7 +20,11 @@ export declare const tableDefinitions: {
     images: TableDefinition;
     integrator_bookings: TableDefinition;
     login: TableDefinition;
+    mstr_breed: TableDefinition;
+    mstr_coat: TableDefinition;
+    mstr_gender: TableDefinition;
     mstr_product_categories: TableDefinition;
+    mstr_pet_types: TableDefinition;
     mstr_provider_product_channels: TableDefinition;
     mstr_provider_plan_features: TableDefinition;
     mstr_provider_plan_prices: TableDefinition;

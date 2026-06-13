@@ -1,0 +1,14 @@
+{
+  "breed_id": {
+    "type": "number"
+  },
+  "breed_name": {
+    "type": "string"
+  },
+  "pet_type_id": {
+    "type": "number"
+  },
+  "status": {
+    "type": "number"
+  }
+}

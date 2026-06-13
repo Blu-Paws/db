@@ -21,6 +21,10 @@ import imagesTable from './data-models/images';
 import integratorBookingsTable from './data-models/integrator_bookings';
 import loginTable from './data-models/login';
 import mstrProductCategoriesTable from './data-models/mstr_product_categories';
+import mstrBreedTable from './data-models/mstr_breed';
+import mstrCoatTable from './data-models/mstr_coat';
+import mstrGenderTable from './data-models/mstr_gender';
+import mstrPetTypesTable from './data-models/mstr_pet_types';
 import mstrProviderProductChannelsTable from './data-models/mstr_provider_product_channels';
 import mstrProviderPlanFeaturesTable from './data-models/mstr_provider_plan_features';
 import mstrProviderPlanPricesTable from './data-models/mstr_provider_plan_prices';
@@ -80,7 +84,11 @@ export const tableDefinitions = {
   'images': imagesTable,
   'integrator_bookings': integratorBookingsTable,
   'login': loginTable,
+  'mstr_breed': mstrBreedTable,
+  'mstr_coat': mstrCoatTable,
+  'mstr_gender': mstrGenderTable,
   'mstr_product_categories': mstrProductCategoriesTable,
+  'mstr_pet_types': mstrPetTypesTable,
   'mstr_provider_product_channels': mstrProviderProductChannelsTable,
   'mstr_provider_plan_features': mstrProviderPlanFeaturesTable,
   'mstr_provider_plan_prices': mstrProviderPlanPricesTable,

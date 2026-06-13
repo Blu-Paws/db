@@ -327,10 +327,10 @@ test('read helpers select table view fields with validated clauses', async () =>
   assert.deepEqual(calls.connections[1].queries[1].values, [1, 25, 10]);
 });
 
-test('pet reads join mstr_status only for the associated status_name view field', async () => {
+test('pet reads build the vw_pets join graph and apply default view filters', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [
-      [{ pet_id: 123, pet_status: 1, status_name: 'Active' }],
+      [{ pet_id: 123, pet_status: 16, status_name: 'Active' }],
     ],
   });
   const db = api.createConnection('dev', 'clinic');
@@ -339,21 +339,50 @@ test('pet reads join mstr_status only for the associated status_name view field'
 
   assert.deepEqual(row, {
     pet_id: 123,
-    pet_status: 1,
+    pet_status: 16,
     status_name: 'Active',
   });
   assert.equal(calls.connections.length, 1);
   const sql = calls.connections[0].queries[0].sql;
   assert.match(
     sql,
-    /pet_status_mstr_status\.status_name AS status_name/,
+    /mstr_status_ref\.status_name AS status_name/,
   );
   assert.match(
     sql,
-    /LEFT JOIN mstr_status AS pet_status_mstr_status ON pets\.pet_status = pet_status_mstr_status\.status_id/,
+    /LEFT JOIN pet_vitals AS pet_vitals_current ON pets\.pet_id = pet_vitals_current\.pet_id AND pet_vitals_current\.status = \?/,
   );
-  assert.equal(sql.includes('pet_status_mstr_status.description'), false);
-  assert.equal(sql.endsWith('WHERE pets.pet_id = ? LIMIT 1'), true);
+  assert.match(
+    sql,
+    /INNER JOIN mstr_status AS mstr_status_ref ON pets\.pet_status = mstr_status_ref\.status_id AND mstr_status_ref\.module_id = \?/,
+  );
+  assert.match(
+    sql,
+    /INNER JOIN login AS pet_owner_login ON pets\.login_id = pet_owner_login\.login_id/,
+  );
+  assert.match(
+    sql,
+    /LEFT JOIN mstr_coat AS mstr_coat_ref ON pet_vitals_current\.coat_id = mstr_coat_ref\.coat_id/,
+  );
+  assert.match(
+    sql,
+    /LEFT JOIN images AS pet_owner_image ON pets\.login_id = pet_owner_image\.key_value AND pet_owner_image\.status = \? AND pet_owner_image\.module_id = \?/,
+  );
+  assert.match(
+    sql,
+    /LEFT JOIN images AS pet_image ON pets\.pet_id = pet_image\.key_value AND pet_image\.status = \? AND pet_image\.module_id = \?/,
+  );
+  assert.equal(sql.includes('pet_owner_login.password'), false);
+  assert.equal(
+    sql.endsWith(
+      'WHERE pets.status = ? AND pets.pet_status = ? AND pets.pet_id = ? LIMIT 1',
+    ),
+    true,
+  );
+  assert.deepEqual(
+    calls.connections[0].queries[0].values,
+    [1, 6, 1, 3, 1, 6, 1, 16, 123],
+  );
 });
 
 test('getRowsFromTable supports transaction connection as the third argument', async () => {

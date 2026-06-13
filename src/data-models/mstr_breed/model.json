@@ -1,0 +1,28 @@
+{
+  "breed_id": {
+    "type": "number",
+    "primary": true,
+    "autoincrement": true,
+    "required": false,
+    "updateable": false,
+    "createable": true
+  },
+  "breed_name": {
+    "type": "string",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "pet_type_id": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "status": {
+    "type": "number",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  }
+}

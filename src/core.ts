@@ -20,6 +20,8 @@ import type {
   QueryResult,
   QueryValues,
   Stage,
+  ViewModelField,
+  ViewModelMeta,
 } from './types';
 import {
   getAcquireTimeoutMs,
@@ -272,17 +274,24 @@ const assertHasFields = (data: DataRow, action: string, tableName: string) => {
   }
 };
 
+const isViewModelFieldEntry = (
+  entry: [string, ViewModelField | ViewModelMeta | undefined],
+): entry is [string, ViewModelField] =>
+  entry[0] !== '__meta' && entry[1] != null;
+
 const getViewQueryParts = (
   tableName: string,
-): { selectStatement: string; joinStatement: string } => {
+): { selectStatement: string; joinStatement: string; joinValues: unknown[] } => {
   const table = getTableDefinition(tableName);
-  const fields = Object.entries(table.view);
+  const fields = Object.entries(table.view).filter(isViewModelFieldEntry);
   if (fields.length === 0) {
     throw new Error(`No view fields provided for ${tableName}`);
   }
 
   const selectStatements: string[] = [];
   const joins = new Map<string, string>();
+  const aliasTableNames = new Map<string, string>([[tableName, tableName]]);
+  const joinValues: unknown[] = [];
   for (const [fieldName, field] of fields) {
     const association = field.association;
     if (association == null) {
@@ -290,9 +299,17 @@ const getViewQueryParts = (
       continue;
     }
 
+    const sourceAlias = association.sourceAlias ?? tableName;
+    const sourceTableName = aliasTableNames.get(sourceAlias);
+    if (sourceTableName == null) {
+      throw new Error(
+        `Unknown source alias ${sourceAlias} for ${tableName}.${fieldName}`,
+      );
+    }
+    const sourceTable = getTableDefinition(sourceTableName);
     const targetTable = getTableDefinition(association.tableName);
     const targetSelectField = association.targetSelectField ?? fieldName;
-    if (table.model[association.sourceField] == null) {
+    if (sourceTable.model[association.sourceField] == null) {
       throw new Error(
         `Unknown source field ${association.sourceField} for ${tableName}.${fieldName}`,
       );
@@ -317,12 +334,23 @@ const getViewQueryParts = (
 
     const alias =
       association.alias ?? `${association.tableName}_${association.targetField}`;
-    const join = `${joinType} JOIN ${association.tableName} AS ${alias} ON ${tableName}.${association.sourceField} = ${alias}.${association.targetField}`;
+    const targetFilterData = serializeClauseData(
+      targetTable.model,
+      association.targetFilters ?? {},
+    );
+    const targetFilterStatement = Object.keys(targetFilterData)
+      .map((key) => `${alias}.${key} = ?`)
+      .join(' AND ');
+    const join = `${joinType} JOIN ${association.tableName} AS ${alias} ON ${sourceAlias}.${association.sourceField} = ${alias}.${association.targetField}${targetFilterStatement.length === 0 ? '' : ` AND ${targetFilterStatement}`}`;
     const existingJoin = joins.get(alias);
     if (existingJoin != null && existingJoin !== join) {
       throw new Error(`Conflicting join alias ${alias} for ${tableName}`);
     }
-    joins.set(alias, join);
+    if (existingJoin == null) {
+      joins.set(alias, join);
+      aliasTableNames.set(alias, association.tableName);
+      Object.values(targetFilterData).forEach((value) => joinValues.push(value));
+    }
     selectStatements.push(`${alias}.${targetSelectField} AS ${fieldName}`);
   }
 
@@ -330,14 +358,37 @@ const getViewQueryParts = (
     selectStatement: selectStatements.join(','),
     joinStatement:
       joins.size === 0 ? '' : ` ${Array.from(joins.values()).join(' ')}`,
+    joinValues,
   };
 };
 
 const getWhereData = (tableName: string, clauses: DataRow): DataRow => {
   const table = getTableDefinition(tableName);
   const whereData = serializeClauseData(table.model, clauses);
-  assertHasFields(whereData, 'where', tableName);
   return whereData;
+};
+
+const getViewWhereData = (tableName: string): DataRow => {
+  const table = getTableDefinition(tableName);
+  return serializeClauseData(table.model, table.view.__meta?.where ?? {});
+};
+
+const getReadWhereData = (tableName: string, clauses: DataRow): DataRow => {
+  const defaultWhereData = getViewWhereData(tableName);
+  const clauseWhereData = getWhereData(tableName, clauses);
+  const mergedWhereData: DataRow = { ...defaultWhereData };
+
+  for (const [key, value] of Object.entries(clauseWhereData)) {
+    if (key in mergedWhereData && mergedWhereData[key] !== value) {
+      throw new Error(
+        `View where clause conflict for ${tableName}.${key}`,
+      );
+    }
+    mergedWhereData[key] = value;
+  }
+
+  assertHasFields(mergedWhereData, 'where', tableName);
+  return mergedWhereData;
 };
 
 const getWhereStatement = (whereData: DataRow, tableName?: string): string =>
@@ -499,8 +550,10 @@ const getRowsFromTableForStage = async (
   options: GetRowsOptions = {},
 ): Promise<GetRowsResult> => {
   getTableDefinition(tableName);
-  const { selectStatement, joinStatement } = getViewQueryParts(tableName);
-  const whereData = getWhereData(tableName, clauses);
+  const { selectStatement, joinStatement, joinValues } = getViewQueryParts(
+    tableName,
+  );
+  const whereData = getReadWhereData(tableName, clauses);
   const whereStatement = getWhereStatement(whereData, tableName);
   const values = Object.values(whereData);
   const offset = normalizePaginationValue(options.offset, 0, 'offset');
@@ -514,7 +567,7 @@ const getRowsFromTableForStage = async (
   }
 
   let sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${whereStatement}`;
-  const rowValues = [...values];
+  const rowValues = [...joinValues, ...values];
   if (limit !== undefined) {
     sql = `${sql} LIMIT ? OFFSET ?`;
     rowValues.push(limit, offset);
@@ -557,10 +610,12 @@ const getRowFromTableForStage = async (
   clauses: DataRow,
 ): Promise<DataRow | null> => {
   getTableDefinition(tableName);
-  const { selectStatement, joinStatement } = getViewQueryParts(tableName);
-  const whereData = getWhereData(tableName, clauses);
+  const { selectStatement, joinStatement, joinValues } = getViewQueryParts(
+    tableName,
+  );
+  const whereData = getReadWhereData(tableName, clauses);
   const whereStatement = getWhereStatement(whereData, tableName);
-  const values = Object.values(whereData);
+  const values = [...joinValues, ...Object.values(whereData)];
   const sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${whereStatement} LIMIT 1`;
   const rows = await queryForStage<RowDataPacket[]>(
     stageKey,

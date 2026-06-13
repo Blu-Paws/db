@@ -1,8 +1,11 @@
 {
-  "pet_id": {
-    "type": "number"
+  "__meta": {
+    "where": {
+      "status": 1,
+      "pet_status": 16
+    }
   },
-  "login_id": {
+  "pet_id": {
     "type": "number"
   },
   "pet_name": {
@@ -19,6 +22,20 @@
   },
   "dob": {
     "type": "datetime"
+  },
+  "weight": {
+    "type": "number",
+    "association": {
+      "tableName": "pet_vitals",
+      "sourceField": "pet_id",
+      "targetField": "pet_id",
+      "targetSelectField": "weight",
+      "alias": "pet_vitals_current",
+      "joinType": "LEFT",
+      "targetFilters": {
+        "status": 1
+      }
+    }
   },
   "notes": {
     "type": "string"
@@ -44,6 +61,39 @@
   "pet_status": {
     "type": "number"
   },
+  "gender": {
+    "type": "string",
+    "association": {
+      "tableName": "mstr_gender",
+      "sourceField": "gender_id",
+      "targetField": "gender_id",
+      "targetSelectField": "name",
+      "alias": "mstr_gender_ref",
+      "joinType": "INNER"
+    }
+  },
+  "breed_name": {
+    "type": "string",
+    "association": {
+      "tableName": "mstr_breed",
+      "sourceField": "breed_id",
+      "targetField": "breed_id",
+      "targetSelectField": "breed_name",
+      "alias": "mstr_breed_ref",
+      "joinType": "LEFT"
+    }
+  },
+  "pet_type": {
+    "type": "string",
+    "association": {
+      "tableName": "mstr_pet_types",
+      "sourceField": "pet_type_id",
+      "targetField": "pet_type_id",
+      "targetSelectField": "name",
+      "alias": "mstr_pet_types_ref",
+      "joinType": "INNER"
+    }
+  },
   "status_name": {
     "type": "string",
     "association": {
@@ -51,14 +101,129 @@
       "sourceField": "pet_status",
       "targetField": "status_id",
       "targetSelectField": "status_name",
-      "alias": "pet_status_mstr_status",
+      "alias": "mstr_status_ref",
+      "joinType": "INNER",
+      "targetFilters": {
+        "module_id": 6
+      }
+    }
+  },
+  "pet_owner_name": {
+    "type": "string",
+    "association": {
+      "tableName": "login",
+      "sourceField": "login_id",
+      "targetField": "login_id",
+      "targetSelectField": "name",
+      "alias": "pet_owner_login",
+      "joinType": "INNER"
+    }
+  },
+  "pet_owner_email": {
+    "type": "string",
+    "association": {
+      "tableName": "login",
+      "sourceField": "login_id",
+      "targetField": "login_id",
+      "targetSelectField": "email",
+      "alias": "pet_owner_login",
+      "joinType": "INNER"
+    }
+  },
+  "pet_owner_phone": {
+    "type": "string",
+    "association": {
+      "tableName": "login",
+      "sourceField": "login_id",
+      "targetField": "login_id",
+      "targetSelectField": "phone",
+      "alias": "pet_owner_login",
+      "joinType": "INNER"
+    }
+  },
+  "coat": {
+    "type": "string",
+    "association": {
+      "tableName": "mstr_coat",
+      "sourceAlias": "pet_vitals_current",
+      "sourceField": "coat_id",
+      "targetField": "coat_id",
+      "targetSelectField": "name",
+      "alias": "mstr_coat_ref",
       "joinType": "LEFT"
+    }
+  },
+  "coat_id": {
+    "type": "number",
+    "association": {
+      "tableName": "mstr_coat",
+      "sourceAlias": "pet_vitals_current",
+      "sourceField": "coat_id",
+      "targetField": "coat_id",
+      "targetSelectField": "coat_id",
+      "alias": "mstr_coat_ref",
+      "joinType": "LEFT"
+    }
+  },
+  "height": {
+    "type": "number",
+    "association": {
+      "tableName": "pet_vitals",
+      "sourceField": "pet_id",
+      "targetField": "pet_id",
+      "targetSelectField": "height",
+      "alias": "pet_vitals_current",
+      "joinType": "LEFT",
+      "targetFilters": {
+        "status": 1
+      }
     }
   },
   "updated_date": {
     "type": "datetime"
   },
   "updated_by": {
+    "type": "string",
+    "association": {
+      "tableName": "login",
+      "sourceField": "updated_by",
+      "targetField": "login_id",
+      "targetSelectField": "name",
+      "alias": "updated_by_login",
+      "joinType": "LEFT"
+    }
+  },
+  "login_id": {
     "type": "number"
+  },
+  "pet_owner_image_path": {
+    "type": "string",
+    "association": {
+      "tableName": "images",
+      "sourceField": "login_id",
+      "targetField": "key_value",
+      "targetSelectField": "image_path",
+      "alias": "pet_owner_image",
+      "joinType": "LEFT",
+      "targetFilters": {
+        "status": 1,
+        "module_id": 3
+      }
+    }
+  },
+  "pet_image_path": {
+    "type": "string",
+    "association": {
+      "tableName": "images",
+      "sourceField": "pet_id",
+      "targetField": "key_value",
+      "targetSelectField": "image_path",
+      "alias": "pet_image",
+      "joinType": "LEFT",
+      "targetFilters": {
+        "status": 1,
+        "module_id": 6
+      }
+    }
   }
 }
