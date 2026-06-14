@@ -62,21 +62,22 @@ table's `view.json` and validate `WHERE` clauses against its model.
 
 ```js
 const pet = await db.getRowFromTable('pets', {
-  clauses: { pet_id: petId },
+  clauses: { status: 1, pet_status: 16, pet_id: petId },
   fields: ['pet_id', 'pet_name', 'status_name'],
 });
 const pets = await db.getRowsFromTable('pets', {
-  clauses: { login_id: loginId },
+  clauses: { status: 1, pet_status: 16, login_id: loginId },
   offset: 0,
   limit: 25,
 });
 ```
 
 `getRowFromTable(...)` adds `LIMIT 1` and returns `null` when no row matches.
-Both read helpers validate `clauses` against `model.json`. Optional `fields`
-must be a non-empty array of strings that match keys from `view.json`; the
-query selects only those fields, and association joins are added only for the
-selected associated fields.
+Both read helpers validate `clauses` against `model.json`. When `fields` is not
+provided or is an empty array, the query selects only direct base-table fields
+from `view.json` and does not add association joins. When `fields` is provided,
+each field must be a string that matches a key from `view.json`; association
+joins are added only for the selected associated fields.
 `getRowsFromTable(...)` returns paged metadata and rows in `items`:
 
 ```js

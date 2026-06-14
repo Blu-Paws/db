@@ -286,9 +286,6 @@ const resolveSelectedFields = (
   if (!Array.isArray(selectedFieldNames)) {
     throw new Error(`fields must be an array of strings for ${tableName}`);
   }
-  if (selectedFieldNames.length === 0) {
-    throw new Error(`fields must not be empty for ${tableName}`);
-  }
 
   const table = getTableDefinition(tableName);
   return selectedFieldNames.map((fieldName, index) => {
@@ -380,8 +377,8 @@ const getViewQueryParts = (
     selectedFieldNames,
   );
   const fields =
-    resolvedSelectedFieldNames == null
-      ? viewFields
+    resolvedSelectedFieldNames == null || resolvedSelectedFieldNames.length === 0
+      ? viewFields.filter(([, field]) => field.association == null)
       : resolvedSelectedFieldNames.map((fieldName) => {
           const field = table.view[fieldName] as ViewModelField;
           return [fieldName, field] as [string, ViewModelField];
@@ -397,6 +394,9 @@ const getViewQueryParts = (
   for (const [fieldName, field] of fields) {
     const associationData = resolveViewAssociation(tableName, fieldName, field);
     if (associationData == null) {
+      if (table.model[fieldName] == null) {
+        throw new Error(`Unknown base field ${fieldName} for ${tableName}`);
+      }
       selectStatements.push(`${tableName}.${fieldName} AS ${fieldName}`);
       continue;
     }

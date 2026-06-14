@@ -380,6 +380,49 @@ test('read helpers select table view fields with validated clauses', async () =>
   assert.deepEqual(calls.connections[1].queries[1].values, [1, 25, 10]);
 });
 
+test('pet reads without fields select only direct base columns', async () => {
+  const petDirectSelect =
+    'pets.pet_id AS pet_id,pets.pet_name AS pet_name,pets.pet_type_id AS pet_type_id,pets.gender_id AS gender_id,pets.breed_id AS breed_id,pets.dob AS dob,pets.notes AS notes,pets.likes AS likes,pets.dislikes AS dislikes,pets.create_date AS create_date,pets.created_by AS created_by,pets.status AS status,pets.deceased_date AS deceased_date,pets.pet_status AS pet_status,pets.updated_date AS updated_date,pets.login_id AS login_id';
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{ pet_id: 123, pet_name: 'Milo' }],
+      [{ count: 1 }],
+      [{ pet_id: 123, pet_name: 'Milo' }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('pets', {
+    clauses: { status: 1, pet_status: 16, pet_id: 123 },
+  });
+  const rows = await db.getRowsFromTable('pets', {
+    clauses: { status: 1, pet_status: 16, login_id: 55 },
+    fields: [],
+    offset: 0,
+    limit: 10,
+  });
+
+  assert.deepEqual(row, { pet_id: 123, pet_name: 'Milo' });
+  assert.deepEqual(rows, {
+    offset: 0,
+    limit: 10,
+    items: [{ pet_id: 123, pet_name: 'Milo' }],
+    count: 1,
+  });
+  assert.equal(
+    calls.connections[0].queries[0].sql,
+    `SELECT ${petDirectSelect} FROM pets WHERE pets.status = ? AND pets.pet_status = ? AND pets.pet_id = ? LIMIT 1`,
+  );
+  assert.equal(calls.connections[0].queries[0].sql.includes('JOIN'), false);
+  assert.deepEqual(calls.connections[0].queries[0].values, [1, 16, 123]);
+  assert.equal(
+    calls.connections[1].queries[1].sql,
+    `SELECT ${petDirectSelect} FROM pets WHERE pets.status = ? AND pets.pet_status = ? AND pets.login_id = ? LIMIT ? OFFSET ?`,
+  );
+  assert.equal(calls.connections[1].queries[1].sql.includes('JOIN'), false);
+  assert.deepEqual(calls.connections[1].queries[1].values, [1, 16, 55, 10, 0]);
+});
+
 test('pet reads build the vw_pets join graph with caller-provided filters', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [
@@ -558,14 +601,6 @@ test('getRowsFromTable validates selected fields before building the query', asy
   const { api, calls } = createConnectionStub();
   const db = api.createConnection('dev', 'clinic');
 
-  await assert.rejects(
-    () =>
-      db.getRowsFromTable('pets', {
-        clauses: { pet_id: 123 },
-        fields: [],
-      }),
-    /fields must not be empty for pets/,
-  );
   await assert.rejects(
     () =>
       db.getRowsFromTable('pets', {
