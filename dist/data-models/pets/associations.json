@@ -1,0 +1,101 @@
+{
+  "current_vitals": {
+    "tableName": "pet_vitals",
+    "sourceField": "pet_id",
+    "targetField": "pet_id",
+    "alias": "pet_vitals_current",
+    "joinType": "LEFT",
+    "targetFilters": {
+      "status": 1
+    }
+  },
+  "gender": {
+    "tableName": "mstr_gender",
+    "sourceField": "gender_id",
+    "targetField": "gender_id",
+    "alias": "mstr_gender_ref",
+    "joinType": "INNER"
+  },
+  "breed": {
+    "tableName": "mstr_breed",
+    "sourceField": "breed_id",
+    "targetField": "breed_id",
+    "alias": "mstr_breed_ref",
+    "joinType": "LEFT"
+  },
+  "pet_type": {
+    "tableName": "mstr_pet_types",
+    "sourceField": "pet_type_id",
+    "targetField": "pet_type_id",
+    "alias": "mstr_pet_types_ref",
+    "joinType": "INNER"
+  },
+  "pet_status": {
+    "tableName": "mstr_status",
+    "sourceField": "pet_status",
+    "targetField": "status_id",
+    "alias": "mstr_status_ref",
+    "joinType": "INNER",
+    "targetFilters": {
+      "module_id": 6
+    }
+  },
+  "pet_owner": {
+    "tableName": "login",
+    "sourceField": "login_id",
+    "targetField": "login_id",
+    "alias": "pet_owner_login",
+    "joinType": "INNER"
+  },
+  "coat": {
+    "path": [
+      {
+        "tableName": "pet_vitals",
+        "sourceField": "pet_id",
+        "targetField": "pet_id",
+        "alias": "pet_vitals_current",
+        "joinType": "LEFT",
+        "targetFilters": {
+          "status": 1
+        }
+      },
+      {
+        "tableName": "mstr_coat",
+        "sourceAlias": "pet_vitals_current",
+        "sourceField": "coat_id",
+        "targetField": "coat_id",
+        "alias": "mstr_coat_ref",
+        "joinType": "LEFT"
+      }
+    ]
+  },
+  "updated_by": {
+    "tableName": "login",
+    "sourceField": "updated_by",
+    "targetField": "login_id",
+    "alias": "updated_by_login",
+    "joinType": "LEFT"
+  },
+  "pet_owner_image": {
+    "tableName": "images",
+    "sourceField": "login_id",
+    "targetField": "key_value",
+    "alias": "pet_owner_image",
+    "joinType": "LEFT",
+    "targetFilters": {
+      "status": 1,
+      "module_id": 3
+    }
+  },
+  "pet_image": {
+    "tableName": "images",
+    "sourceField": "pet_id",
+    "targetField": "key_value",
+    "alias": "pet_image",
+    "joinType": "LEFT",
+    "targetFilters": {
+      "status": 1,
+      "module_id": 6
+    }
+  }
+}

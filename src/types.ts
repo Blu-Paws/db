@@ -29,19 +29,33 @@ export type DataRow = Record<string, unknown>;
 export type Flavor = string;
 export type TableOperation = 'insert' | 'update' | 'delete';
 
-export type ViewAssociation = {
+export type ViewAssociationJoin = {
   tableName: string;
   sourceField: string;
   sourceAlias?: string;
   targetField: string;
   targetFilters?: DataRow;
-  targetSelectField?: string;
   alias?: string;
   joinType?: 'LEFT' | 'INNER';
 };
 
+export type ViewAssociation = {
+  tableName?: string;
+  sourceField?: string;
+  sourceAlias?: string;
+  targetField?: string;
+  targetFilters?: DataRow;
+  targetSelectField?: string;
+  alias?: string;
+  joinType?: 'LEFT' | 'INNER';
+  path?: ViewAssociationJoin[];
+};
+
+export type ViewAssociations = Record<string, ViewAssociation>;
+
 export type ViewModelField = {
-  association?: ViewAssociation;
+  association?: string | ViewAssociation;
+  field?: string;
   type: ModelFieldType;
 };
 
@@ -54,7 +68,14 @@ export type ViewModel = {
   __meta?: ViewModelMeta;
 };
 
-export type GetRowsOptions = {
+export type ReadOptions = {
+  clauses?: DataRow;
+  fields?: string[];
+};
+
+export type GetRowOptions = ReadOptions;
+
+export type GetRowsOptions = ReadOptions & {
   offset?: number;
   limit?: number;
 };
@@ -84,6 +105,7 @@ export type TableDefinition<T extends DataRow = DataRow> = {
   tableName: string;
   model: DataModel;
   view: ViewModel;
+  associations?: ViewAssociations;
   validateInsert: TableValidator<T>;
   validateUpdate: TableValidator<T>;
   validateDelete: TableValidator<T>;

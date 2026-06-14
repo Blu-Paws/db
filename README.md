@@ -38,8 +38,8 @@ stage secret does not exist, the package throws.
 - `db.withTransaction(callback)`
 - `db.insertRowIntoTable(tableName, row, conn?)`
 - `db.insertRowsIntoTable(tableName, rows, conn?)`
-- `db.getRowFromTable(tableName, clauses, conn?)`
-- `db.getRowsFromTable(tableName, clauses, options?, conn?)`
+- `db.getRowFromTable(tableName, options?, conn?)`
+- `db.getRowsFromTable(tableName, options?, conn?)`
 - `db.updateRowTable(tableName, row, clauses, conn?)`
 - `db.deleteRowFromTable(tableName, clauses, conn?)`
 
@@ -61,15 +61,22 @@ Use the table read helpers when the query should select the fields from the
 table's `view.json` and validate `WHERE` clauses against its model.
 
 ```js
-const pet = await db.getRowFromTable('pets', { pet_id: petId });
-const pets = await db.getRowsFromTable(
-  'pets',
-  { login_id: loginId },
-  { offset: 0, limit: 25 },
-);
+const pet = await db.getRowFromTable('pets', {
+  clauses: { pet_id: petId },
+  fields: ['pet_id', 'pet_name', 'status_name'],
+});
+const pets = await db.getRowsFromTable('pets', {
+  clauses: { login_id: loginId },
+  offset: 0,
+  limit: 25,
+});
 ```
 
 `getRowFromTable(...)` adds `LIMIT 1` and returns `null` when no row matches.
+Both read helpers validate `clauses` against `model.json`. Optional `fields`
+must be a non-empty array of strings that match keys from `view.json`; the
+query selects only those fields, and association joins are added only for the
+selected associated fields.
 `getRowsFromTable(...)` returns paged metadata and rows in `items`:
 
 ```js
@@ -135,6 +142,7 @@ Shared table models live in `src/data-models`. Each table has its own folder:
 ```txt
 src/data-models/<table_name>/model.json
 src/data-models/<table_name>/view.json
+src/data-models/<table_name>/associations.json
 src/data-models/<table_name>/index.ts
 ```
 
@@ -142,8 +150,9 @@ src/data-models/<table_name>/index.ts
 checks and create/update support. `view.json` is the `ViewModel`: it contains
 the fields selected by `getRowFromTable(...)` and `getRowsFromTable(...)`; it is
 read-only projection metadata and does not include create/update or constraint
-flags. `index.ts` contains the internal table definition, an exported table
-type, and three internal validator hooks:
+flags. `associations.json` is optional and contains named table relationships
+used by associated view fields. `index.ts` contains the internal table
+definition, an exported table type, and three internal validator hooks:
 
 - `validateInsert(conn, row)`
 - `validateUpdate(conn, row)`
@@ -154,8 +163,27 @@ If a validator throws or returns `false`, the write helper rejects the operation
 before mutating the table.
 
 Only view fields can define an `association` to select one field from another
-table. The read helpers add the join only when that associated field is present
-in the view select list.
+table. Prefer named associations from `associations.json`; inline association
+objects are still supported for compatibility. When the output field name does
+not match the target table column, set `field` to the real column name:
+
+```json
+{
+  "pet_owner_name": {
+    "type": "string",
+    "association": "pet_owner",
+    "field": "name"
+  },
+  "status_name": {
+    "type": "string",
+    "association": "pet_status"
+  }
+}
+```
+
+The read helpers add joins only when selected associated fields need them.
+Associations can define a single join or a small `path` array for cases that
+need an intermediate table.
 
 The initial model set was generated from all handler-local data models under
 the `aws` workspace. Conflicting definitions were merged permissively so the

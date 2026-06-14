@@ -290,11 +290,12 @@ test('read helpers select table view fields with validated clauses', async () =>
   });
   const db = api.createConnection('dev', 'clinic');
 
-  const row = await db.getRowFromTable('login', { phone: '5551234' });
+  const row = await db.getRowFromTable('login', {
+    clauses: { phone: '5551234' },
+  });
   const rows = await db.getRowsFromTable(
     'login',
-    { login_status_id: 1 },
-    { offset: 10, limit: 25 },
+    { clauses: { login_status_id: 1 }, offset: 10, limit: 25 },
   );
 
   assert.deepEqual(row, { login_id: 123, phone: '5551234' });
@@ -335,7 +336,10 @@ test('pet reads build the vw_pets join graph and apply default view filters', as
   });
   const db = api.createConnection('dev', 'clinic');
 
-  const row = await db.getRowFromTable('pets', { pet_id: 123 });
+  const row = await db.getRowFromTable('pets', {
+    clauses: { pet_id: 123 },
+    fields: ['pet_id', 'pet_status', 'status_name'],
+  });
 
   assert.deepEqual(row, {
     pet_id: 123,
@@ -350,29 +354,13 @@ test('pet reads build the vw_pets join graph and apply default view filters', as
   );
   assert.match(
     sql,
-    /LEFT JOIN pet_vitals AS pet_vitals_current ON pets\.pet_id = pet_vitals_current\.pet_id AND pet_vitals_current\.status = \?/,
-  );
-  assert.match(
-    sql,
     /INNER JOIN mstr_status AS mstr_status_ref ON pets\.pet_status = mstr_status_ref\.status_id AND mstr_status_ref\.module_id = \?/,
   );
-  assert.match(
-    sql,
-    /INNER JOIN login AS pet_owner_login ON pets\.login_id = pet_owner_login\.login_id/,
-  );
-  assert.match(
-    sql,
-    /LEFT JOIN mstr_coat AS mstr_coat_ref ON pet_vitals_current\.coat_id = mstr_coat_ref\.coat_id/,
-  );
-  assert.match(
-    sql,
-    /LEFT JOIN images AS pet_owner_image ON pets\.login_id = pet_owner_image\.key_value AND pet_owner_image\.status = \? AND pet_owner_image\.module_id = \?/,
-  );
-  assert.match(
-    sql,
-    /LEFT JOIN images AS pet_image ON pets\.pet_id = pet_image\.key_value AND pet_image\.status = \? AND pet_image\.module_id = \?/,
-  );
-  assert.equal(sql.includes('pet_owner_login.password'), false);
+  assert.equal(sql.includes('pet_vitals_current'), false);
+  assert.equal(sql.includes('pet_owner_login'), false);
+  assert.equal(sql.includes('mstr_coat_ref'), false);
+  assert.equal(sql.includes('pet_owner_image'), false);
+  assert.equal(sql.includes('pet_image'), false);
   assert.equal(
     sql.endsWith(
       'WHERE pets.status = ? AND pets.pet_status = ? AND pets.pet_id = ? LIMIT 1',
@@ -381,8 +369,37 @@ test('pet reads build the vw_pets join graph and apply default view filters', as
   );
   assert.deepEqual(
     calls.connections[0].queries[0].values,
-    [1, 6, 1, 3, 1, 6, 1, 16, 123],
+    [6, 1, 16, 123],
   );
+  assert.equal(sql.includes('mstr_gender'), false);
+  assert.equal(sql.includes('mstr_pet_types'), false);
+});
+
+test('pet association paths add required intermediate joins', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{ pet_id: 123, coat: 'Short' }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('pets', {
+    clauses: { pet_id: 123 },
+    fields: ['pet_id', 'coat'],
+  });
+
+  assert.deepEqual(row, { pet_id: 123, coat: 'Short' });
+  const sql = calls.connections[0].queries[0].sql;
+  assert.match(
+    sql,
+    /LEFT JOIN pet_vitals AS pet_vitals_current ON pets\.pet_id = pet_vitals_current\.pet_id AND pet_vitals_current\.status = \?/,
+  );
+  assert.match(
+    sql,
+    /LEFT JOIN mstr_coat AS mstr_coat_ref ON pet_vitals_current\.coat_id = mstr_coat_ref\.coat_id/,
+  );
+  assert.match(sql, /mstr_coat_ref\.name AS coat/);
+  assert.deepEqual(calls.connections[0].queries[0].values, [1, 1, 16, 123]);
 });
 
 test('getRowsFromTable supports transaction connection as the third argument', async () => {
@@ -399,7 +416,7 @@ test('getRowsFromTable supports transaction connection as the third argument', a
   await db.withTransaction(async (conn) => {
     const rows = await db.getRowsFromTable(
       'login',
-      { login_status_id: 1 },
+      { clauses: { login_status_id: 1 } },
       conn,
     );
 
@@ -423,15 +440,65 @@ test('getRowsFromTable supports transaction connection as the third argument', a
   );
 });
 
+test('getRowsFromTable validates selected fields before building the query', async () => {
+  const { api, calls } = createConnectionStub();
+  const db = api.createConnection('dev', 'clinic');
+
+  await assert.rejects(
+    () =>
+      db.getRowsFromTable('pets', {
+        clauses: { pet_id: 123 },
+        fields: [],
+      }),
+    /fields must not be empty for pets/,
+  );
+  await assert.rejects(
+    () =>
+      db.getRowsFromTable('pets', {
+        clauses: { pet_id: 123 },
+        fields: ['pet_id', 'missing_field'],
+      }),
+    /Unknown view field missing_field for pets/,
+  );
+  await assert.rejects(
+    () =>
+      db.getRowsFromTable('pets', {
+        clauses: { pet_id: 123 },
+        fields: ['pet_id', 123],
+      }),
+    /fields\[1\] must be a string for pets/,
+  );
+
+  assert.equal(calls.connections.length, 0);
+});
+
 test('getRowFromTable returns null when no row matches', async () => {
   const { api } = createConnectionStub({
     queryResults: [[]],
   });
   const db = api.createConnection('dev', 'clinic');
 
-  const row = await db.getRowFromTable('login', { phone: '5551234' });
+  const row = await db.getRowFromTable('login', {
+    clauses: { phone: '5551234' },
+  });
 
   assert.equal(row, null);
+});
+
+test('getRowFromTable validates selected fields before building the query', async () => {
+  const { api, calls } = createConnectionStub();
+  const db = api.createConnection('dev', 'clinic');
+
+  await assert.rejects(
+    () =>
+      db.getRowFromTable('login', {
+        clauses: { phone: '5551234' },
+        fields: ['login_id', ''],
+      }),
+    /fields\[1\] must be a non-empty string for login/,
+  );
+
+  assert.equal(calls.connections.length, 0);
 });
 
 test('helpers inside withTransaction use the provided transaction connection', async () => {

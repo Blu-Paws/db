@@ -15,11 +15,14 @@ import type {
   BluPawsPool,
   DataRow,
   Flavor,
+  GetRowOptions,
   GetRowsOptions,
   GetRowsResult,
   QueryResult,
   QueryValues,
   Stage,
+  ViewAssociation,
+  ViewAssociationJoin,
   ViewModelField,
   ViewModelMeta,
 } from './types';
@@ -279,11 +282,120 @@ const isViewModelFieldEntry = (
 ): entry is [string, ViewModelField] =>
   entry[0] !== '__meta' && entry[1] != null;
 
+const resolveSelectedFields = (
+  tableName: string,
+  selectedFieldNames?: string[],
+): string[] | undefined => {
+  if (selectedFieldNames === undefined) {
+    return undefined;
+  }
+  if (!Array.isArray(selectedFieldNames)) {
+    throw new Error(`fields must be an array of strings for ${tableName}`);
+  }
+  if (selectedFieldNames.length === 0) {
+    throw new Error(`fields must not be empty for ${tableName}`);
+  }
+
+  const table = getTableDefinition(tableName);
+  return selectedFieldNames.map((fieldName, index) => {
+    if (typeof fieldName !== 'string') {
+      throw new Error(
+        `fields[${index}] must be a string for ${tableName}`,
+      );
+    }
+    const normalizedFieldName = fieldName.trim();
+    if (normalizedFieldName.length === 0) {
+      throw new Error(
+        `fields[${index}] must be a non-empty string for ${tableName}`,
+      );
+    }
+    const field = table.view[normalizedFieldName];
+    if (
+      normalizedFieldName === '__meta' ||
+      field == null ||
+      'where' in field
+    ) {
+      throw new Error(
+        `Unknown view field ${normalizedFieldName} for ${tableName}`,
+      );
+    }
+    return normalizedFieldName;
+  });
+};
+
+const resolveViewAssociation = (
+  tableName: string,
+  fieldName: string,
+  field: ViewModelField,
+): { association: ViewAssociation; targetSelectField: string } | null => {
+  const associationRef = field.association;
+  if (associationRef == null) {
+    return null;
+  }
+
+  const table = getTableDefinition(tableName);
+  const association =
+    typeof associationRef === 'string'
+      ? table.associations?.[associationRef]
+      : associationRef;
+  if (association == null) {
+    throw new Error(
+      `Unknown association ${associationRef} for ${tableName}.${fieldName}`,
+    );
+  }
+
+  return {
+    association,
+    targetSelectField: field.field ?? association.targetSelectField ?? fieldName,
+  };
+};
+
+const getAssociationJoins = (
+  tableName: string,
+  fieldName: string,
+  association: ViewAssociation,
+): ViewAssociationJoin[] => {
+  if (association.path != null) {
+    if (!Array.isArray(association.path) || association.path.length === 0) {
+      throw new Error(`Association path is empty for ${tableName}.${fieldName}`);
+    }
+    return association.path;
+  }
+
+  const { tableName: targetTableName, sourceField, targetField } = association;
+  if (targetTableName == null || sourceField == null || targetField == null) {
+    throw new Error(`Association join is incomplete for ${tableName}.${fieldName}`);
+  }
+  return [
+    {
+      tableName: targetTableName,
+      sourceField,
+      sourceAlias: association.sourceAlias,
+      targetField,
+      targetFilters: association.targetFilters,
+      alias: association.alias,
+      joinType: association.joinType,
+    },
+  ];
+};
+
 const getViewQueryParts = (
   tableName: string,
+  selectedFieldNames?: string[],
 ): { selectStatement: string; joinStatement: string; joinValues: unknown[] } => {
   const table = getTableDefinition(tableName);
-  const fields = Object.entries(table.view).filter(isViewModelFieldEntry);
+  const viewFields = Object.entries(table.view).filter(isViewModelFieldEntry);
+  const resolvedSelectedFieldNames = resolveSelectedFields(
+    tableName,
+    selectedFieldNames,
+  );
+  const fields =
+    resolvedSelectedFieldNames == null
+      ? viewFields
+      : resolvedSelectedFieldNames.map((fieldName) => {
+          const field = table.view[fieldName] as ViewModelField;
+          return [fieldName, field] as [string, ViewModelField];
+        });
   if (fields.length === 0) {
     throw new Error(`No view fields provided for ${tableName}`);
   }
@@ -293,65 +405,82 @@ const getViewQueryParts = (
   const aliasTableNames = new Map<string, string>([[tableName, tableName]]);
   const joinValues: unknown[] = [];
   for (const [fieldName, field] of fields) {
-    const association = field.association;
-    if (association == null) {
+    const associationData = resolveViewAssociation(tableName, fieldName, field);
+    if (associationData == null) {
       selectStatements.push(`${tableName}.${fieldName} AS ${fieldName}`);
       continue;
     }
 
-    const sourceAlias = association.sourceAlias ?? tableName;
-    const sourceTableName = aliasTableNames.get(sourceAlias);
-    if (sourceTableName == null) {
-      throw new Error(
-        `Unknown source alias ${sourceAlias} for ${tableName}.${fieldName}`,
+    const { association, targetSelectField } = associationData;
+    const associationJoins = getAssociationJoins(
+      tableName,
+      fieldName,
+      association,
+    );
+    let targetAlias = tableName;
+    let targetTableName = tableName;
+    for (const [index, associationJoin] of associationJoins.entries()) {
+      const sourceAlias =
+        associationJoin.sourceAlias ?? (index === 0 ? tableName : targetAlias);
+      const sourceTableName = aliasTableNames.get(sourceAlias);
+      if (sourceTableName == null) {
+        throw new Error(
+          `Unknown source alias ${sourceAlias} for ${tableName}.${fieldName}`,
+        );
+      }
+      const sourceTable = getTableDefinition(sourceTableName);
+      const targetTable = getTableDefinition(associationJoin.tableName);
+      if (sourceTable.model[associationJoin.sourceField] == null) {
+        throw new Error(
+          `Unknown source field ${associationJoin.sourceField} for ${tableName}.${fieldName}`,
+        );
+      }
+      if (targetTable.model[associationJoin.targetField] == null) {
+        throw new Error(
+          `Unknown target field ${associationJoin.targetField} for ${tableName}.${fieldName}`,
+        );
+      }
+
+      const joinType = associationJoin.joinType ?? 'LEFT';
+      if (joinType !== 'LEFT' && joinType !== 'INNER') {
+        throw new Error(
+          `Unsupported join type ${joinType} for ${tableName}.${fieldName}`,
+        );
+      }
+
+      const alias =
+        associationJoin.alias ??
+        `${associationJoin.tableName}_${associationJoin.targetField}`;
+      const targetFilterData = serializeClauseData(
+        targetTable.model,
+        associationJoin.targetFilters ?? {},
       );
+      const targetFilterStatement = Object.keys(targetFilterData)
+        .map((key) => `${alias}.${key} = ?`)
+        .join(' AND ');
+      const join = `${joinType} JOIN ${associationJoin.tableName} AS ${alias} ON ${sourceAlias}.${associationJoin.sourceField} = ${alias}.${associationJoin.targetField}${targetFilterStatement.length === 0 ? '' : ` AND ${targetFilterStatement}`}`;
+      const existingJoin = joins.get(alias);
+      if (existingJoin != null && existingJoin !== join) {
+        throw new Error(`Conflicting join alias ${alias} for ${tableName}`);
+      }
+      if (existingJoin == null) {
+        joins.set(alias, join);
+        aliasTableNames.set(alias, associationJoin.tableName);
+        Object.values(targetFilterData).forEach((value) =>
+          joinValues.push(value),
+        );
+      }
+      targetAlias = alias;
+      targetTableName = associationJoin.tableName;
     }
-    const sourceTable = getTableDefinition(sourceTableName);
-    const targetTable = getTableDefinition(association.tableName);
-    const targetSelectField = association.targetSelectField ?? fieldName;
-    if (sourceTable.model[association.sourceField] == null) {
-      throw new Error(
-        `Unknown source field ${association.sourceField} for ${tableName}.${fieldName}`,
-      );
-    }
-    if (targetTable.model[association.targetField] == null) {
-      throw new Error(
-        `Unknown target field ${association.targetField} for ${tableName}.${fieldName}`,
-      );
-    }
+
+    const targetTable = getTableDefinition(targetTableName);
     if (targetTable.model[targetSelectField] == null) {
       throw new Error(
         `Unknown target select field ${targetSelectField} for ${tableName}.${fieldName}`,
       );
     }
-
-    const joinType = association.joinType ?? 'LEFT';
-    if (joinType !== 'LEFT' && joinType !== 'INNER') {
-      throw new Error(
-        `Unsupported join type ${joinType} for ${tableName}.${fieldName}`,
-      );
-    }
-
-    const alias =
-      association.alias ?? `${association.tableName}_${association.targetField}`;
-    const targetFilterData = serializeClauseData(
-      targetTable.model,
-      association.targetFilters ?? {},
-    );
-    const targetFilterStatement = Object.keys(targetFilterData)
-      .map((key) => `${alias}.${key} = ?`)
-      .join(' AND ');
-    const join = `${joinType} JOIN ${association.tableName} AS ${alias} ON ${sourceAlias}.${association.sourceField} = ${alias}.${association.targetField}${targetFilterStatement.length === 0 ? '' : ` AND ${targetFilterStatement}`}`;
-    const existingJoin = joins.get(alias);
-    if (existingJoin != null && existingJoin !== join) {
-      throw new Error(`Conflicting join alias ${alias} for ${tableName}`);
-    }
-    if (existingJoin == null) {
-      joins.set(alias, join);
-      aliasTableNames.set(alias, association.tableName);
-      Object.values(targetFilterData).forEach((value) => joinValues.push(value));
-    }
-    selectStatements.push(`${alias}.${targetSelectField} AS ${fieldName}`);
+    selectStatements.push(`${targetAlias}.${targetSelectField} AS ${fieldName}`);
   }
 
   return {
@@ -390,6 +519,8 @@ const getReadWhereData = (tableName: string, clauses: DataRow): DataRow => {
   assertHasFields(mergedWhereData, 'where', tableName);
   return mergedWhereData;
 };
+
+const resolveClauses = (clauses?: DataRow): DataRow => clauses ?? {};
 
 const getWhereStatement = (whereData: DataRow, tableName?: string): string =>
   Object.keys(whereData)
@@ -546,12 +677,13 @@ const getRowsFromTableForStage = async (
   stageKey: Stage,
   conn: PoolConnection | null | undefined,
   tableName: string,
-  clauses: DataRow,
   options: GetRowsOptions = {},
 ): Promise<GetRowsResult> => {
   getTableDefinition(tableName);
+  const clauses = resolveClauses(options.clauses);
   const { selectStatement, joinStatement, joinValues } = getViewQueryParts(
     tableName,
+    options.fields,
   );
   const whereData = getReadWhereData(tableName, clauses);
   const whereStatement = getWhereStatement(whereData, tableName);
@@ -607,11 +739,13 @@ const getRowFromTableForStage = async (
   stageKey: Stage,
   conn: PoolConnection | null | undefined,
   tableName: string,
-  clauses: DataRow,
+  options: GetRowOptions = {},
 ): Promise<DataRow | null> => {
   getTableDefinition(tableName);
+  const clauses = resolveClauses(options.clauses);
   const { selectStatement, joinStatement, joinValues } = getViewQueryParts(
     tableName,
+    options.fields,
   );
   const whereData = getReadWhereData(tableName, clauses);
   const whereStatement = getWhereStatement(whereData, tableName);
@@ -657,12 +791,11 @@ export const createConnection = (stageValue: Stage, flavorValue: Flavor) => {
     ) => insertRowsIntoTableForStage(stageKey, conn, tableName, rows),
     getRowFromTable: (
       tableName: string,
-      clauses: DataRow,
+      options?: GetRowOptions,
       conn?: PoolConnection | null,
-    ) => getRowFromTableForStage(stageKey, conn, tableName, clauses),
+    ) => getRowFromTableForStage(stageKey, conn, tableName, options),
     getRowsFromTable: (
       tableName: string,
-      clauses: DataRow,
       optionsOrConn?: GetRowsOptions | PoolConnection | null,
       conn?: PoolConnection | null,
     ) => {
@@ -671,7 +804,6 @@ export const createConnection = (stageValue: Stage, flavorValue: Flavor) => {
         stageKey,
         args.conn,
         tableName,
-        clauses,
         args.options,
       );
     },

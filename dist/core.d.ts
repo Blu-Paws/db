@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken';
 import mysql, { PoolConnection, RowDataPacket } from 'mysql2/promise';
-import type { DataRow, Flavor, GetRowsOptions, GetRowsResult, QueryResult, QueryValues, Stage } from './types';
+import type { DataRow, Flavor, GetRowOptions, GetRowsOptions, GetRowsResult, QueryResult, QueryValues, Stage } from './types';
 export declare const createConnection: (stageValue: Stage, flavorValue: Flavor) => {
     query: <T extends QueryResult = mysql.RowDataPacket[]>(sql: string, values?: QueryValues, conn?: PoolConnection | null) => Promise<T>;
     withTransaction: <T>(callback: (conn: PoolConnection) => Promise<T>) => Promise<T>;
     insertRowIntoTable: (tableName: string, row: DataRow, conn?: PoolConnection | null) => Promise<number>;
     insertRowsIntoTable: (tableName: string, rows: DataRow[], conn?: PoolConnection | null) => Promise<void>;
-    getRowFromTable: (tableName: string, clauses: DataRow, conn?: PoolConnection | null) => Promise<DataRow | null>;
-    getRowsFromTable: (tableName: string, clauses: DataRow, optionsOrConn?: GetRowsOptions | PoolConnection | null, conn?: PoolConnection | null) => Promise<GetRowsResult>;
+    getRowFromTable: (tableName: string, options?: GetRowOptions, conn?: PoolConnection | null) => Promise<DataRow | null>;
+    getRowsFromTable: (tableName: string, optionsOrConn?: GetRowsOptions | PoolConnection | null, conn?: PoolConnection | null) => Promise<GetRowsResult>;
     updateRowTable: (tableName: string, row: DataRow, clauses: DataRow, conn?: PoolConnection | null) => Promise<void>;
     deleteRowFromTable: (tableName: string, clauses: DataRow, conn?: PoolConnection | null) => Promise<void>;
 };
