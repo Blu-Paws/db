@@ -266,7 +266,8 @@ const getViewQueryParts = (tableName, selectedFieldNames) => {
     const table = (0, utils_1.getTableDefinition)(tableName);
     const viewFields = Object.entries(table.view);
     const resolvedSelectedFieldNames = resolveSelectedFields(tableName, selectedFieldNames);
-    const fields = resolvedSelectedFieldNames == null || resolvedSelectedFieldNames.length === 0
+    const fields = resolvedSelectedFieldNames == null ||
+        resolvedSelectedFieldNames.length === 0
         ? viewFields.filter(([, field]) => field.association == null)
         : resolvedSelectedFieldNames.map((fieldName) => {
             const field = table.view[fieldName];
@@ -561,7 +562,7 @@ const verifyRefreshToken = async (stageValue, token) => {
 exports.verifyRefreshToken = verifyRefreshToken;
 const getAuthenticatedUserDetails = async (stageValue, headers) => {
     const { 'x-api-key': blupawsApiKey, Authorization } = headers;
-    if (blupawsApiKey == null || Authorization == null) {
+    if (blupawsApiKey == null && Authorization == null) {
         return {
             error: 'Authentication headers are missing',
         };

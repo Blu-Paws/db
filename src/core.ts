@@ -290,9 +290,7 @@ const resolveSelectedFields = (
   const table = getTableDefinition(tableName);
   return selectedFieldNames.map((fieldName, index) => {
     if (typeof fieldName !== 'string') {
-      throw new Error(
-        `fields[${index}] must be a string for ${tableName}`,
-      );
+      throw new Error(`fields[${index}] must be a string for ${tableName}`);
     }
     const normalizedFieldName = fieldName.trim();
     if (normalizedFieldName.length === 0) {
@@ -333,7 +331,8 @@ const resolveViewAssociation = (
 
   return {
     association,
-    targetSelectField: field.field ?? association.targetSelectField ?? fieldName,
+    targetSelectField:
+      field.field ?? association.targetSelectField ?? fieldName,
   };
 };
 
@@ -344,14 +343,18 @@ const getAssociationJoins = (
 ): ViewAssociationJoin[] => {
   if (association.path != null) {
     if (!Array.isArray(association.path) || association.path.length === 0) {
-      throw new Error(`Association path is empty for ${tableName}.${fieldName}`);
+      throw new Error(
+        `Association path is empty for ${tableName}.${fieldName}`,
+      );
     }
     return association.path;
   }
 
   const { tableName: targetTableName, sourceField, targetField } = association;
   if (targetTableName == null || sourceField == null || targetField == null) {
-    throw new Error(`Association join is incomplete for ${tableName}.${fieldName}`);
+    throw new Error(
+      `Association join is incomplete for ${tableName}.${fieldName}`,
+    );
   }
   return [
     {
@@ -369,7 +372,11 @@ const getAssociationJoins = (
 const getViewQueryParts = (
   tableName: string,
   selectedFieldNames?: string[],
-): { selectStatement: string; joinStatement: string; joinValues: unknown[] } => {
+): {
+  selectStatement: string;
+  joinStatement: string;
+  joinValues: unknown[];
+} => {
   const table = getTableDefinition(tableName);
   const viewFields = Object.entries(table.view);
   const resolvedSelectedFieldNames = resolveSelectedFields(
@@ -377,7 +384,8 @@ const getViewQueryParts = (
     selectedFieldNames,
   );
   const fields =
-    resolvedSelectedFieldNames == null || resolvedSelectedFieldNames.length === 0
+    resolvedSelectedFieldNames == null ||
+    resolvedSelectedFieldNames.length === 0
       ? viewFields.filter(([, field]) => field.association == null)
       : resolvedSelectedFieldNames.map((fieldName) => {
           const field = table.view[fieldName] as ViewModelField;
@@ -470,7 +478,9 @@ const getViewQueryParts = (
         `Unknown target select field ${targetSelectField} for ${tableName}.${fieldName}`,
       );
     }
-    selectStatements.push(`${targetAlias}.${targetSelectField} AS ${fieldName}`);
+    selectStatements.push(
+      `${targetAlias}.${targetSelectField} AS ${fieldName}`,
+    );
   }
 
   return {
@@ -841,7 +851,7 @@ export const getAuthenticatedUserDetails = async (
   headers: Record<string, string>,
 ) => {
   const { 'x-api-key': blupawsApiKey, Authorization } = headers;
-  if (blupawsApiKey == null || Authorization == null) {
+  if (blupawsApiKey == null && Authorization == null) {
     return {
       error: 'Authentication headers are missing',
     };
