@@ -41,13 +41,7 @@ export type ViewModelField = {
     field?: string;
     type: ModelFieldType;
 };
-export type ViewModelMeta = {
-    where?: DataRow;
-};
-export type ViewModel = {
-    [key: string]: ViewModelField | ViewModelMeta | undefined;
-    __meta?: ViewModelMeta;
-};
+export type ViewModel = Record<string, ViewModelField>;
 export type ReadOptions = {
     clauses?: DataRow;
     fields?: string[];

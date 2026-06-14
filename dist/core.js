@@ -199,7 +199,6 @@ const assertHasFields = (data, action, tableName) => {
         throw new Error(`No ${action} fields provided for ${tableName}`);
     }
 };
-const isViewModelFieldEntry = (entry) => entry[0] !== '__meta' && entry[1] != null;
 const resolveSelectedFields = (tableName, selectedFieldNames) => {
     if (selectedFieldNames === undefined) {
         return undefined;
@@ -220,9 +219,7 @@ const resolveSelectedFields = (tableName, selectedFieldNames) => {
             throw new Error(`fields[${index}] must be a non-empty string for ${tableName}`);
         }
         const field = table.view[normalizedFieldName];
-        if (normalizedFieldName === '__meta' ||
-            field == null ||
-            'where' in field) {
+        if (field == null) {
             throw new Error(`Unknown view field ${normalizedFieldName} for ${tableName}`);
         }
         return normalizedFieldName;
@@ -270,7 +267,7 @@ const getAssociationJoins = (tableName, fieldName, association) => {
 };
 const getViewQueryParts = (tableName, selectedFieldNames) => {
     const table = (0, utils_1.getTableDefinition)(tableName);
-    const viewFields = Object.entries(table.view).filter(isViewModelFieldEntry);
+    const viewFields = Object.entries(table.view);
     const resolvedSelectedFieldNames = resolveSelectedFields(tableName, selectedFieldNames);
     const fields = resolvedSelectedFieldNames == null
         ? viewFields
@@ -349,22 +346,10 @@ const getWhereData = (tableName, clauses) => {
     const whereData = (0, utils_1.serializeClauseData)(table.model, clauses);
     return whereData;
 };
-const getViewWhereData = (tableName) => {
-    const table = (0, utils_1.getTableDefinition)(tableName);
-    return (0, utils_1.serializeClauseData)(table.model, table.view.__meta?.where ?? {});
-};
 const getReadWhereData = (tableName, clauses) => {
-    const defaultWhereData = getViewWhereData(tableName);
-    const clauseWhereData = getWhereData(tableName, clauses);
-    const mergedWhereData = { ...defaultWhereData };
-    for (const [key, value] of Object.entries(clauseWhereData)) {
-        if (key in mergedWhereData && mergedWhereData[key] !== value) {
-            throw new Error(`View where clause conflict for ${tableName}.${key}`);
-        }
-        mergedWhereData[key] = value;
-    }
-    assertHasFields(mergedWhereData, 'where', tableName);
-    return mergedWhereData;
+    const whereData = getWhereData(tableName, clauses);
+    assertHasFields(whereData, 'where', tableName);
+    return whereData;
 };
 const resolveClauses = (clauses) => clauses ?? {};
 const getWhereStatement = (whereData, tableName) => Object.keys(whereData)

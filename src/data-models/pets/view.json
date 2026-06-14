@@ -1,10 +1,4 @@
 {
-  "__meta": {
-    "where": {
-      "status": 1,
-      "pet_status": 16
-    }
-  },
   "pet_id": {
     "type": "number"
   },

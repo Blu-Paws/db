@@ -150,9 +150,11 @@ src/data-models/<table_name>/index.ts
 checks and create/update support. `view.json` is the `ViewModel`: it contains
 the fields selected by `getRowFromTable(...)` and `getRowsFromTable(...)`; it is
 read-only projection metadata and does not include create/update or constraint
-flags. `associations.json` is optional and contains named table relationships
-used by associated view fields. `index.ts` contains the internal table
-definition, an exported table type, and three internal validator hooks:
+flags. It should not include `__meta` or default filters; callers must pass the
+correct read filters in `clauses`. `associations.json` is optional and contains
+named table relationships used by associated view fields. `index.ts` contains
+the internal table definition, an exported table type, and three internal
+validator hooks:
 
 - `validateInsert(conn, row)`
 - `validateUpdate(conn, row)`

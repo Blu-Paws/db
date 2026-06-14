@@ -166,6 +166,11 @@ test('view models omit write and constraint metadata', () => {
       continue;
     }
     const view = JSON.parse(fs.readFileSync(viewPath, 'utf8'));
+    assert.equal(
+      Object.hasOwn(view, '__meta'),
+      false,
+      `${entry.name}.view should not include __meta`,
+    );
     for (const [fieldName, metadata] of Object.entries(view)) {
       for (const key of bannedKeys) {
         assert.equal(
@@ -198,6 +203,53 @@ test('data models do not define view associations', () => {
       );
     }
   }
+});
+
+test('pets view references named associations defined in associations json', () => {
+  const petsRoot = path.resolve(__dirname, '..', 'dist', 'data-models', 'pets');
+  const view = JSON.parse(
+    fs.readFileSync(path.join(petsRoot, 'view.json'), 'utf8'),
+  );
+  const associations = JSON.parse(
+    fs.readFileSync(path.join(petsRoot, 'associations.json'), 'utf8'),
+  );
+
+  for (const [fieldName, metadata] of Object.entries(view)) {
+    if (metadata.association == null) {
+      continue;
+    }
+    assert.equal(
+      typeof metadata.association,
+      'string',
+      `pets.${fieldName} should reference a named association`,
+    );
+    assert.ok(
+      associations[metadata.association],
+      `pets.${fieldName} references missing association ${metadata.association}`,
+    );
+  }
+
+  assert.equal(view.status_name.association, 'pet_status');
+  assert.equal(Object.hasOwn(view.status_name, 'field'), false);
+  assert.equal(view.breed_name.association, 'breed');
+  assert.equal(Object.hasOwn(view.breed_name, 'field'), false);
+  assert.equal(view.pet_owner_name.field, 'name');
+  assert.equal(view.pet_owner_image_path.field, 'image_path');
+  assert.deepEqual(
+    Object.keys(associations).sort(),
+    [
+      'breed',
+      'coat',
+      'current_vitals',
+      'gender',
+      'pet_image',
+      'pet_owner',
+      'pet_owner_image',
+      'pet_status',
+      'pet_type',
+      'updated_by',
+    ],
+  );
 });
 
 test('query acquires and releases a pooled connection', async () => {
@@ -328,7 +380,7 @@ test('read helpers select table view fields with validated clauses', async () =>
   assert.deepEqual(calls.connections[1].queries[1].values, [1, 25, 10]);
 });
 
-test('pet reads build the vw_pets join graph and apply default view filters', async () => {
+test('pet reads build the vw_pets join graph with caller-provided filters', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [
       [{ pet_id: 123, pet_status: 16, status_name: 'Active' }],
@@ -337,7 +389,7 @@ test('pet reads build the vw_pets join graph and apply default view filters', as
   const db = api.createConnection('dev', 'clinic');
 
   const row = await db.getRowFromTable('pets', {
-    clauses: { pet_id: 123 },
+    clauses: { status: 1, pet_status: 16, pet_id: 123 },
     fields: ['pet_id', 'pet_status', 'status_name'],
   });
 
@@ -384,7 +436,7 @@ test('pet association paths add required intermediate joins', async () => {
   const db = api.createConnection('dev', 'clinic');
 
   const row = await db.getRowFromTable('pets', {
-    clauses: { pet_id: 123 },
+    clauses: { status: 1, pet_status: 16, pet_id: 123 },
     fields: ['pet_id', 'coat'],
   });
 
@@ -399,6 +451,68 @@ test('pet association paths add required intermediate joins', async () => {
     /LEFT JOIN mstr_coat AS mstr_coat_ref ON pet_vitals_current\.coat_id = mstr_coat_ref\.coat_id/,
   );
   assert.match(sql, /mstr_coat_ref\.name AS coat/);
+  assert.deepEqual(calls.connections[0].queries[0].values, [1, 1, 16, 123]);
+});
+
+test('pet named associations reuse one join for multiple selected owner fields', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [
+        {
+          pet_owner_name: 'Sam',
+          pet_owner_email: 'sam@example.com',
+          pet_owner_phone: '5551234',
+        },
+      ],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('pets', {
+    clauses: { status: 1, pet_status: 16, pet_id: 123 },
+    fields: ['pet_owner_name', 'pet_owner_email', 'pet_owner_phone'],
+  });
+
+  assert.deepEqual(row, {
+    pet_owner_name: 'Sam',
+    pet_owner_email: 'sam@example.com',
+    pet_owner_phone: '5551234',
+  });
+  const sql = calls.connections[0].queries[0].sql;
+  assert.equal(
+    sql.match(/INNER JOIN login AS pet_owner_login/g)?.length,
+    1,
+  );
+  assert.match(sql, /pet_owner_login\.name AS pet_owner_name/);
+  assert.match(sql, /pet_owner_login\.email AS pet_owner_email/);
+  assert.match(sql, /pet_owner_login\.phone AS pet_owner_phone/);
+  assert.deepEqual(calls.connections[0].queries[0].values, [1, 16, 123]);
+});
+
+test('pet named associations dedupe shared path joins across selected fields', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{ weight: 20, height: 12, coat: 'Short', coat_id: 4 }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('pets', {
+    clauses: { status: 1, pet_status: 16, pet_id: 123 },
+    fields: ['weight', 'height', 'coat', 'coat_id'],
+  });
+
+  assert.deepEqual(row, { weight: 20, height: 12, coat: 'Short', coat_id: 4 });
+  const sql = calls.connections[0].queries[0].sql;
+  assert.equal(
+    sql.match(/LEFT JOIN pet_vitals AS pet_vitals_current/g)?.length,
+    1,
+  );
+  assert.equal(sql.match(/LEFT JOIN mstr_coat AS mstr_coat_ref/g)?.length, 1);
+  assert.match(sql, /pet_vitals_current\.weight AS weight/);
+  assert.match(sql, /pet_vitals_current\.height AS height/);
+  assert.match(sql, /mstr_coat_ref\.name AS coat/);
+  assert.match(sql, /mstr_coat_ref\.coat_id AS coat_id/);
   assert.deepEqual(calls.connections[0].queries[0].values, [1, 1, 16, 123]);
 });
 
@@ -496,6 +610,21 @@ test('getRowFromTable validates selected fields before building the query', asyn
         fields: ['login_id', ''],
       }),
     /fields\[1\] must be a non-empty string for login/,
+  );
+
+  assert.equal(calls.connections.length, 0);
+});
+
+test('getRowFromTable requires caller-provided clauses', async () => {
+  const { api, calls } = createConnectionStub();
+  const db = api.createConnection('dev', 'clinic');
+
+  await assert.rejects(
+    () =>
+      db.getRowFromTable('pets', {
+        fields: ['pet_id'],
+      }),
+    /No where fields provided for pets/,
   );
 
   assert.equal(calls.connections.length, 0);
