@@ -12,6 +12,7 @@ import {
 } from '@aws-sdk/client-secrets-manager';
 
 import type {
+  AuthenticationResponse,
   BluPawsPool,
   BPConnection,
   DataRow,
@@ -39,6 +40,8 @@ import {
   serializeUpdateData,
   validateTableOperation,
 } from './utils';
+import { VIEW_LOGIN } from './data-models/login/type';
+import { VIEW_CLINIC } from './data-models/clinic/type';
 
 const pools = new Map<Stage, BluPawsPool>();
 const poolPromises = new Map<Stage, Promise<BluPawsPool>>();
@@ -826,7 +829,7 @@ export const verifyJWTToken = async (stageValue: Stage, token: string) => {
   const decoded = jwt.verify(token, secret, {
     algorithms: ['HS256'],
   });
-  return decoded;
+  return decoded as VIEW_LOGIN;
 };
 
 export const createRefreshToken = async (
@@ -853,7 +856,7 @@ export const verifyRefreshToken = async (stageValue: Stage, token: string) => {
 export const getAuthenticatedUserDetails = async (
   stageValue: Stage,
   headers: Record<string, string>,
-) => {
+): Promise<AuthenticationResponse> => {
   const { 'x-api-key': blupawsApiKey, Authorization } = headers;
   if (blupawsApiKey == null && Authorization == null) {
     return {
@@ -875,11 +878,11 @@ export const getAuthenticatedUserDetails = async (
         );
         if (clinic != null) {
           return {
-            clinic,
+            clinic: clinic as VIEW_CLINIC,
             user: {
               login_id: providerKey.integrator_id,
               ...providerKey,
-            },
+            } as VIEW_LOGIN,
           };
         }
       }

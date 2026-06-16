@@ -15,7 +15,11 @@ export type {
   ViewModelField,
   BPConnection,
   SQLConnection,
+  AuthenticationResponse,
 } from './types';
+
+export type { VIEW_LOGIN } from './data-models/login/type';
+export type { VIEW_CLINIC } from './data-models/clinic/type';
 
 export {
   createConnection,

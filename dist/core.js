@@ -574,7 +574,7 @@ const getAuthenticatedUserDetails = async (stageValue, headers) => {
                 const [clinic] = await queryForStage(stageValue, 'select * from vw_clinic where clinic_id = ?', [providerKey.clinic_id]);
                 if (clinic != null) {
                     return {
-                        clinic,
+                        clinic: clinic,
                         user: {
                             login_id: providerKey.integrator_id,
                             ...providerKey,

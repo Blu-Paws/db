@@ -1,4 +1,6 @@
 import type { Pool, PoolConnection, QueryError, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { VIEW_LOGIN } from './data-models/login/type';
+import { VIEW_CLINIC } from './data-models/clinic/type';
 export type Stage = string;
 export type QueryValues = unknown[] | Record<string, unknown>;
 export type QueryResult = RowDataPacket[] | RowDataPacket[][] | ResultSetHeader;
@@ -85,3 +87,16 @@ export type BPConnection = {
     deleteRowFromTable: (tableName: string, clauses: DataRow, conn?: PoolConnection | null) => Promise<void>;
 };
 export type SQLConnection = PoolConnection;
+export type AuthenticationResponse = {
+    clinic: VIEW_CLINIC;
+    user: VIEW_LOGIN;
+    error?: undefined;
+} | {
+    user: VIEW_LOGIN;
+    clinic?: undefined;
+    error?: undefined;
+} | {
+    error: any;
+    clinic?: undefined;
+    user?: undefined;
+};
