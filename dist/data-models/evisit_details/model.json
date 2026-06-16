@@ -51,7 +51,7 @@
     "type": "number",
     "createable": true,
     "updateable": true,
-    "required": true
+    "required": false
   },
   "promotion_id": {
     "type": "number",
@@ -69,7 +69,7 @@
     "type": "datetime",
     "createable": true,
     "updateable": true,
-    "required": false
+    "required": true
   },
   "evisit_date": {
     "type": "datetime",
