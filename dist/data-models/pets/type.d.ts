@@ -1,0 +1,32 @@
+export interface VIEW_PETS {
+    pet_id: number;
+    pet_name: string;
+    pet_type_id: number;
+    gender_id: number;
+    breed_id: number;
+    dob: string;
+    weight: number;
+    notes: string;
+    likes: string;
+    dislikes: string;
+    create_date: string;
+    created_by: number;
+    status: number;
+    deceased_date: string;
+    pet_status: number;
+    gender: string;
+    breed_name: string;
+    pet_type: string;
+    status_name: string;
+    pet_owner_name: string;
+    pet_owner_email: string;
+    pet_owner_phone: string;
+    coat: string;
+    coat_id: number;
+    height: number;
+    updated_date: string;
+    updated_by: string;
+    login_id: number;
+    pet_owner_image_path: string;
+    pet_image_path: string;
+}

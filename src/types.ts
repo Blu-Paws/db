@@ -60,9 +60,29 @@ export type ViewModelField = {
 
 export type ViewModel = Record<string, ViewModelField>;
 
+export type ReadFilterOperator =
+  | '='
+  | '!='
+  | '>'
+  | '>='
+  | '<'
+  | '<='
+  | 'like'
+  | 'in'
+  | 'not_in'
+  | 'is_null'
+  | 'is_not_null';
+
+export type ReadFilter = {
+  field: string;
+  operator: ReadFilterOperator;
+  value?: unknown;
+};
+
 export type ReadOptions = {
   clauses?: DataRow;
   fields?: string[];
+  filters?: ReadFilter[];
 };
 
 export type GetRowOptions = ReadOptions;

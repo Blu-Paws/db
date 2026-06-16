@@ -252,6 +252,43 @@ test('pets view references named associations defined in associations json', () 
   );
 });
 
+test('every view model emits a corresponding exported type declaration', () => {
+  const sourceRoot = path.resolve(__dirname, '..', 'src', 'data-models');
+  const distRoot = path.resolve(__dirname, '..', 'dist', 'data-models');
+  const barrelPath = path.resolve(
+    __dirname,
+    '..',
+    'dist',
+    'data-models',
+    'view-types.d.ts',
+  );
+  const barrel = fs.readFileSync(barrelPath, 'utf8');
+
+  for (const entry of fs.readdirSync(sourceRoot, { withFileTypes: true })) {
+    if (!entry.isDirectory()) {
+      continue;
+    }
+
+    const viewPath = path.join(sourceRoot, entry.name, 'view.json');
+    if (!fs.existsSync(viewPath)) {
+      continue;
+    }
+
+    const interfaceName = `VIEW_${entry.name.replace(/[^a-zA-Z0-9]+/g, '_').toUpperCase()}`;
+    const typeDeclarationPath = path.join(distRoot, entry.name, 'type.d.ts');
+    assert.equal(
+      fs.existsSync(typeDeclarationPath),
+      true,
+      `${entry.name} should emit ${path.relative(distRoot, typeDeclarationPath)}`,
+    );
+    assert.match(
+      barrel,
+      new RegExp(`\\b${interfaceName}\\b`),
+      `${interfaceName} should be exported from data-models/view-types`,
+    );
+  }
+});
+
 test('query acquires and releases a pooled connection', async () => {
   const { api, calls } = createConnectionStub();
   const db = api.createConnection('dev', 'clinic');
@@ -378,6 +415,56 @@ test('read helpers select table view fields with validated clauses', async () =>
   );
   assert.equal(calls.connections[1].queries[1].sql.includes('JOIN'), false);
   assert.deepEqual(calls.connections[1].queries[1].values, [1, 25, 10]);
+});
+
+test('getRowsFromTable supports structured filters with parameterized values', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{ count: 2 }],
+      [
+        { login_id: 123, name: 'Abc Vet' },
+        { login_id: 456, name: 'Abc Care' },
+      ],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const rows = await db.getRowsFromTable('login', {
+    clauses: { status: 1 },
+    filters: [
+      { field: 'name', operator: 'like', value: '%abc%' },
+      { field: 'login_id', operator: 'in', value: [123, 456] },
+    ],
+    fields: ['login_id', 'name'],
+    offset: 5,
+    limit: 20,
+  });
+
+  assert.deepEqual(rows, {
+    offset: 5,
+    limit: 20,
+    items: [
+      { login_id: 123, name: 'Abc Vet' },
+      { login_id: 456, name: 'Abc Care' },
+    ],
+    count: 2,
+  });
+  assert.equal(
+    calls.connections[0].queries[0].sql,
+    'SELECT COUNT(*) AS count FROM login WHERE login.status = ? AND LOWER(login.name) LIKE LOWER(?) AND login.login_id IN (?, ?)',
+  );
+  assert.deepEqual(
+    calls.connections[0].queries[0].values,
+    [1, '%abc%', 123, 456],
+  );
+  assert.equal(
+    calls.connections[0].queries[1].sql,
+    'SELECT login.login_id AS login_id,login.name AS name FROM login WHERE login.status = ? AND LOWER(login.name) LIKE LOWER(?) AND login.login_id IN (?, ?) LIMIT ? OFFSET ?',
+  );
+  assert.deepEqual(
+    calls.connections[0].queries[1].values,
+    [1, '%abc%', 123, 456, 20, 5],
+  );
 });
 
 test('pet reads without fields select only direct base columns', async () => {
@@ -621,6 +708,38 @@ test('getRowsFromTable validates selected fields before building the query', asy
   assert.equal(calls.connections.length, 0);
 });
 
+test('getRowsFromTable validates structured filters before querying', async () => {
+  const { api, calls } = createConnectionStub();
+  const db = api.createConnection('dev', 'clinic');
+
+  await assert.rejects(
+    () =>
+      db.getRowsFromTable('login', {
+        clauses: { status: 1 },
+        filters: [{ field: 'missing', operator: 'like', value: '%abc%' }],
+      }),
+    /Unknown filter field missing for login/,
+  );
+  await assert.rejects(
+    () =>
+      db.getRowsFromTable('login', {
+        clauses: { status: 1 },
+        filters: [{ field: 'name', operator: 'in', value: [] }],
+      }),
+    /Invalid filter for login.name: value must be a non-empty array/,
+  );
+  await assert.rejects(
+    () =>
+      db.getRowsFromTable('login', {
+        clauses: { status: 1 },
+        filters: [{ field: 'name', operator: 'is_null', value: null }],
+      }),
+    /Invalid filter for login.name: value must be omitted/,
+  );
+
+  assert.equal(calls.connections.length, 0);
+});
+
 test('getRowFromTable returns null when no row matches', async () => {
   const { api } = createConnectionStub({
     queryResults: [[]],
@@ -632,6 +751,29 @@ test('getRowFromTable returns null when no row matches', async () => {
   });
 
   assert.equal(row, null);
+});
+
+test('getRowFromTable supports structured filters', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [[{ login_id: 123, name: 'Abc Vet' }]],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('login', {
+    clauses: { status: 1 },
+    filters: [
+      { field: 'name', operator: 'like', value: '%abc%' },
+      { field: 'email', operator: 'is_not_null' },
+    ],
+    fields: ['login_id', 'name'],
+  });
+
+  assert.deepEqual(row, { login_id: 123, name: 'Abc Vet' });
+  assert.equal(
+    calls.connections[0].queries[0].sql,
+    'SELECT login.login_id AS login_id,login.name AS name FROM login WHERE login.status = ? AND LOWER(login.name) LIKE LOWER(?) AND login.email IS NOT NULL LIMIT 1',
+  );
+  assert.deepEqual(calls.connections[0].queries[0].values, [1, '%abc%']);
 });
 
 test('getRowFromTable validates selected fields before building the query', async () => {

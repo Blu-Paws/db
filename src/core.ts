@@ -22,6 +22,7 @@ import type {
   GetRowsResult,
   QueryResult,
   QueryValues,
+  ReadFilter,
   Stage,
   ViewAssociation,
   ViewAssociationJoin,
@@ -503,7 +504,6 @@ const getWhereData = (tableName: string, clauses: DataRow): DataRow => {
 
 const getReadWhereData = (tableName: string, clauses: DataRow): DataRow => {
   const whereData = getWhereData(tableName, clauses);
-  assertHasFields(whereData, 'where', tableName);
   return whereData;
 };
 
@@ -513,6 +513,122 @@ const getWhereStatement = (whereData: DataRow, tableName?: string): string =>
   Object.keys(whereData)
     .map((x) => `${tableName == null ? '' : `${tableName}.`}${x} = ?`)
     .join(' AND ');
+
+const getFilterValueError = (
+  tableName: string,
+  filter: ReadFilter,
+  message: string,
+): Error => new Error(`Invalid filter for ${tableName}.${filter.field}: ${message}`);
+
+const getReadFilterData = (
+  tableName: string,
+  filters?: ReadFilter[],
+): { statement: string; values: unknown[] } => {
+  if (filters == null) {
+    return { statement: '', values: [] };
+  }
+  if (!Array.isArray(filters)) {
+    throw new Error(`filters must be an array for ${tableName}`);
+  }
+
+  const table = getTableDefinition(tableName);
+  const statements: string[] = [];
+  const values: unknown[] = [];
+
+  for (const [index, filter] of filters.entries()) {
+    if (filter == null || typeof filter !== 'object' || Array.isArray(filter)) {
+      throw new Error(`filters[${index}] must be an object for ${tableName}`);
+    }
+    if (typeof filter.field !== 'string' || filter.field.trim().length === 0) {
+      throw new Error(`filters[${index}].field must be a non-empty string for ${tableName}`);
+    }
+    const fieldName = filter.field.trim();
+    const modelField = table.model[fieldName];
+    if (modelField == null) {
+      throw new Error(`Unknown filter field ${fieldName} for ${tableName}`);
+    }
+    const operator = filter.operator;
+    switch (operator) {
+      case '=':
+      case '!=':
+      case '>':
+      case '>=':
+      case '<':
+      case '<=':
+      case 'like': {
+        if (filter.value === undefined) {
+          throw getFilterValueError(tableName, filter, 'value is required');
+        }
+        if (operator === 'like') {
+          statements.push(`LOWER(${tableName}.${fieldName}) LIKE LOWER(?)`);
+        } else {
+          statements.push(`${tableName}.${fieldName} ${operator} ?`);
+        }
+        values.push(filter.value);
+        break;
+      }
+      case 'in':
+      case 'not_in': {
+        if (!Array.isArray(filter.value) || filter.value.length === 0) {
+          throw getFilterValueError(
+            tableName,
+            filter,
+            'value must be a non-empty array',
+          );
+        }
+        const placeholders = filter.value.map(() => '?').join(', ');
+        statements.push(
+          `${tableName}.${fieldName} ${operator === 'in' ? 'IN' : 'NOT IN'} (${placeholders})`,
+        );
+        values.push(...filter.value);
+        break;
+      }
+      case 'is_null':
+      case 'is_not_null': {
+        if (filter.value !== undefined) {
+          throw getFilterValueError(
+            tableName,
+            filter,
+            'value must be omitted',
+          );
+        }
+        statements.push(
+          `${tableName}.${fieldName} ${operator === 'is_null' ? 'IS NULL' : 'IS NOT NULL'}`,
+        );
+        break;
+      }
+      default:
+        throw new Error(
+          `Unsupported filter operator ${String(operator)} for ${tableName}.${fieldName}`,
+        );
+    }
+  }
+
+  return {
+    statement: statements.join(' AND '),
+    values,
+  };
+};
+
+const buildReadWhereData = (
+  tableName: string,
+  options: GetRowOptions | GetRowsOptions,
+): { statement: string; values: unknown[] } => {
+  const clauseWhereData = getReadWhereData(tableName, resolveClauses(options.clauses));
+  const clauseStatement = getWhereStatement(clauseWhereData, tableName);
+  const clauseValues = Object.values(clauseWhereData);
+  const filterData = getReadFilterData(tableName, options.filters);
+  const statements = [clauseStatement, filterData.statement].filter(
+    (statement) => statement.length > 0,
+  );
+  if (statements.length === 0) {
+    throw new Error(`No where fields provided for ${tableName}`);
+  }
+  return {
+    statement: statements.join(' AND '),
+    values: [...clauseValues, ...filterData.values],
+  };
+};
 
 const normalizePaginationValue = (
   value: number | undefined,
@@ -667,14 +783,11 @@ const getRowsFromTableForStage = async <T>(
   options: GetRowsOptions = {},
 ): Promise<GetRowsResult<T>> => {
   getTableDefinition(tableName);
-  const clauses = resolveClauses(options.clauses);
   const { selectStatement, joinStatement, joinValues } = getViewQueryParts(
     tableName,
     options.fields,
   );
-  const whereData = getReadWhereData(tableName, clauses);
-  const whereStatement = getWhereStatement(whereData, tableName);
-  const values = Object.values(whereData);
+  const where = buildReadWhereData(tableName, options);
   const offset = normalizePaginationValue(options.offset, 0, 'offset');
   const limit =
     options.limit === undefined
@@ -685,19 +798,19 @@ const getRowsFromTableForStage = async <T>(
     throw new Error('limit is required when offset is provided');
   }
 
-  let sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${whereStatement}`;
-  const rowValues = [...joinValues, ...values];
+  let sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${where.statement}`;
+  const rowValues = [...joinValues, ...where.values];
   if (limit !== undefined) {
     sql = `${sql} LIMIT ? OFFSET ?`;
     rowValues.push(limit, offset);
   }
 
-  const countSql = `SELECT COUNT(*) AS count FROM ${tableName} WHERE ${whereStatement}`;
+  const countSql = `SELECT COUNT(*) AS count FROM ${tableName} WHERE ${where.statement}`;
   const run = async (activeConn: PoolConnection): Promise<GetRowsResult<T>> => {
     const countRows = await queryForStage<RowDataPacket[]>(
       stageKey,
       countSql,
-      values,
+      where.values,
       activeConn,
     );
     const rows = await queryForStage<RowDataPacket[]>(
@@ -729,15 +842,13 @@ const getRowFromTableForStage = async <T>(
   options: GetRowOptions = {},
 ): Promise<T | null> => {
   getTableDefinition(tableName);
-  const clauses = resolveClauses(options.clauses);
   const { selectStatement, joinStatement, joinValues } = getViewQueryParts(
     tableName,
     options.fields,
   );
-  const whereData = getReadWhereData(tableName, clauses);
-  const whereStatement = getWhereStatement(whereData, tableName);
-  const values = [...joinValues, ...Object.values(whereData)];
-  const sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${whereStatement} LIMIT 1`;
+  const where = buildReadWhereData(tableName, options);
+  const values = [...joinValues, ...where.values];
+  const sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${where.statement} LIMIT 1`;
   const rows = await queryForStage<RowDataPacket[]>(
     stageKey,
     sql,

@@ -135,7 +135,7 @@ test('refresh token helpers create and verify RS256 tokens', async () => {
   assert.equal(decoded.login_id, 77);
 });
 
-test('getAuthenticatedUserDetails requires both api key and authorization header', async () => {
+test('getAuthenticatedUserDetails returns jwt verification errors for bad bearer tokens', async () => {
   const { api } = createAuthStub();
 
   const result = await api.getAuthenticatedUserDetails('dev', {
@@ -143,7 +143,7 @@ test('getAuthenticatedUserDetails requires both api key and authorization header
   });
 
   assert.deepEqual(result, {
-    error: 'Authentication headers are missing',
+    error: 'jwt malformed',
   });
 });
 

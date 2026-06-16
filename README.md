@@ -67,6 +67,9 @@ const pet = await db.getRowFromTable('pets', {
 });
 const pets = await db.getRowsFromTable('pets', {
   clauses: { status: 1, pet_status: 16, login_id: loginId },
+  filters: [
+    { field: 'pet_name', operator: 'like', value: '%milo%' }
+  ],
   offset: 0,
   limit: 25,
 });
@@ -78,6 +81,10 @@ provided or is an empty array, the query selects only direct base-table fields
 from `view.json` and does not add association joins. When `fields` is provided,
 each field must be a string that matches a key from `view.json`; association
 joins are added only for the selected associated fields.
+Structured `filters` are optional and currently apply only to base-table
+columns. Supported operators are `=`, `!=`, `>`, `>=`, `<`, `<=`, `like`,
+`in`, `not_in`, `is_null`, and `is_not_null`. `like` is case-insensitive and
+is built as `LOWER(column) LIKE LOWER(?)`.
 `getRowsFromTable(...)` returns paged metadata and rows in `items`:
 
 ```js

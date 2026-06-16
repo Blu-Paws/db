@@ -1,0 +1,32 @@
+export interface VIEW_EVISIT_DETAILS {
+    evisit_id: number;
+    pet_id: number;
+    clinic_id: number;
+    address_id: number;
+    assigned_id: number;
+    allow_past_visit: number;
+    visit_status_id: number;
+    visit_type_id: number;
+    time_block_id: number;
+    promotion_id: number;
+    request_date: string;
+    evisit_end_date: string;
+    evisit_date: string;
+    followup_date: string;
+    request_notes: string;
+    diagnosys: string;
+    issue_details: string;
+    issue_summary: string;
+    followup_notes: string;
+    notes: string;
+    vitals_id: number;
+    issue_type_id: number;
+    pet_history_id: number;
+    evisit_phone_no: string;
+    feedback_id: number;
+    create_date: string;
+    created_by: number;
+    updated_by: number;
+    updated_date: string;
+    status: number;
+}
