@@ -1,0 +1,23 @@
+{
+  "device_token": {
+    "type": "string"
+  },
+  "login_id": {
+    "type": "number"
+  },
+  "device": {
+    "type": "string"
+  },
+  "os_type": {
+    "type": "string"
+  },
+  "created_date": {
+    "type": "datetime"
+  },
+  "session_id": {
+    "type": "string"
+  },
+  "flavor": {
+    "type": "string"
+  }
+}

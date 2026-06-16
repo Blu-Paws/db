@@ -1,11 +1,11 @@
 {
   "device_token": {
-    "type": "number",
+    "type": "string",
     "primary": true,
     "autoincrement": true,
-    "required": false,
+    "required": true,
     "updateable": false,
-    "createable": false
+    "createable": true
   },
   "login_id": {
     "type": "number",

@@ -16,6 +16,7 @@ export declare const tableDefinitions: {
     evisit_details_history: TableDefinition;
     evisit_details_notes: TableDefinition;
     favourite: TableDefinition;
+    fcm_login_device_map: TableDefinition;
     feedback: TableDefinition;
     images: TableDefinition;
     integrator_bookings: TableDefinition;
