@@ -1,0 +1,46 @@
+{
+  "device_token": {
+    "type": "number",
+    "primary": true,
+    "autoincrement": true,
+    "required": false,
+    "updateable": false,
+    "createable": false
+  },
+  "login_id": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "device": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "os_type": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "created_date": {
+    "type": "datetime",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "session_id": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "flavor": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  }
+}

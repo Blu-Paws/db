@@ -20,10 +20,7 @@ export type DataModelField = {
   type: ModelFieldType;
 };
 
-export type DataModel = Record<
-  string,
-  DataModelField
->;
+export type DataModel = Record<string, DataModelField>;
 
 export type DataRow = Record<string, unknown>;
 export type Flavor = string;
@@ -73,7 +70,7 @@ export type GetRowsOptions = ReadOptions & {
   limit?: number;
 };
 
-export type GetRowsResult<T extends DataRow = DataRow> = {
+export type GetRowsResult<T> = {
   offset: number;
   limit: number;
   items: T[];
@@ -103,3 +100,45 @@ export type TableDefinition<T extends DataRow = DataRow> = {
   validateUpdate: TableValidator<T>;
   validateDelete: TableValidator<T>;
 };
+
+export type BPConnection = {
+  query: <T extends QueryResult = RowDataPacket[]>(
+    sql: string,
+    values?: QueryValues,
+    conn?: PoolConnection | null,
+  ) => Promise<T>;
+  withTransaction: <T>(callback: (conn: PoolConnection) => Promise<T>) => any;
+  insertRowIntoTable: (
+    tableName: string,
+    row: DataRow,
+    conn?: PoolConnection | null,
+  ) => Promise<number>;
+  insertRowsIntoTable: (
+    tableName: string,
+    row: DataRow[],
+    conn?: PoolConnection | null,
+  ) => Promise<void>;
+  getRowFromTable: <T>(
+    tableName: string,
+    options?: GetRowOptions,
+    conn?: PoolConnection | null,
+  ) => Promise<T | null>;
+  getRowsFromTable: <T>(
+    tableName: string,
+    optionsOrConn?: GetRowsOptions | PoolConnection | null,
+    conn?: PoolConnection | null,
+  ) => Promise<GetRowsResult<T>>;
+  updateRowTable: (
+    tableName: string,
+    row: DataRow,
+    clauses: DataRow,
+    conn?: PoolConnection | null,
+  ) => Promise<void>;
+  deleteRowFromTable: (
+    tableName: string,
+    clauses: DataRow,
+    conn?: PoolConnection | null,
+  ) => Promise<void>;
+};
+
+export type SQLConnection = PoolConnection;

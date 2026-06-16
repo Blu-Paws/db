@@ -13,6 +13,7 @@ import {
 
 import type {
   BluPawsPool,
+  BPConnection,
   DataRow,
   Flavor,
   GetRowOptions,
@@ -656,12 +657,12 @@ const deleteRowFromTableForStage = async (
   await withConnectionForStage(stageKey, run);
 };
 
-const getRowsFromTableForStage = async (
+const getRowsFromTableForStage = async <T>(
   stageKey: Stage,
   conn: PoolConnection | null | undefined,
   tableName: string,
   options: GetRowsOptions = {},
-): Promise<GetRowsResult> => {
+): Promise<GetRowsResult<T>> => {
   getTableDefinition(tableName);
   const clauses = resolveClauses(options.clauses);
   const { selectStatement, joinStatement, joinValues } = getViewQueryParts(
@@ -689,7 +690,7 @@ const getRowsFromTableForStage = async (
   }
 
   const countSql = `SELECT COUNT(*) AS count FROM ${tableName} WHERE ${whereStatement}`;
-  const run = async (activeConn: PoolConnection): Promise<GetRowsResult> => {
+  const run = async (activeConn: PoolConnection): Promise<GetRowsResult<T>> => {
     const countRows = await queryForStage<RowDataPacket[]>(
       stageKey,
       countSql,
@@ -703,7 +704,7 @@ const getRowsFromTableForStage = async (
       activeConn,
     );
     const count = Number((countRows[0] as DataRow | undefined)?.count ?? 0);
-    const items = rows as DataRow[];
+    const items = rows as T[];
     return {
       offset,
       limit: limit ?? items.length,
@@ -718,12 +719,12 @@ const getRowsFromTableForStage = async (
   return withConnectionForStage(stageKey, run);
 };
 
-const getRowFromTableForStage = async (
+const getRowFromTableForStage = async <T>(
   stageKey: Stage,
   conn: PoolConnection | null | undefined,
   tableName: string,
   options: GetRowOptions = {},
-): Promise<DataRow | null> => {
+): Promise<T | null> => {
   getTableDefinition(tableName);
   const clauses = resolveClauses(options.clauses);
   const { selectStatement, joinStatement, joinValues } = getViewQueryParts(
@@ -740,10 +741,13 @@ const getRowFromTableForStage = async (
     values,
     conn,
   );
-  return (rows[0] as DataRow | undefined) ?? null;
+  return (rows[0] as T | undefined) ?? null;
 };
 
-export const createConnection = (stageValue: Stage, flavorValue: Flavor) => {
+export const createConnection = (
+  stageValue: Stage,
+  flavorValue: Flavor,
+): BPConnection => {
   if (stageValue == null || `${stageValue}`.trim().length === 0) {
     throw new Error('Stage is required');
   }
@@ -772,18 +776,18 @@ export const createConnection = (stageValue: Stage, flavorValue: Flavor) => {
       rows: DataRow[],
       conn?: PoolConnection | null,
     ) => insertRowsIntoTableForStage(stageKey, conn, tableName, rows),
-    getRowFromTable: (
+    getRowFromTable: <T>(
       tableName: string,
       options?: GetRowOptions,
       conn?: PoolConnection | null,
-    ) => getRowFromTableForStage(stageKey, conn, tableName, options),
-    getRowsFromTable: (
+    ) => getRowFromTableForStage<T>(stageKey, conn, tableName, options),
+    getRowsFromTable: <T>(
       tableName: string,
       optionsOrConn?: GetRowsOptions | PoolConnection | null,
       conn?: PoolConnection | null,
     ) => {
       const args = resolveGetRowsArgs(optionsOrConn, conn);
-      return getRowsFromTableForStage(
+      return getRowsFromTableForStage<T>(
         stageKey,
         args.conn,
         tableName,

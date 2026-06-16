@@ -13,6 +13,8 @@ export type {
   ViewAssociations,
   ViewModel,
   ViewModelField,
+  BPConnection,
+  SQLConnection,
 } from './types';
 
 export {
