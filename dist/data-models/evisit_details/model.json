@@ -75,7 +75,7 @@
     "type": "datetime",
     "createable": true,
     "updateable": true,
-    "required": false
+    "required": true
   },
   "followup_date": {
     "type": "datetime",
