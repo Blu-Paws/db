@@ -645,10 +645,8 @@ const getAuthenticatedUserDetails = async (stageValue, headers) => {
                 if (clinic != null) {
                     return {
                         clinic: clinic,
-                        user: {
-                            login_id: providerKey.integrator_id,
-                            ...providerKey,
-                        },
+                        integrator_id: providerKey.integrator_id,
+                        flavor: providerKey.flavor,
                     };
                 }
             }

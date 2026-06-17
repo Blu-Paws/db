@@ -167,16 +167,22 @@ export type SQLConnection = PoolConnection;
 export type AuthenticationResponse =
   | {
       clinic: VIEW_CLINIC;
-      user: VIEW_LOGIN;
+      integrator_id: number;
+      flavor: string;
+      user?: never;
       error?: undefined;
     }
   | {
       user: VIEW_LOGIN;
-      clinic?: undefined;
-      error?: undefined;
+      clinic?: never;
+      error?: never;
+      integrator_id?: never;
+      flavor?: never;
     }
   | {
       error: any;
-      clinic?: undefined;
-      user?: undefined;
+      clinic?: never;
+      user?: never;
+      integrator_id?: never;
+      flavor?: never;
     };

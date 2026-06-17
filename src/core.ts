@@ -511,7 +511,8 @@ const getFilterValueError = (
   tableName: string,
   filter: ReadFilter,
   message: string,
-): Error => new Error(`Invalid filter for ${tableName}.${filter.field}: ${message}`);
+): Error =>
+  new Error(`Invalid filter for ${tableName}.${filter.field}: ${message}`);
 
 const getReadFilterData = (
   tableName: string,
@@ -533,7 +534,9 @@ const getReadFilterData = (
       throw new Error(`filters[${index}] must be an object for ${tableName}`);
     }
     if (typeof filter.field !== 'string' || filter.field.trim().length === 0) {
-      throw new Error(`filters[${index}].field must be a non-empty string for ${tableName}`);
+      throw new Error(
+        `filters[${index}].field must be a non-empty string for ${tableName}`,
+      );
     }
     const fieldName = filter.field.trim();
     const modelField = table.model[fieldName];
@@ -579,11 +582,7 @@ const getReadFilterData = (
       case 'is_null':
       case 'is_not_null': {
         if (filter.value !== undefined) {
-          throw getFilterValueError(
-            tableName,
-            filter,
-            'value must be omitted',
-          );
+          throw getFilterValueError(tableName, filter, 'value must be omitted');
         }
         statements.push(
           `${tableName}.${fieldName} ${operator === 'is_null' ? 'IS NULL' : 'IS NOT NULL'}`,
@@ -977,10 +976,8 @@ export const getAuthenticatedUserDetails = async (
         if (clinic != null) {
           return {
             clinic: clinic as VIEW_CLINIC,
-            user: {
-              login_id: providerKey.integrator_id,
-              ...providerKey,
-            } as VIEW_LOGIN,
+            integrator_id: providerKey.integrator_id,
+            flavor: providerKey.flavor,
           };
         }
       }
