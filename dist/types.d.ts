@@ -51,7 +51,6 @@ export type ReadFilter = {
     value?: unknown;
 };
 export type ReadOptions = {
-    clauses?: DataRow;
     fields?: string[];
     filters?: ReadFilter[];
 };

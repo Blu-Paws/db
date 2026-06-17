@@ -80,7 +80,6 @@ export type ReadFilter = {
 };
 
 export type ReadOptions = {
-  clauses?: DataRow;
   fields?: string[];
   filters?: ReadFilter[];
 };

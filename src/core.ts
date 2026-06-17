@@ -502,13 +502,6 @@ const getWhereData = (tableName: string, clauses: DataRow): DataRow => {
   return whereData;
 };
 
-const getReadWhereData = (tableName: string, clauses: DataRow): DataRow => {
-  const whereData = getWhereData(tableName, clauses);
-  return whereData;
-};
-
-const resolveClauses = (clauses?: DataRow): DataRow => clauses ?? {};
-
 const getWhereStatement = (whereData: DataRow, tableName?: string): string =>
   Object.keys(whereData)
     .map((x) => `${tableName == null ? '' : `${tableName}.`}${x} = ?`)
@@ -614,19 +607,13 @@ const buildReadWhereData = (
   tableName: string,
   options: GetRowOptions | GetRowsOptions,
 ): { statement: string; values: unknown[] } => {
-  const clauseWhereData = getReadWhereData(tableName, resolveClauses(options.clauses));
-  const clauseStatement = getWhereStatement(clauseWhereData, tableName);
-  const clauseValues = Object.values(clauseWhereData);
   const filterData = getReadFilterData(tableName, options.filters);
-  const statements = [clauseStatement, filterData.statement].filter(
-    (statement) => statement.length > 0,
-  );
-  if (statements.length === 0) {
+  if (filterData.statement.length === 0) {
     throw new Error(`No where fields provided for ${tableName}`);
   }
   return {
-    statement: statements.join(' AND '),
-    values: [...clauseValues, ...filterData.values],
+    statement: filterData.statement,
+    values: filterData.values,
   };
 };
 

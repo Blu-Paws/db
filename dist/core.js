@@ -347,11 +347,6 @@ const getWhereData = (tableName, clauses) => {
     const whereData = (0, utils_1.serializeClauseData)(table.model, clauses);
     return whereData;
 };
-const getReadWhereData = (tableName, clauses) => {
-    const whereData = getWhereData(tableName, clauses);
-    return whereData;
-};
-const resolveClauses = (clauses) => clauses ?? {};
 const getWhereStatement = (whereData, tableName) => Object.keys(whereData)
     .map((x) => `${tableName == null ? '' : `${tableName}.`}${x} = ?`)
     .join(' AND ');
@@ -427,17 +422,13 @@ const getReadFilterData = (tableName, filters) => {
     };
 };
 const buildReadWhereData = (tableName, options) => {
-    const clauseWhereData = getReadWhereData(tableName, resolveClauses(options.clauses));
-    const clauseStatement = getWhereStatement(clauseWhereData, tableName);
-    const clauseValues = Object.values(clauseWhereData);
     const filterData = getReadFilterData(tableName, options.filters);
-    const statements = [clauseStatement, filterData.statement].filter((statement) => statement.length > 0);
-    if (statements.length === 0) {
+    if (filterData.statement.length === 0) {
         throw new Error(`No where fields provided for ${tableName}`);
     }
     return {
-        statement: statements.join(' AND '),
-        values: [...clauseValues, ...filterData.values],
+        statement: filterData.statement,
+        values: filterData.values,
     };
 };
 const normalizePaginationValue = (value, fallback, fieldName) => {

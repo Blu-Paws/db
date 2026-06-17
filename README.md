@@ -62,12 +62,18 @@ table's `view.json` and validate `WHERE` clauses against its model.
 
 ```js
 const pet = await db.getRowFromTable('pets', {
-  clauses: { status: 1, pet_status: 16, pet_id: petId },
+  filters: [
+    { field: 'status', operator: '=', value: 1 },
+    { field: 'pet_status', operator: '=', value: 16 },
+    { field: 'pet_id', operator: '=', value: petId }
+  ],
   fields: ['pet_id', 'pet_name', 'status_name'],
 });
 const pets = await db.getRowsFromTable('pets', {
-  clauses: { status: 1, pet_status: 16, login_id: loginId },
   filters: [
+    { field: 'status', operator: '=', value: 1 },
+    { field: 'pet_status', operator: '=', value: 16 },
+    { field: 'login_id', operator: '=', value: loginId },
     { field: 'pet_name', operator: 'like', value: '%milo%' }
   ],
   offset: 0,
@@ -76,15 +82,15 @@ const pets = await db.getRowsFromTable('pets', {
 ```
 
 `getRowFromTable(...)` adds `LIMIT 1` and returns `null` when no row matches.
-Both read helpers validate `clauses` against `model.json`. When `fields` is not
-provided or is an empty array, the query selects only direct base-table fields
-from `view.json` and does not add association joins. When `fields` is provided,
-each field must be a string that matches a key from `view.json`; association
-joins are added only for the selected associated fields.
-Structured `filters` are optional and currently apply only to base-table
-columns. Supported operators are `=`, `!=`, `>`, `>=`, `<`, `<=`, `like`,
-`in`, `not_in`, `is_null`, and `is_not_null`. `like` is case-insensitive and
-is built as `LOWER(column) LIKE LOWER(?)`.
+Both read helpers use `filters` for all `WHERE` conditions and currently apply
+them only to base-table columns. Supported operators are `=`, `!=`, `>`, `>=`,
+`<`, `<=`, `like`, `in`, `not_in`, `is_null`, and `is_not_null`. `like` is
+case-insensitive and is built as `LOWER(column) LIKE LOWER(?)`.
+When `fields` is not provided or is an empty array, the query selects only
+direct base-table fields from `view.json` and does not add association joins.
+When `fields` is provided, each field must be a string that matches a key from
+`view.json`; association joins are added only for the selected associated
+fields.
 `getRowsFromTable(...)` returns paged metadata and rows in `items`:
 
 ```js

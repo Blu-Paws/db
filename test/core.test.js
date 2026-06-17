@@ -380,11 +380,15 @@ test('read helpers select table view fields with validated clauses', async () =>
   const db = api.createConnection('dev', 'clinic');
 
   const row = await db.getRowFromTable('login', {
-    clauses: { phone: '5551234' },
+    filters: [{ field: 'phone', operator: '=', value: '5551234' }],
   });
   const rows = await db.getRowsFromTable(
     'login',
-    { clauses: { login_status_id: 1 }, offset: 10, limit: 25 },
+    {
+      filters: [{ field: 'login_status_id', operator: '=', value: 1 }],
+      offset: 10,
+      limit: 25,
+    },
   );
 
   assert.deepEqual(row, { login_id: 123, phone: '5551234' });
@@ -430,8 +434,8 @@ test('getRowsFromTable supports structured filters with parameterized values', a
   const db = api.createConnection('dev', 'clinic');
 
   const rows = await db.getRowsFromTable('login', {
-    clauses: { status: 1 },
     filters: [
+      { field: 'status', operator: '=', value: 1 },
       { field: 'name', operator: 'like', value: '%abc%' },
       { field: 'login_id', operator: 'in', value: [123, 456] },
     ],
@@ -480,10 +484,18 @@ test('pet reads without fields select only direct base columns', async () => {
   const db = api.createConnection('dev', 'clinic');
 
   const row = await db.getRowFromTable('pets', {
-    clauses: { status: 1, pet_status: 16, pet_id: 123 },
+    filters: [
+      { field: 'status', operator: '=', value: 1 },
+      { field: 'pet_status', operator: '=', value: 16 },
+      { field: 'pet_id', operator: '=', value: 123 },
+    ],
   });
   const rows = await db.getRowsFromTable('pets', {
-    clauses: { status: 1, pet_status: 16, login_id: 55 },
+    filters: [
+      { field: 'status', operator: '=', value: 1 },
+      { field: 'pet_status', operator: '=', value: 16 },
+      { field: 'login_id', operator: '=', value: 55 },
+    ],
     fields: [],
     offset: 0,
     limit: 10,
@@ -519,7 +531,11 @@ test('pet reads build the vw_pets join graph with caller-provided filters', asyn
   const db = api.createConnection('dev', 'clinic');
 
   const row = await db.getRowFromTable('pets', {
-    clauses: { status: 1, pet_status: 16, pet_id: 123 },
+    filters: [
+      { field: 'status', operator: '=', value: 1 },
+      { field: 'pet_status', operator: '=', value: 16 },
+      { field: 'pet_id', operator: '=', value: 123 },
+    ],
     fields: ['pet_id', 'pet_status', 'status_name'],
   });
 
@@ -566,7 +582,11 @@ test('pet association paths add required intermediate joins', async () => {
   const db = api.createConnection('dev', 'clinic');
 
   const row = await db.getRowFromTable('pets', {
-    clauses: { status: 1, pet_status: 16, pet_id: 123 },
+    filters: [
+      { field: 'status', operator: '=', value: 1 },
+      { field: 'pet_status', operator: '=', value: 16 },
+      { field: 'pet_id', operator: '=', value: 123 },
+    ],
     fields: ['pet_id', 'coat'],
   });
 
@@ -599,7 +619,11 @@ test('pet named associations reuse one join for multiple selected owner fields',
   const db = api.createConnection('dev', 'clinic');
 
   const row = await db.getRowFromTable('pets', {
-    clauses: { status: 1, pet_status: 16, pet_id: 123 },
+    filters: [
+      { field: 'status', operator: '=', value: 1 },
+      { field: 'pet_status', operator: '=', value: 16 },
+      { field: 'pet_id', operator: '=', value: 123 },
+    ],
     fields: ['pet_owner_name', 'pet_owner_email', 'pet_owner_phone'],
   });
 
@@ -628,7 +652,11 @@ test('pet named associations dedupe shared path joins across selected fields', a
   const db = api.createConnection('dev', 'clinic');
 
   const row = await db.getRowFromTable('pets', {
-    clauses: { status: 1, pet_status: 16, pet_id: 123 },
+    filters: [
+      { field: 'status', operator: '=', value: 1 },
+      { field: 'pet_status', operator: '=', value: 16 },
+      { field: 'pet_id', operator: '=', value: 123 },
+    ],
     fields: ['weight', 'height', 'coat', 'coat_id'],
   });
 
@@ -660,7 +688,7 @@ test('getRowsFromTable supports transaction connection as the third argument', a
   await db.withTransaction(async (conn) => {
     const rows = await db.getRowsFromTable(
       'login',
-      { clauses: { login_status_id: 1 } },
+      { filters: [{ field: 'login_status_id', operator: '=', value: 1 }] },
       conn,
     );
 
@@ -691,16 +719,16 @@ test('getRowsFromTable validates selected fields before building the query', asy
   await assert.rejects(
     () =>
       db.getRowsFromTable('pets', {
-        clauses: { pet_id: 123 },
         fields: ['pet_id', 'missing_field'],
+        filters: [{ field: 'pet_id', operator: '=', value: 123 }],
       }),
     /Unknown view field missing_field for pets/,
   );
   await assert.rejects(
     () =>
       db.getRowsFromTable('pets', {
-        clauses: { pet_id: 123 },
         fields: ['pet_id', 123],
+        filters: [{ field: 'pet_id', operator: '=', value: 123 }],
       }),
     /fields\[1\] must be a string for pets/,
   );
@@ -715,24 +743,30 @@ test('getRowsFromTable validates structured filters before querying', async () =
   await assert.rejects(
     () =>
       db.getRowsFromTable('login', {
-        clauses: { status: 1 },
-        filters: [{ field: 'missing', operator: 'like', value: '%abc%' }],
+        filters: [
+          { field: 'status', operator: '=', value: 1 },
+          { field: 'missing', operator: 'like', value: '%abc%' },
+        ],
       }),
     /Unknown filter field missing for login/,
   );
   await assert.rejects(
     () =>
       db.getRowsFromTable('login', {
-        clauses: { status: 1 },
-        filters: [{ field: 'name', operator: 'in', value: [] }],
+        filters: [
+          { field: 'status', operator: '=', value: 1 },
+          { field: 'name', operator: 'in', value: [] },
+        ],
       }),
     /Invalid filter for login.name: value must be a non-empty array/,
   );
   await assert.rejects(
     () =>
       db.getRowsFromTable('login', {
-        clauses: { status: 1 },
-        filters: [{ field: 'name', operator: 'is_null', value: null }],
+        filters: [
+          { field: 'status', operator: '=', value: 1 },
+          { field: 'name', operator: 'is_null', value: null },
+        ],
       }),
     /Invalid filter for login.name: value must be omitted/,
   );
@@ -747,7 +781,7 @@ test('getRowFromTable returns null when no row matches', async () => {
   const db = api.createConnection('dev', 'clinic');
 
   const row = await db.getRowFromTable('login', {
-    clauses: { phone: '5551234' },
+    filters: [{ field: 'phone', operator: '=', value: '5551234' }],
   });
 
   assert.equal(row, null);
@@ -760,8 +794,8 @@ test('getRowFromTable supports structured filters', async () => {
   const db = api.createConnection('dev', 'clinic');
 
   const row = await db.getRowFromTable('login', {
-    clauses: { status: 1 },
     filters: [
+      { field: 'status', operator: '=', value: 1 },
       { field: 'name', operator: 'like', value: '%abc%' },
       { field: 'email', operator: 'is_not_null' },
     ],
@@ -783,7 +817,7 @@ test('getRowFromTable validates selected fields before building the query', asyn
   await assert.rejects(
     () =>
       db.getRowFromTable('login', {
-        clauses: { phone: '5551234' },
+        filters: [{ field: 'phone', operator: '=', value: '5551234' }],
         fields: ['login_id', ''],
       }),
     /fields\[1\] must be a non-empty string for login/,
