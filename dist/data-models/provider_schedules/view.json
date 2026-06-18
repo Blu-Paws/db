@@ -23,6 +23,12 @@
   "exception_date": {
     "type": "string"
   },
+  "exception_name": {
+    "type": "string"
+  },
+  "exception_end_date": {
+    "type": "string"
+  },
   "day_of_week": {
     "type": "number"
   },

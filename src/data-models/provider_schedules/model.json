@@ -41,6 +41,18 @@
     "updateable": true,
     "required": false
   },
+  "exception_name": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "exception_end_date": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
   "day_of_week": {
     "type": "number",
     "createable": true,
