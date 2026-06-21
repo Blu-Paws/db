@@ -759,6 +759,181 @@ test('provider products read joins category tax and image fields from associatio
   assert.deepEqual(calls.connections[0].queries[0].values, [22]);
 });
 
+test('provider product variants read joins product clinic_id from associations', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{
+        variant_id: 7,
+        product_id: 15,
+        clinic_id: 22,
+      }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('provider_product_variants', {
+    filters: [
+      { field: 'clinic_id', operator: '=', value: 22 },
+      { field: 'variant_id', operator: '=', value: 7 },
+      { field: 'product_id', operator: '=', value: 15 },
+    ],
+    fields: ['variant_id', 'product_id', 'clinic_id'],
+  });
+
+  assert.deepEqual(row, {
+    variant_id: 7,
+    product_id: 15,
+    clinic_id: 22,
+  });
+  const sql = calls.connections[0].queries[0].sql;
+  assert.match(
+    sql,
+    /INNER JOIN provider_products AS provider_products_ref ON provider_product_variants\.product_id = provider_products_ref\.product_id/,
+  );
+  assert.match(sql, /provider_products_ref\.clinic_id AS clinic_id/);
+  assert.match(sql, /provider_products_ref\.clinic_id = \?/);
+  assert.deepEqual(calls.connections[0].queries[0].values, [22, 7, 15]);
+});
+
+test('getRowsFromTable counts rows with association filters using the same join graph', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{ count: 1 }],
+      [{ variant_id: 7 }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const rows = await db.getRowsFromTable('provider_product_variants', {
+    filters: [
+      { field: 'clinic_id', operator: '=', value: 22 },
+      { field: 'product_id', operator: '=', value: 15 },
+    ],
+    fields: ['variant_id'],
+    limit: 20,
+    offset: 0,
+  });
+
+  assert.deepEqual(rows, {
+    offset: 0,
+    limit: 20,
+    items: [{ variant_id: 7 }],
+    count: 1,
+  });
+  assert.equal(
+    calls.connections[0].queries[0].sql,
+    'SELECT COUNT(*) AS count FROM provider_product_variants INNER JOIN provider_products AS provider_products_ref ON provider_product_variants.product_id = provider_products_ref.product_id WHERE provider_products_ref.clinic_id = ? AND provider_product_variants.product_id = ?',
+  );
+  assert.deepEqual(calls.connections[0].queries[0].values, [22, 15]);
+  assert.equal(
+    calls.connections[0].queries[1].sql,
+    'SELECT provider_product_variants.variant_id AS variant_id FROM provider_product_variants INNER JOIN provider_products AS provider_products_ref ON provider_product_variants.product_id = provider_products_ref.product_id WHERE provider_products_ref.clinic_id = ? AND provider_product_variants.product_id = ? LIMIT ? OFFSET ?',
+  );
+});
+
+test('provider inventory movements read joins variant product and location fields', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{
+        movement_id: 9,
+        clinic_id: 22,
+        variant_id: 7,
+        variant_code: 'VAR-7',
+        variant_name: 'Small',
+        product_id: 15,
+        product_code: 'PRD-15',
+        product_name: 'Shampoo',
+        location_code: 'MAIN',
+        location_name: 'Main Store',
+        location_type: 'stock',
+        full_path_code: 'MAIN',
+        from_location_code: 'OLD',
+        from_location_name: 'Old Shelf',
+        to_location_code: 'NEW',
+        to_location_name: 'New Shelf',
+      }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('provider_inventory_movements', {
+    filters: [
+      { field: 'clinic_id', operator: '=', value: 22 },
+      { field: 'movement_id', operator: '=', value: 9 },
+    ],
+    fields: [
+      'movement_id',
+      'clinic_id',
+      'variant_id',
+      'variant_code',
+      'variant_name',
+      'product_id',
+      'product_code',
+      'product_name',
+      'location_code',
+      'location_name',
+      'location_type',
+      'full_path_code',
+      'from_location_code',
+      'from_location_name',
+      'to_location_code',
+      'to_location_name',
+    ],
+  });
+
+  assert.deepEqual(row, {
+    movement_id: 9,
+    clinic_id: 22,
+    variant_id: 7,
+    variant_code: 'VAR-7',
+    variant_name: 'Small',
+    product_id: 15,
+    product_code: 'PRD-15',
+    product_name: 'Shampoo',
+    location_code: 'MAIN',
+    location_name: 'Main Store',
+    location_type: 'stock',
+    full_path_code: 'MAIN',
+    from_location_code: 'OLD',
+    from_location_name: 'Old Shelf',
+    to_location_code: 'NEW',
+    to_location_name: 'New Shelf',
+  });
+  const sql = calls.connections[0].queries[0].sql;
+  assert.match(
+    sql,
+    /INNER JOIN provider_product_variants AS provider_product_variants_ref ON provider_inventory_movements\.variant_id = provider_product_variants_ref\.variant_id/,
+  );
+  assert.match(
+    sql,
+    /INNER JOIN provider_products AS provider_products_ref ON provider_product_variants_ref\.product_id = provider_products_ref\.product_id/,
+  );
+  assert.match(
+    sql,
+    /LEFT JOIN provider_inventory_locations AS provider_inventory_locations_ref ON provider_inventory_movements\.location_id = provider_inventory_locations_ref\.location_id/,
+  );
+  assert.match(
+    sql,
+    /LEFT JOIN provider_inventory_locations AS provider_inventory_from_locations_ref ON provider_inventory_movements\.from_location_id = provider_inventory_from_locations_ref\.location_id/,
+  );
+  assert.match(
+    sql,
+    /LEFT JOIN provider_inventory_locations AS provider_inventory_to_locations_ref ON provider_inventory_movements\.to_location_id = provider_inventory_to_locations_ref\.location_id/,
+  );
+  assert.match(sql, /provider_product_variants_ref\.variant_code AS variant_code/);
+  assert.match(sql, /provider_products_ref\.product_name AS product_name/);
+  assert.match(sql, /provider_inventory_locations_ref\.full_path_code AS full_path_code/);
+  assert.match(
+    sql,
+    /provider_inventory_from_locations_ref\.location_code AS from_location_code/,
+  );
+  assert.match(
+    sql,
+    /provider_inventory_to_locations_ref\.location_name AS to_location_name/,
+  );
+  assert.deepEqual(calls.connections[0].queries[0].values, [22, 9]);
+});
+
 test('getRowsFromTable supports validated orderBy for base table fields', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [
@@ -926,7 +1101,7 @@ test('getRowsFromTable validates structured filters before querying', async () =
           { field: 'missing', operator: 'like', value: '%abc%' },
         ],
       }),
-    /Unknown filter field missing for login/,
+    /Unknown view field missing for login/,
   );
   await assert.rejects(
     () =>

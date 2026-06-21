@@ -55,5 +55,61 @@
   },
   "created_date": {
     "type": "datetime"
+  },
+  "variant_code": {
+    "type": "string",
+    "association": "variant"
+  },
+  "variant_name": {
+    "type": "string",
+    "association": "variant"
+  },
+  "product_id": {
+    "type": "number",
+    "association": "product"
+  },
+  "product_code": {
+    "type": "string",
+    "association": "product"
+  },
+  "product_name": {
+    "type": "string",
+    "association": "product"
+  },
+  "location_code": {
+    "type": "string",
+    "association": "location"
+  },
+  "location_name": {
+    "type": "string",
+    "association": "location"
+  },
+  "location_type": {
+    "type": "string",
+    "association": "location"
+  },
+  "full_path_code": {
+    "type": "string",
+    "association": "location"
+  },
+  "from_location_code": {
+    "type": "string",
+    "association": "from_location",
+    "field": "location_code"
+  },
+  "from_location_name": {
+    "type": "string",
+    "association": "from_location",
+    "field": "location_name"
+  },
+  "to_location_code": {
+    "type": "string",
+    "association": "to_location",
+    "field": "location_code"
+  },
+  "to_location_name": {
+    "type": "string",
+    "association": "to_location",
+    "field": "location_name"
   }
 }

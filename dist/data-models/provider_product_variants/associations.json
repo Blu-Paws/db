@@ -1,0 +1,9 @@
+{
+  "product": {
+    "tableName": "provider_products",
+    "sourceField": "product_id",
+    "targetField": "product_id",
+    "alias": "provider_products_ref",
+    "joinType": "INNER"
+  }
+}

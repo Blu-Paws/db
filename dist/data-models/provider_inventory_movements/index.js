@@ -6,10 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.providerInventoryMovementsTable = void 0;
 const model_json_1 = __importDefault(require("./model.json"));
 const view_json_1 = __importDefault(require("./view.json"));
+const associations_json_1 = __importDefault(require("./associations.json"));
 exports.providerInventoryMovementsTable = {
     tableName: 'provider_inventory_movements',
     model: model_json_1.default,
     view: view_json_1.default,
+    associations: associations_json_1.default,
     validateInsert: async (_conn, _row) => { },
     validateUpdate: async (_conn, _row) => { },
     validateDelete: async (_conn, _row) => { },

@@ -374,9 +374,135 @@ const getAssociationJoins = (
   ];
 };
 
+type JoinResolutionState = {
+  joins: Map<string, string>;
+  aliasTableNames: Map<string, string>;
+  joinValues: unknown[];
+};
+
+const createJoinResolutionState = (tableName: string): JoinResolutionState => ({
+  joins: new Map<string, string>(),
+  aliasTableNames: new Map<string, string>([[tableName, tableName]]),
+  joinValues: [],
+});
+
+const getJoinStatement = (state: JoinResolutionState): string =>
+  state.joins.size === 0 ? '' : ` ${Array.from(state.joins.values()).join(' ')}`;
+
+const ensureAssociationJoins = (
+  tableName: string,
+  fieldName: string,
+  association: ViewAssociation,
+  state: JoinResolutionState,
+): { targetAlias: string; targetTableName: string } => {
+  const associationJoins = getAssociationJoins(tableName, fieldName, association);
+  let targetAlias = tableName;
+  let targetTableName = tableName;
+
+  for (const [index, associationJoin] of associationJoins.entries()) {
+    const sourceAlias =
+      associationJoin.sourceAlias ?? (index === 0 ? tableName : targetAlias);
+    const sourceTableName = state.aliasTableNames.get(sourceAlias);
+    if (sourceTableName == null) {
+      throw new Error(
+        `Unknown source alias ${sourceAlias} for ${tableName}.${fieldName}`,
+      );
+    }
+    const sourceTable = getTableDefinition(sourceTableName);
+    const targetTable = getTableDefinition(associationJoin.tableName);
+    if (sourceTable.model[associationJoin.sourceField] == null) {
+      throw new Error(
+        `Unknown source field ${associationJoin.sourceField} for ${tableName}.${fieldName}`,
+      );
+    }
+    if (targetTable.model[associationJoin.targetField] == null) {
+      throw new Error(
+        `Unknown target field ${associationJoin.targetField} for ${tableName}.${fieldName}`,
+      );
+    }
+
+    const joinType = associationJoin.joinType ?? 'LEFT';
+    if (joinType !== 'LEFT' && joinType !== 'INNER') {
+      throw new Error(
+        `Unsupported join type ${joinType} for ${tableName}.${fieldName}`,
+      );
+    }
+
+    const alias =
+      associationJoin.alias ??
+      `${associationJoin.tableName}_${associationJoin.targetField}`;
+    const targetFilterData = serializeClauseData(
+      targetTable.model,
+      associationJoin.targetFilters ?? {},
+    );
+    const targetFilterStatement = Object.keys(targetFilterData)
+      .map((key) => `${alias}.${key} = ?`)
+      .join(' AND ');
+    const join = `${joinType} JOIN ${associationJoin.tableName} AS ${alias} ON ${sourceAlias}.${associationJoin.sourceField} = ${alias}.${associationJoin.targetField}${targetFilterStatement.length === 0 ? '' : ` AND ${targetFilterStatement}`}`;
+    const existingJoin = state.joins.get(alias);
+    if (existingJoin != null && existingJoin !== join) {
+      throw new Error(`Conflicting join alias ${alias} for ${tableName}`);
+    }
+    if (existingJoin == null) {
+      state.joins.set(alias, join);
+      state.aliasTableNames.set(alias, associationJoin.tableName);
+      Object.values(targetFilterData).forEach((value) =>
+        state.joinValues.push(value),
+      );
+    }
+    targetAlias = alias;
+    targetTableName = associationJoin.tableName;
+  }
+
+  return { targetAlias, targetTableName };
+};
+
+const resolveViewFieldReference = (
+  tableName: string,
+  fieldName: string,
+  state: JoinResolutionState,
+): { expression: string; field: ViewModelField } => {
+  const table = getTableDefinition(tableName);
+  const field = table.view[fieldName];
+  if (field == null) {
+    throw new Error(`Unknown view field ${fieldName} for ${tableName}`);
+  }
+
+  const associationData = resolveViewAssociation(tableName, fieldName, field);
+  if (associationData == null) {
+    if (table.model[fieldName] == null) {
+      throw new Error(`Unknown base field ${fieldName} for ${tableName}`);
+    }
+    return {
+      expression: `${tableName}.${fieldName}`,
+      field,
+    };
+  }
+
+  const { association, targetSelectField } = associationData;
+  const { targetAlias, targetTableName } = ensureAssociationJoins(
+    tableName,
+    fieldName,
+    association,
+    state,
+  );
+  const targetTable = getTableDefinition(targetTableName);
+  if (targetTable.model[targetSelectField] == null) {
+    throw new Error(
+      `Unknown target select field ${targetSelectField} for ${tableName}.${fieldName}`,
+    );
+  }
+
+  return {
+    expression: `${targetAlias}.${targetSelectField}`,
+    field,
+  };
+};
+
 const getViewQueryParts = (
   tableName: string,
   selectedFieldNames?: string[],
+  state = createJoinResolutionState(tableName),
 ): {
   selectStatement: string;
   joinStatement: string;
@@ -401,98 +527,22 @@ const getViewQueryParts = (
   }
 
   const selectStatements: string[] = [];
-  const joins = new Map<string, string>();
-  const aliasTableNames = new Map<string, string>([[tableName, tableName]]);
-  const joinValues: unknown[] = [];
   for (const [fieldName, field] of fields) {
-    const associationData = resolveViewAssociation(tableName, fieldName, field);
-    if (associationData == null) {
+    if (field.association == null) {
       if (table.model[fieldName] == null) {
         throw new Error(`Unknown base field ${fieldName} for ${tableName}`);
       }
       selectStatements.push(`${tableName}.${fieldName} AS ${fieldName}`);
       continue;
     }
-
-    const { association, targetSelectField } = associationData;
-    const associationJoins = getAssociationJoins(
-      tableName,
-      fieldName,
-      association,
-    );
-    let targetAlias = tableName;
-    let targetTableName = tableName;
-    for (const [index, associationJoin] of associationJoins.entries()) {
-      const sourceAlias =
-        associationJoin.sourceAlias ?? (index === 0 ? tableName : targetAlias);
-      const sourceTableName = aliasTableNames.get(sourceAlias);
-      if (sourceTableName == null) {
-        throw new Error(
-          `Unknown source alias ${sourceAlias} for ${tableName}.${fieldName}`,
-        );
-      }
-      const sourceTable = getTableDefinition(sourceTableName);
-      const targetTable = getTableDefinition(associationJoin.tableName);
-      if (sourceTable.model[associationJoin.sourceField] == null) {
-        throw new Error(
-          `Unknown source field ${associationJoin.sourceField} for ${tableName}.${fieldName}`,
-        );
-      }
-      if (targetTable.model[associationJoin.targetField] == null) {
-        throw new Error(
-          `Unknown target field ${associationJoin.targetField} for ${tableName}.${fieldName}`,
-        );
-      }
-
-      const joinType = associationJoin.joinType ?? 'LEFT';
-      if (joinType !== 'LEFT' && joinType !== 'INNER') {
-        throw new Error(
-          `Unsupported join type ${joinType} for ${tableName}.${fieldName}`,
-        );
-      }
-
-      const alias =
-        associationJoin.alias ??
-        `${associationJoin.tableName}_${associationJoin.targetField}`;
-      const targetFilterData = serializeClauseData(
-        targetTable.model,
-        associationJoin.targetFilters ?? {},
-      );
-      const targetFilterStatement = Object.keys(targetFilterData)
-        .map((key) => `${alias}.${key} = ?`)
-        .join(' AND ');
-      const join = `${joinType} JOIN ${associationJoin.tableName} AS ${alias} ON ${sourceAlias}.${associationJoin.sourceField} = ${alias}.${associationJoin.targetField}${targetFilterStatement.length === 0 ? '' : ` AND ${targetFilterStatement}`}`;
-      const existingJoin = joins.get(alias);
-      if (existingJoin != null && existingJoin !== join) {
-        throw new Error(`Conflicting join alias ${alias} for ${tableName}`);
-      }
-      if (existingJoin == null) {
-        joins.set(alias, join);
-        aliasTableNames.set(alias, associationJoin.tableName);
-        Object.values(targetFilterData).forEach((value) =>
-          joinValues.push(value),
-        );
-      }
-      targetAlias = alias;
-      targetTableName = associationJoin.tableName;
-    }
-
-    const targetTable = getTableDefinition(targetTableName);
-    if (targetTable.model[targetSelectField] == null) {
-      throw new Error(
-        `Unknown target select field ${targetSelectField} for ${tableName}.${fieldName}`,
-      );
-    }
-    selectStatements.push(
-      `${targetAlias}.${targetSelectField} AS ${fieldName}`,
-    );
+    const { expression } = resolveViewFieldReference(tableName, fieldName, state);
+    selectStatements.push(`${expression} AS ${fieldName}`);
   }
 
   return {
     selectStatement: selectStatements.join(','),
-    joinStatement:
-      joins.size === 0 ? '' : ` ${Array.from(joins.values()).join(' ')}`,
-    joinValues,
+    joinStatement: getJoinStatement(state),
+    joinValues: state.joinValues,
   };
 };
 
@@ -516,6 +566,7 @@ const getFilterValueError = (
 
 const getReadFilterData = (
   tableName: string,
+  state: JoinResolutionState,
   filters?: ReadFilter[],
 ): { statement: string; values: unknown[] } => {
   if (filters == null) {
@@ -524,8 +575,6 @@ const getReadFilterData = (
   if (!Array.isArray(filters)) {
     throw new Error(`filters must be an array for ${tableName}`);
   }
-
-  const table = getTableDefinition(tableName);
   const statements: string[] = [];
   const values: unknown[] = [];
 
@@ -539,10 +588,7 @@ const getReadFilterData = (
       );
     }
     const fieldName = filter.field.trim();
-    const modelField = table.model[fieldName];
-    if (modelField == null) {
-      throw new Error(`Unknown filter field ${fieldName} for ${tableName}`);
-    }
+    const { expression } = resolveViewFieldReference(tableName, fieldName, state);
     const operator = filter.operator;
     switch (operator) {
       case '=':
@@ -556,9 +602,9 @@ const getReadFilterData = (
           throw getFilterValueError(tableName, filter, 'value is required');
         }
         if (operator === 'like') {
-          statements.push(`LOWER(${tableName}.${fieldName}) LIKE LOWER(?)`);
+          statements.push(`LOWER(${expression}) LIKE LOWER(?)`);
         } else {
-          statements.push(`${tableName}.${fieldName} ${operator} ?`);
+          statements.push(`${expression} ${operator} ?`);
         }
         values.push(filter.value);
         break;
@@ -574,7 +620,7 @@ const getReadFilterData = (
         }
         const placeholders = filter.value.map(() => '?').join(', ');
         statements.push(
-          `${tableName}.${fieldName} ${operator === 'in' ? 'IN' : 'NOT IN'} (${placeholders})`,
+          `${expression} ${operator === 'in' ? 'IN' : 'NOT IN'} (${placeholders})`,
         );
         values.push(...filter.value);
         break;
@@ -585,7 +631,7 @@ const getReadFilterData = (
           throw getFilterValueError(tableName, filter, 'value must be omitted');
         }
         statements.push(
-          `${tableName}.${fieldName} ${operator === 'is_null' ? 'IS NULL' : 'IS NOT NULL'}`,
+          `${expression} ${operator === 'is_null' ? 'IS NULL' : 'IS NOT NULL'}`,
         );
         break;
       }
@@ -628,8 +674,9 @@ const getReadQueryData = (
 const buildReadWhereData = (
   tableName: string,
   options: GetRowOptions | GetRowsOptions,
+  state: JoinResolutionState,
 ): { statement: string; values: unknown[] } => {
-  const filterData = getReadFilterData(tableName, options.filters);
+  const filterData = getReadFilterData(tableName, state, options.filters);
   const queryData = getReadQueryData(tableName, options.query);
   const statements = [filterData.statement, queryData.statement].filter(
     (statement) => statement.length > 0,
@@ -848,11 +895,14 @@ const getRowsFromTableForStage = async <T>(
   options: GetRowsOptions = {},
 ): Promise<GetRowsResult<T>> => {
   getTableDefinition(tableName);
-  const { selectStatement, joinStatement, joinValues } = getViewQueryParts(
+  const joinState = createJoinResolutionState(tableName);
+  const { selectStatement, joinValues } = getViewQueryParts(
     tableName,
     options.fields,
+    joinState,
   );
-  const where = buildReadWhereData(tableName, options);
+  const where = buildReadWhereData(tableName, options, joinState);
+  const joinStatement = getJoinStatement(joinState);
   const orderStatement = getReadOrderData(tableName, options);
   const offset = normalizePaginationValue(options.offset, 0, 'offset');
   const limit =
@@ -871,12 +921,12 @@ const getRowsFromTableForStage = async <T>(
     rowValues.push(limit, offset);
   }
 
-  const countSql = `SELECT COUNT(*) AS count FROM ${tableName} WHERE ${where.statement}`;
+  const countSql = `SELECT COUNT(*) AS count FROM ${tableName}${joinStatement} WHERE ${where.statement}`;
   const run = async (activeConn: PoolConnection): Promise<GetRowsResult<T>> => {
     const countRows = await queryForStage<RowDataPacket[]>(
       stageKey,
       countSql,
-      where.values,
+      [...joinValues, ...where.values],
       activeConn,
     );
     const rows = await queryForStage<RowDataPacket[]>(
@@ -908,11 +958,14 @@ const getRowFromTableForStage = async <T>(
   options: GetRowOptions = {},
 ): Promise<T | null> => {
   getTableDefinition(tableName);
-  const { selectStatement, joinStatement, joinValues } = getViewQueryParts(
+  const joinState = createJoinResolutionState(tableName);
+  const { selectStatement, joinValues } = getViewQueryParts(
     tableName,
     options.fields,
+    joinState,
   );
-  const where = buildReadWhereData(tableName, options);
+  const where = buildReadWhereData(tableName, options, joinState);
+  const joinStatement = getJoinStatement(joinState);
   const values = [...joinValues, ...where.values];
   const sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${where.statement} LIMIT 1`;
   const rows = await queryForStage<RowDataPacket[]>(

@@ -64,5 +64,9 @@
   },
   "updated_date": {
     "type": "datetime"
+  },
+  "clinic_id": {
+    "type": "number",
+    "association": "product"
   }
 }
