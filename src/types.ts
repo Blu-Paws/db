@@ -79,16 +79,26 @@ export type ReadFilter = {
   value?: unknown;
 };
 
+export type ReadQuery = {
+  sql: string;
+  values?: unknown[];
+};
+
 export type ReadOptions = {
   fields?: string[];
   filters?: ReadFilter[];
+  query?: ReadQuery;
 };
 
 export type GetRowOptions = ReadOptions;
 
+export type ReadOrderDirection = 'asc' | 'desc';
+
 export type GetRowsOptions = ReadOptions & {
   offset?: number;
   limit?: number;
+  orderBy?: string;
+  orderDirection?: ReadOrderDirection;
 };
 
 export type GetRowsResult<T> = {

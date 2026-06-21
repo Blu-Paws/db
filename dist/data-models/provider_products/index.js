@@ -4,12 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.providerProductsTable = void 0;
+const associations_json_1 = __importDefault(require("./associations.json"));
 const model_json_1 = __importDefault(require("./model.json"));
 const view_json_1 = __importDefault(require("./view.json"));
 exports.providerProductsTable = {
     tableName: 'provider_products',
     model: model_json_1.default,
     view: view_json_1.default,
+    associations: associations_json_1.default,
     validateInsert: async (_conn, _row) => { },
     validateUpdate: async (_conn, _row) => { },
     validateDelete: async (_conn, _row) => { },

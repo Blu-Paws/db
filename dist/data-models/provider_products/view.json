@@ -61,5 +61,17 @@
   },
   "clinic_key": {
     "type": "number"
+  },
+  "category_name": {
+    "type": "string",
+    "association": "category"
+  },
+  "tax_name": {
+    "type": "string",
+    "association": "tax"
+  },
+  "image_path": {
+    "type": "string",
+    "association": "image"
   }
 }

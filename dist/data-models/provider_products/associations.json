@@ -1,0 +1,23 @@
+{
+  "category": {
+    "tableName": "mstr_product_categories",
+    "sourceField": "category_id",
+    "targetField": "category_id",
+    "alias": "mstr_product_categories_ref",
+    "joinType": "LEFT"
+  },
+  "tax": {
+    "tableName": "clinic_tax",
+    "sourceField": "tax_id",
+    "targetField": "tax_id",
+    "alias": "clinic_tax_ref",
+    "joinType": "LEFT"
+  },
+  "image": {
+    "tableName": "images",
+    "sourceField": "image_id",
+    "targetField": "image_id",
+    "alias": "images_ref",
+    "joinType": "LEFT"
+  }
+}

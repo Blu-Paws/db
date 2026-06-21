@@ -76,6 +76,12 @@ const pets = await db.getRowsFromTable('pets', {
     { field: 'login_id', operator: '=', value: loginId },
     { field: 'pet_name', operator: 'like', value: '%milo%' }
   ],
+  orderBy: 'pet_name',
+  orderDirection: 'asc',
+  query: {
+    sql: '(pets.likes LIKE ? OR pets.notes LIKE ?)',
+    values: ['%treat%', '%treat%']
+  },
   offset: 0,
   limit: 25,
 });
@@ -86,6 +92,11 @@ Both read helpers use `filters` for all `WHERE` conditions and currently apply
 them only to base-table columns. Supported operators are `=`, `!=`, `>`, `>=`,
 `<`, `<=`, `like`, `in`, `not_in`, `is_null`, and `is_not_null`. `like` is
 case-insensitive and is built as `LOWER(column) LIKE LOWER(?)`.
+Optional `query` can be used for more complex `WHERE` fragments. It accepts
+`sql` plus optional `values`, and is combined with `filters` using `AND`.
+`getRowsFromTable(...)` also supports optional `orderBy` and `orderDirection`
+(`asc` or `desc`). `orderBy` can also be passed as a single string like
+`product_code asc`. Ordering currently applies only to base-table fields.
 When `fields` is not provided or is an empty array, the query selects only
 direct base-table fields from `view.json` and does not add association joins.
 When `fields` is provided, each field must be a string that matches a key from

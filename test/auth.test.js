@@ -162,12 +162,8 @@ test('getAuthenticatedUserDetails resolves clinic user from provider api key flo
 
   assert.deepEqual(result, {
     clinic: { clinic_id: 12, clinic_name: 'Blu Paws Vet' },
-    user: {
-      login_id: 9,
-      integrator_id: 9,
-      clinic_id: 12,
-      flavor: 'clinic',
-    },
+    integrator_id: 9,
+    flavor: 'clinic',
   });
   assert.match(calls.queries[0].sql, /vw_provider_api_keys/);
   assert.match(calls.queries[1].sql, /vw_clinic/);

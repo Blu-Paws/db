@@ -602,18 +602,97 @@ const getReadFilterData = (
   };
 };
 
+const getReadQueryData = (
+  tableName: string,
+  query?: GetRowOptions['query'] | GetRowsOptions['query'],
+): { statement: string; values: unknown[] } => {
+  if (query == null) {
+    return { statement: '', values: [] };
+  }
+  if (typeof query !== 'object' || Array.isArray(query)) {
+    throw new Error(`query must be an object for ${tableName}`);
+  }
+  if (typeof query.sql !== 'string' || query.sql.trim().length === 0) {
+    throw new Error(`query.sql must be a non-empty string for ${tableName}`);
+  }
+  if (query.values != null && !Array.isArray(query.values)) {
+    throw new Error(`query.values must be an array for ${tableName}`);
+  }
+
+  return {
+    statement: `(${query.sql.trim()})`,
+    values: query.values ?? [],
+  };
+};
+
 const buildReadWhereData = (
   tableName: string,
   options: GetRowOptions | GetRowsOptions,
 ): { statement: string; values: unknown[] } => {
   const filterData = getReadFilterData(tableName, options.filters);
-  if (filterData.statement.length === 0) {
+  const queryData = getReadQueryData(tableName, options.query);
+  const statements = [filterData.statement, queryData.statement].filter(
+    (statement) => statement.length > 0,
+  );
+  if (statements.length === 0) {
     throw new Error(`No where fields provided for ${tableName}`);
   }
   return {
-    statement: filterData.statement,
-    values: filterData.values,
+    statement: statements.join(' AND '),
+    values: [...filterData.values, ...queryData.values],
   };
+};
+
+const getReadOrderData = (
+  tableName: string,
+  options: GetRowsOptions,
+): string => {
+  if (options.orderBy == null) {
+    return '';
+  }
+  if (
+    typeof options.orderBy !== 'string' ||
+    options.orderBy.trim().length === 0
+  ) {
+    throw new Error(`orderBy must be a non-empty string for ${tableName}`);
+  }
+
+  const orderByValue = options.orderBy.trim();
+  const orderByParts = orderByValue.split(/\s+/);
+  let fieldName = orderByValue;
+  let inlineDirection: string | undefined;
+  if (orderByParts.length === 2) {
+    const candidateDirection = orderByParts[1].toLowerCase();
+    if (candidateDirection === 'asc' || candidateDirection === 'desc') {
+      fieldName = orderByParts[0];
+      inlineDirection = candidateDirection;
+    }
+  } else if (orderByParts.length > 2) {
+    throw new Error(`Invalid orderBy value ${orderByValue} for ${tableName}`);
+  }
+
+  const table = getTableDefinition(tableName);
+  const viewField = table.view[fieldName];
+  if (viewField == null) {
+    throw new Error(`Unknown orderBy field ${fieldName} for ${tableName}`);
+  }
+  if (viewField.association != null) {
+    throw new Error(
+      `orderBy only supports base table fields for ${tableName}.${fieldName}`,
+    );
+  }
+  if (table.model[fieldName] == null) {
+    throw new Error(`Unknown base field ${fieldName} for ${tableName}`);
+  }
+
+  const direction = options.orderDirection?.toLowerCase() ?? inlineDirection ?? 'asc';
+  if (direction !== 'asc' && direction !== 'desc') {
+    throw new Error(
+      `orderDirection must be "asc" or "desc" for ${tableName}`,
+    );
+  }
+
+  return ` ORDER BY ${tableName}.${fieldName} ${direction.toUpperCase()}`;
 };
 
 const normalizePaginationValue = (
@@ -774,6 +853,7 @@ const getRowsFromTableForStage = async <T>(
     options.fields,
   );
   const where = buildReadWhereData(tableName, options);
+  const orderStatement = getReadOrderData(tableName, options);
   const offset = normalizePaginationValue(options.offset, 0, 'offset');
   const limit =
     options.limit === undefined
@@ -784,7 +864,7 @@ const getRowsFromTableForStage = async <T>(
     throw new Error('limit is required when offset is provided');
   }
 
-  let sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${where.statement}`;
+  let sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${where.statement}${orderStatement}`;
   const rowValues = [...joinValues, ...where.values];
   if (limit !== undefined) {
     sql = `${sql} LIMIT ? OFFSET ?`;

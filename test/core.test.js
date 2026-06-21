@@ -471,6 +471,48 @@ test('getRowsFromTable supports structured filters with parameterized values', a
   );
 });
 
+test('getRowsFromTable supports optional query fragments for complex conditions', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{ count: 1 }],
+      [{ login_id: 123, name: 'Abc Vet' }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const rows = await db.getRowsFromTable('login', {
+    filters: [{ field: 'status', operator: '=', value: 1 }],
+    query: {
+      sql: '(login.name LIKE ? OR login.email LIKE ?)',
+      values: ['%abc%', '%abc%'],
+    },
+    fields: ['login_id', 'name'],
+  });
+
+  assert.deepEqual(rows, {
+    offset: 0,
+    limit: 1,
+    items: [{ login_id: 123, name: 'Abc Vet' }],
+    count: 1,
+  });
+  assert.equal(
+    calls.connections[0].queries[0].sql,
+    'SELECT COUNT(*) AS count FROM login WHERE login.status = ? AND ((login.name LIKE ? OR login.email LIKE ?))',
+  );
+  assert.deepEqual(
+    calls.connections[0].queries[0].values,
+    [1, '%abc%', '%abc%'],
+  );
+  assert.equal(
+    calls.connections[0].queries[1].sql,
+    'SELECT login.login_id AS login_id,login.name AS name FROM login WHERE login.status = ? AND ((login.name LIKE ? OR login.email LIKE ?))',
+  );
+  assert.deepEqual(
+    calls.connections[0].queries[1].values,
+    [1, '%abc%', '%abc%'],
+  );
+});
+
 test('pet reads without fields select only direct base columns', async () => {
   const petDirectSelect =
     'pets.pet_id AS pet_id,pets.pet_name AS pet_name,pets.pet_type_id AS pet_type_id,pets.gender_id AS gender_id,pets.breed_id AS breed_id,pets.dob AS dob,pets.notes AS notes,pets.likes AS likes,pets.dislikes AS dislikes,pets.create_date AS create_date,pets.created_by AS created_by,pets.status AS status,pets.deceased_date AS deceased_date,pets.pet_status AS pet_status,pets.updated_date AS updated_date,pets.login_id AS login_id';
@@ -674,6 +716,109 @@ test('pet named associations dedupe shared path joins across selected fields', a
   assert.deepEqual(calls.connections[0].queries[0].values, [1, 1, 16, 123]);
 });
 
+test('provider products read joins category tax and image fields from associations', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{
+        product_id: 10,
+        category_name: 'Medicine',
+        tax_name: 'GST',
+        image_path: '/images/product.png',
+      }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('provider_products', {
+    filters: [{ field: 'clinic_id', operator: '=', value: 22 }],
+    fields: ['product_id', 'category_name', 'tax_name', 'image_path'],
+  });
+
+  assert.deepEqual(row, {
+    product_id: 10,
+    category_name: 'Medicine',
+    tax_name: 'GST',
+    image_path: '/images/product.png',
+  });
+  const sql = calls.connections[0].queries[0].sql;
+  assert.match(
+    sql,
+    /LEFT JOIN mstr_product_categories AS mstr_product_categories_ref ON provider_products\.category_id = mstr_product_categories_ref\.category_id/,
+  );
+  assert.match(
+    sql,
+    /LEFT JOIN clinic_tax AS clinic_tax_ref ON provider_products\.tax_id = clinic_tax_ref\.tax_id/,
+  );
+  assert.match(
+    sql,
+    /LEFT JOIN images AS images_ref ON provider_products\.image_id = images_ref\.image_id/,
+  );
+  assert.match(sql, /mstr_product_categories_ref\.category_name AS category_name/);
+  assert.match(sql, /clinic_tax_ref\.tax_name AS tax_name/);
+  assert.match(sql, /images_ref\.image_path AS image_path/);
+  assert.deepEqual(calls.connections[0].queries[0].values, [22]);
+});
+
+test('getRowsFromTable supports validated orderBy for base table fields', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{ count: 1 }],
+      [{ product_id: 10, product_name: 'Alpha' }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const rows = await db.getRowsFromTable('provider_products', {
+    filters: [{ field: 'clinic_id', operator: '=', value: 22 }],
+    fields: ['product_id', 'product_name'],
+    orderBy: 'product_name',
+    orderDirection: 'desc',
+    offset: 0,
+    limit: 20,
+  });
+
+  assert.deepEqual(rows, {
+    offset: 0,
+    limit: 20,
+    items: [{ product_id: 10, product_name: 'Alpha' }],
+    count: 1,
+  });
+  assert.equal(
+    calls.connections[0].queries[1].sql,
+    'SELECT provider_products.product_id AS product_id,provider_products.product_name AS product_name FROM provider_products WHERE provider_products.clinic_id = ? ORDER BY provider_products.product_name DESC LIMIT ? OFFSET ?',
+  );
+  assert.deepEqual(calls.connections[0].queries[1].values, [22, 20, 0]);
+});
+
+test('getRowsFromTable accepts inline order direction inside orderBy', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{ count: 1 }],
+      [{ product_id: 10, product_code: 'A-1' }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const rows = await db.getRowsFromTable('provider_products', {
+    filters: [{ field: 'clinic_id', operator: '=', value: 22 }],
+    fields: ['product_id', 'product_code'],
+    orderBy: 'product_code asc',
+    offset: 0,
+    limit: 20,
+  });
+
+  assert.deepEqual(rows, {
+    offset: 0,
+    limit: 20,
+    items: [{ product_id: 10, product_code: 'A-1' }],
+    count: 1,
+  });
+  assert.equal(
+    calls.connections[0].queries[1].sql,
+    'SELECT provider_products.product_id AS product_id,provider_products.product_code AS product_code FROM provider_products WHERE provider_products.clinic_id = ? ORDER BY provider_products.product_code ASC LIMIT ? OFFSET ?',
+  );
+});
+
 test('getRowsFromTable supports transaction connection as the third argument', async () => {
   const loginSelect =
     'login.login_id AS login_id,login.email AS email,login.name AS name,login.password AS password,login.create_date AS create_date,login.status AS status,login.phone AS phone,login.force_change_password AS force_change_password,login.login_status_id AS login_status_id,login.created_by AS created_by,login.module_id AS module_id,login.country_code AS country_code';
@@ -736,6 +881,39 @@ test('getRowsFromTable validates selected fields before building the query', asy
   assert.equal(calls.connections.length, 0);
 });
 
+test('getRowsFromTable validates orderBy before querying', async () => {
+  const { api, calls } = createConnectionStub();
+  const db = api.createConnection('dev', 'clinic');
+
+  await assert.rejects(
+    () =>
+      db.getRowsFromTable('provider_products', {
+        filters: [{ field: 'clinic_id', operator: '=', value: 22 }],
+        orderBy: 'category_name',
+      }),
+    /orderBy only supports base table fields for provider_products.category_name/,
+  );
+  await assert.rejects(
+    () =>
+      db.getRowsFromTable('provider_products', {
+        filters: [{ field: 'clinic_id', operator: '=', value: 22 }],
+        orderBy: 'missing_field',
+      }),
+    /Unknown orderBy field missing_field for provider_products/,
+  );
+  await assert.rejects(
+    () =>
+      db.getRowsFromTable('provider_products', {
+        filters: [{ field: 'clinic_id', operator: '=', value: 22 }],
+        orderBy: 'product_name',
+        orderDirection: 'sideways',
+      }),
+    /orderDirection must be "asc" or "desc" for provider_products/,
+  );
+
+  assert.equal(calls.connections.length, 0);
+});
+
 test('getRowsFromTable validates structured filters before querying', async () => {
   const { api, calls } = createConnectionStub();
   const db = api.createConnection('dev', 'clinic');
@@ -769,6 +947,35 @@ test('getRowsFromTable validates structured filters before querying', async () =
         ],
       }),
     /Invalid filter for login.name: value must be omitted/,
+  );
+
+  assert.equal(calls.connections.length, 0);
+});
+
+test('getRowsFromTable validates optional query fragments before querying', async () => {
+  const { api, calls } = createConnectionStub();
+  const db = api.createConnection('dev', 'clinic');
+
+  await assert.rejects(
+    () =>
+      db.getRowsFromTable('login', {
+        query: 'name like ?',
+      }),
+    /query must be an object for login/,
+  );
+  await assert.rejects(
+    () =>
+      db.getRowsFromTable('login', {
+        query: { sql: '' },
+      }),
+    /query\.sql must be a non-empty string for login/,
+  );
+  await assert.rejects(
+    () =>
+      db.getRowsFromTable('login', {
+        query: { sql: 'login.name LIKE ?', values: '%abc%' },
+      }),
+    /query\.values must be an array for login/,
   );
 
   assert.equal(calls.connections.length, 0);
@@ -808,6 +1015,28 @@ test('getRowFromTable supports structured filters', async () => {
     'SELECT login.login_id AS login_id,login.name AS name FROM login WHERE login.status = ? AND LOWER(login.name) LIKE LOWER(?) AND login.email IS NOT NULL LIMIT 1',
   );
   assert.deepEqual(calls.connections[0].queries[0].values, [1, '%abc%']);
+});
+
+test('getRowFromTable supports query fragments without structured filters', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [[{ login_id: 123, name: 'Abc Vet' }]],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('login', {
+    query: {
+      sql: 'login.name LIKE ? OR login.email LIKE ?',
+      values: ['%abc%', '%abc%'],
+    },
+    fields: ['login_id', 'name'],
+  });
+
+  assert.deepEqual(row, { login_id: 123, name: 'Abc Vet' });
+  assert.equal(
+    calls.connections[0].queries[0].sql,
+    'SELECT login.login_id AS login_id,login.name AS name FROM login WHERE (login.name LIKE ? OR login.email LIKE ?) LIMIT 1',
+  );
+  assert.deepEqual(calls.connections[0].queries[0].values, ['%abc%', '%abc%']);
 });
 
 test('getRowFromTable validates selected fields before building the query', async () => {
