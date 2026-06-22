@@ -475,7 +475,7 @@ const buildReadWhereData = (tableName, options, state) => {
         values: [...filterData.values, ...queryData.values],
     };
 };
-const getReadOrderData = (tableName, options) => {
+const getReadOrderData = (tableName, options, state) => {
     if (options.orderBy == null) {
         return '';
     }
@@ -502,17 +502,12 @@ const getReadOrderData = (tableName, options) => {
     if (viewField == null) {
         throw new Error(`Unknown orderBy field ${fieldName} for ${tableName}`);
     }
-    if (viewField.association != null) {
-        throw new Error(`orderBy only supports base table fields for ${tableName}.${fieldName}`);
-    }
-    if (table.model[fieldName] == null) {
-        throw new Error(`Unknown base field ${fieldName} for ${tableName}`);
-    }
+    const { expression } = resolveViewFieldReference(tableName, fieldName, state);
     const direction = options.orderDirection?.toLowerCase() ?? inlineDirection ?? 'asc';
     if (direction !== 'asc' && direction !== 'desc') {
         throw new Error(`orderDirection must be "asc" or "desc" for ${tableName}`);
     }
-    return ` ORDER BY ${tableName}.${fieldName} ${direction.toUpperCase()}`;
+    return ` ORDER BY ${expression} ${direction.toUpperCase()}`;
 };
 const normalizePaginationValue = (value, fallback, fieldName) => {
     if (value === undefined) {
@@ -616,8 +611,8 @@ const getRowsFromTableForStage = async (stageKey, conn, tableName, options = {})
     const joinState = createJoinResolutionState(tableName);
     const { selectStatement, joinValues } = getViewQueryParts(tableName, options.fields, joinState);
     const where = buildReadWhereData(tableName, options, joinState);
+    const orderStatement = getReadOrderData(tableName, options, joinState);
     const joinStatement = getJoinStatement(joinState);
-    const orderStatement = getReadOrderData(tableName, options);
     const offset = normalizePaginationValue(options.offset, 0, 'offset');
     const limit = options.limit === undefined
         ? undefined

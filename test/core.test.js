@@ -994,6 +994,40 @@ test('getRowsFromTable accepts inline order direction inside orderBy', async () 
   );
 });
 
+test('getRowsFromTable supports orderBy for associated view fields', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{ count: 1 }],
+      [{ product_id: 10 }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const rows = await db.getRowsFromTable('provider_products', {
+    filters: [{ field: 'clinic_id', operator: '=', value: 22 }],
+    fields: ['product_id'],
+    orderBy: 'category_name desc',
+    offset: 0,
+    limit: 20,
+  });
+
+  assert.deepEqual(rows, {
+    offset: 0,
+    limit: 20,
+    items: [{ product_id: 10 }],
+    count: 1,
+  });
+  assert.equal(
+    calls.connections[0].queries[0].sql,
+    'SELECT COUNT(*) AS count FROM provider_products LEFT JOIN mstr_product_categories AS mstr_product_categories_ref ON provider_products.category_id = mstr_product_categories_ref.category_id WHERE provider_products.clinic_id = ?',
+  );
+  assert.equal(
+    calls.connections[0].queries[1].sql,
+    'SELECT provider_products.product_id AS product_id FROM provider_products LEFT JOIN mstr_product_categories AS mstr_product_categories_ref ON provider_products.category_id = mstr_product_categories_ref.category_id WHERE provider_products.clinic_id = ? ORDER BY mstr_product_categories_ref.category_name DESC LIMIT ? OFFSET ?',
+  );
+  assert.deepEqual(calls.connections[0].queries[1].values, [22, 20, 0]);
+});
+
 test('getRowsFromTable supports transaction connection as the third argument', async () => {
   const loginSelect =
     'login.login_id AS login_id,login.email AS email,login.name AS name,login.password AS password,login.create_date AS create_date,login.status AS status,login.phone AS phone,login.force_change_password AS force_change_password,login.login_status_id AS login_status_id,login.created_by AS created_by,login.module_id AS module_id,login.country_code AS country_code';
@@ -1060,14 +1094,6 @@ test('getRowsFromTable validates orderBy before querying', async () => {
   const { api, calls } = createConnectionStub();
   const db = api.createConnection('dev', 'clinic');
 
-  await assert.rejects(
-    () =>
-      db.getRowsFromTable('provider_products', {
-        filters: [{ field: 'clinic_id', operator: '=', value: 22 }],
-        orderBy: 'category_name',
-      }),
-    /orderBy only supports base table fields for provider_products.category_name/,
-  );
   await assert.rejects(
     () =>
       db.getRowsFromTable('provider_products', {
