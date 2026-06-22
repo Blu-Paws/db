@@ -40,5 +40,49 @@
   },
   "updated_date": {
     "type": "datetime"
+  },
+  "available_quantity": {
+    "type": "number",
+    "expression": "provider_inventory_stock.quantity_on_hand - provider_inventory_stock.reserved_quantity"
+  },
+  "variant_code": {
+    "type": "string",
+    "association": "variant"
+  },
+  "variant_name": {
+    "type": "string",
+    "association": "variant"
+  },
+  "sku": {
+    "type": "string",
+    "association": "variant"
+  },
+  "product_id": {
+    "type": "number",
+    "association": "product"
+  },
+  "product_code": {
+    "type": "string",
+    "association": "product"
+  },
+  "product_name": {
+    "type": "string",
+    "association": "product"
+  },
+  "location_code": {
+    "type": "string",
+    "association": "location"
+  },
+  "location_name": {
+    "type": "string",
+    "association": "location"
+  },
+  "location_type": {
+    "type": "string",
+    "association": "location"
+  },
+  "full_path_code": {
+    "type": "string",
+    "association": "location"
   }
 }

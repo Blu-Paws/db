@@ -54,6 +54,7 @@ export type ViewAssociations = Record<string, ViewAssociation>;
 
 export type ViewModelField = {
   association?: string | ViewAssociation;
+  expression?: string;
   field?: string;
   type: ModelFieldType;
 };

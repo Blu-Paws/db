@@ -317,6 +317,18 @@ const resolveViewFieldReference = (tableName, fieldName, state) => {
     if (field == null) {
         throw new Error(`Unknown view field ${fieldName} for ${tableName}`);
     }
+    if (field.expression != null) {
+        if (typeof field.expression !== 'string' || field.expression.trim().length === 0) {
+            throw new Error(`Invalid expression for ${tableName}.${fieldName}`);
+        }
+        if (field.association != null) {
+            throw new Error(`Expression fields cannot define associations for ${tableName}.${fieldName}`);
+        }
+        return {
+            expression: field.expression.trim(),
+            field,
+        };
+    }
     const associationData = resolveViewAssociation(tableName, fieldName, field);
     if (associationData == null) {
         if (table.model[fieldName] == null) {
@@ -344,7 +356,7 @@ const getViewQueryParts = (tableName, selectedFieldNames, state = createJoinReso
     const resolvedSelectedFieldNames = resolveSelectedFields(tableName, selectedFieldNames);
     const fields = resolvedSelectedFieldNames == null ||
         resolvedSelectedFieldNames.length === 0
-        ? viewFields.filter(([, field]) => field.association == null)
+        ? viewFields.filter(([, field]) => field.association == null && field.expression == null)
         : resolvedSelectedFieldNames.map((fieldName) => {
             const field = table.view[fieldName];
             return [fieldName, field];
@@ -354,6 +366,11 @@ const getViewQueryParts = (tableName, selectedFieldNames, state = createJoinReso
     }
     const selectStatements = [];
     for (const [fieldName, field] of fields) {
+        if (field.expression != null) {
+            const { expression } = resolveViewFieldReference(tableName, fieldName, state);
+            selectStatements.push(`${expression} AS ${fieldName}`);
+            continue;
+        }
         if (field.association == null) {
             if (table.model[fieldName] == null) {
                 throw new Error(`Unknown base field ${fieldName} for ${tableName}`);

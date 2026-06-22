@@ -934,6 +934,120 @@ test('provider inventory movements read joins variant product and location field
   assert.deepEqual(calls.connections[0].queries[0].values, [22, 9]);
 });
 
+test('provider inventory stock read joins variant product and location fields', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{
+        stock_id: 12,
+        clinic_id: 22,
+        variant_id: 7,
+        location_id: 3,
+        batch_id: 'B-1',
+        quantity_on_hand: 10,
+        reserved_quantity: 2,
+        available_quantity: 8,
+        variant_code: 'VAR-7',
+        variant_name: 'Small',
+        sku: 'SKU-7',
+        product_id: 15,
+        product_code: 'PRD-15',
+        product_name: 'Shampoo',
+        location_code: 'MAIN',
+        location_name: 'Main Store',
+        location_type: 'stock',
+        full_path_code: 'MAIN',
+      }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('provider_inventory_stock', {
+    filters: [
+      { field: 'clinic_id', operator: '=', value: 22 },
+      { field: 'stock_id', operator: '=', value: 12 },
+    ],
+    fields: [
+      'stock_id',
+      'clinic_id',
+      'variant_id',
+      'location_id',
+      'batch_id',
+      'quantity_on_hand',
+      'reserved_quantity',
+      'available_quantity',
+      'variant_code',
+      'variant_name',
+      'sku',
+      'product_id',
+      'product_code',
+      'product_name',
+      'location_code',
+      'location_name',
+      'location_type',
+      'full_path_code',
+    ],
+  });
+
+  assert.deepEqual(row, {
+    stock_id: 12,
+    clinic_id: 22,
+    variant_id: 7,
+    location_id: 3,
+    batch_id: 'B-1',
+    quantity_on_hand: 10,
+    reserved_quantity: 2,
+    available_quantity: 8,
+    variant_code: 'VAR-7',
+    variant_name: 'Small',
+    sku: 'SKU-7',
+    product_id: 15,
+    product_code: 'PRD-15',
+    product_name: 'Shampoo',
+    location_code: 'MAIN',
+    location_name: 'Main Store',
+    location_type: 'stock',
+    full_path_code: 'MAIN',
+  });
+  const sql = calls.connections[0].queries[0].sql;
+  assert.match(
+    sql,
+    /provider_inventory_stock\.quantity_on_hand - provider_inventory_stock\.reserved_quantity AS available_quantity/,
+  );
+  assert.match(
+    sql,
+    /INNER JOIN provider_product_variants AS provider_product_variants_ref ON provider_inventory_stock\.variant_id = provider_product_variants_ref\.variant_id/,
+  );
+  assert.match(
+    sql,
+    /INNER JOIN provider_products AS provider_products_ref ON provider_product_variants_ref\.product_id = provider_products_ref\.product_id/,
+  );
+  assert.match(
+    sql,
+    /INNER JOIN provider_inventory_locations AS provider_inventory_locations_ref ON provider_inventory_stock\.location_id = provider_inventory_locations_ref\.location_id/,
+  );
+  assert.match(sql, /provider_product_variants_ref\.sku AS sku/);
+  assert.match(sql, /provider_products_ref\.product_name AS product_name/);
+  assert.match(sql, /provider_inventory_locations_ref\.full_path_code AS full_path_code/);
+  assert.deepEqual(calls.connections[0].queries[0].values, [22, 12]);
+});
+
+test('stock reads without fields omit computed and association fields', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [[{ stock_id: 12 }]],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  await db.getRowFromTable('provider_inventory_stock', {
+    filters: [{ field: 'stock_id', operator: '=', value: 12 }],
+  });
+
+  const sql = calls.connections[0].queries[0].sql;
+  assert.doesNotMatch(sql, /available_quantity/);
+  assert.doesNotMatch(sql, /JOIN provider_product_variants/);
+  assert.match(sql, /provider_inventory_stock\.stock_id AS stock_id/);
+  assert.match(sql, /provider_inventory_stock\.updated_date AS updated_date/);
+});
+
 test('getRowsFromTable supports validated orderBy for base table fields', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [
