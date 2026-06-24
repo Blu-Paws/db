@@ -1,0 +1,32 @@
+{
+  "inventory_batch_id": {
+    "type": "number"
+  },
+  "clinic_id": {
+    "type": "number"
+  },
+  "variant_id": {
+    "type": "number"
+  },
+  "batch_number": {
+    "type": "string"
+  },
+  "manufacture_date": {
+    "type": "datetime"
+  },
+  "expiry_date": {
+    "type": "datetime"
+  },
+  "purchase_cost": {
+    "type": "number"
+  },
+  "status": {
+    "type": "number"
+  },
+  "created_by": {
+    "type": "number"
+  },
+  "created_date": {
+    "type": "datetime"
+  }
+}

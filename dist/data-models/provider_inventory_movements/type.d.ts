@@ -9,8 +9,7 @@ export interface VIEW_PROVIDER_INVENTORY_MOVEMENTS {
     quantity: number;
     unit_cost: number;
     unit_price: number;
-    batch_id: string;
-    expiry_date: string;
+    inventory_batch_id: number;
     reference_type: string;
     reference_id: number;
     reference_no: string;

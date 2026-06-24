@@ -47,6 +47,7 @@ import providerInspectionChecklistTable from './data-models/provider_inspection_
 import providerInspectionChecklistQuestionsTable from './data-models/provider_inspection_checklist_questions';
 import providerInventoryLocationsTable from './data-models/provider_inventory_locations';
 import providerInventoryMovementsTable from './data-models/provider_inventory_movements';
+import providerInventoryBatch from './data-models/provider_inventory_batch';
 import providerInventoryStockTable from './data-models/provider_inventory_stock';
 import providerPackageServicesTable from './data-models/provider_package_services';
 import providerPackagesTable from './data-models/provider_packages';
@@ -114,6 +115,7 @@ export const tableDefinitions = {
     providerInspectionChecklistQuestionsTable,
   provider_inventory_locations: providerInventoryLocationsTable,
   provider_inventory_movements: providerInventoryMovementsTable,
+  provider_inventory_batch: providerInventoryBatch,
   provider_inventory_stock: providerInventoryStockTable,
   provider_package_services: providerPackageServicesTable,
   provider_packages: providerPackagesTable,

@@ -25,8 +25,8 @@
     "updateable": false,
     "createable": true
   },
-  "batch_id": {
-    "type": "string",
+  "inventory_batch_id": {
+    "type": "number",
     "required": false,
     "updateable": false,
     "createable": true
@@ -38,24 +38,6 @@
     "createable": true
   },
   "reserved_quantity": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
-    "createable": true
-  },
-  "last_counted_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": true,
-    "createable": true
-  },
-  "last_movement_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": true,
-    "createable": true
-  },
-  "status": {
     "type": "number",
     "required": false,
     "updateable": true,

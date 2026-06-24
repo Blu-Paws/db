@@ -29,11 +29,8 @@
   "unit_price": {
     "type": "number"
   },
-  "batch_id": {
-    "type": "string"
-  },
-  "expiry_date": {
-    "type": "datetime"
+  "inventory_batch_id": {
+    "type": "number"
   },
   "reference_type": {
     "type": "string"

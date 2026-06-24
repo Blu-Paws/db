@@ -61,14 +61,8 @@
     "updateable": false,
     "createable": true
   },
-  "batch_id": {
-    "type": "string",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "expiry_date": {
-    "type": "datetime",
+  "inventory_batch_id": {
+    "type": "number",
     "required": false,
     "updateable": false,
     "createable": true

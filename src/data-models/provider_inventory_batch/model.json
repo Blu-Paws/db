@@ -1,5 +1,5 @@
 {
-  "stock_id": {
+  "inventory_batch_id": {
     "type": "number",
     "primary": true,
     "autoincrement": true,
@@ -19,52 +19,46 @@
     "updateable": false,
     "createable": true
   },
-  "location_id": {
-    "type": "number",
+  "batch_number": {
+    "type": "string",
     "required": true,
-    "updateable": false,
-    "createable": true
-  },
-  "inventory_batch_id": {
-    "type": "number",
-    "required": false,
-    "updateable": false,
-    "createable": true
-  },
-  "quantity_on_hand": {
-    "type": "number",
-    "required": false,
     "updateable": true,
     "createable": true
   },
-  "reserved_quantity": {
+  "manufacture_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "expiry_date": {
+    "type": "datetime",
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "purchase_cost": {
     "type": "number",
-    "required": false,
+    "required": true,
+    "updateable": true,
+    "createable": true
+  },
+  "status": {
+    "type": "number",
+    "required": true,
     "updateable": true,
     "createable": true
   },
   "created_by": {
     "type": "number",
-    "required": false,
+    "required": true,
     "updateable": false,
-    "createable": true
-  },
-  "updated_by": {
-    "type": "number",
-    "required": false,
-    "updateable": true,
     "createable": true
   },
   "created_date": {
     "type": "datetime",
-    "required": false,
+    "required": true,
     "updateable": false,
-    "createable": true
-  },
-  "updated_date": {
-    "type": "datetime",
-    "required": false,
-    "updateable": true,
     "createable": true
   }
 }

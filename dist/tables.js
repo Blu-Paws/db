@@ -51,6 +51,7 @@ const provider_inspection_checklist_1 = __importDefault(require("./data-models/p
 const provider_inspection_checklist_questions_1 = __importDefault(require("./data-models/provider_inspection_checklist_questions"));
 const provider_inventory_locations_1 = __importDefault(require("./data-models/provider_inventory_locations"));
 const provider_inventory_movements_1 = __importDefault(require("./data-models/provider_inventory_movements"));
+const provider_inventory_batch_1 = __importDefault(require("./data-models/provider_inventory_batch"));
 const provider_inventory_stock_1 = __importDefault(require("./data-models/provider_inventory_stock"));
 const provider_package_services_1 = __importDefault(require("./data-models/provider_package_services"));
 const provider_packages_1 = __importDefault(require("./data-models/provider_packages"));
@@ -116,6 +117,7 @@ exports.tableDefinitions = {
     provider_inspection_checklist_questions: provider_inspection_checklist_questions_1.default,
     provider_inventory_locations: provider_inventory_locations_1.default,
     provider_inventory_movements: provider_inventory_movements_1.default,
+    provider_inventory_batch: provider_inventory_batch_1.default,
     provider_inventory_stock: provider_inventory_stock_1.default,
     provider_package_services: provider_package_services_1.default,
     provider_packages: provider_packages_1.default,

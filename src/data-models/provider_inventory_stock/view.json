@@ -11,22 +11,13 @@
   "location_id": {
     "type": "number"
   },
-  "batch_id": {
-    "type": "string"
+  "inventory_batch_id": {
+    "type": "number"
   },
   "quantity_on_hand": {
     "type": "number"
   },
   "reserved_quantity": {
-    "type": "number"
-  },
-  "last_counted_date": {
-    "type": "datetime"
-  },
-  "last_movement_date": {
-    "type": "datetime"
-  },
-  "status": {
     "type": "number"
   },
   "created_by": {
