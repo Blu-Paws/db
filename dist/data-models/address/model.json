@@ -64,7 +64,7 @@
   "status": {
     "type": "number",
     "required": false,
-    "updateable": false,
+    "updateable": true,
     "createable": true
   },
   "create_date": {
