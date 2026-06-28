@@ -21,4 +21,19 @@ export interface VIEW_PROVIDER_PRODUCT_VARIANTS {
   updated_by: number;
   created_date: string;
   updated_date: string;
+  clinic_id: number;
+  category_id: number;
+  product_code: string;
+  product_name: string;
+  description: string;
+  brand_name: string;
+  product_type: string;
+  is_stock_tracked: number;
+  is_restricted: number;
+  requires_prescription: number;
+  allow_negative_stock: number;
+  tax_id: number;
+  default_unit_of_measure: string;
+  image_id: number;
+  product_status: number;
 }

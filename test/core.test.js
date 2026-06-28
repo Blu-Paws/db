@@ -795,6 +795,84 @@ test('provider product variants read joins product clinic_id from associations',
   assert.deepEqual(calls.connections[0].queries[0].values, [22, 7, 15]);
 });
 
+test('provider product variants expose product table columns through product association', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [{
+        variant_id: 7,
+        product_id: 15,
+        clinic_id: 22,
+        category_id: 4,
+        product_code: 'PRD-15',
+        product_name: 'Shampoo',
+        description: 'Gentle wash',
+        brand_name: 'BluPaws',
+        product_type: 'goods',
+        is_stock_tracked: 1,
+        is_restricted: 0,
+        requires_prescription: 0,
+        allow_negative_stock: 0,
+        tax_id: 2,
+        default_unit_of_measure: 'bottle',
+        image_id: 99,
+        product_status: 1,
+      }],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('provider_product_variants', {
+    filters: [{ field: 'variant_id', operator: '=', value: 7 }],
+    fields: [
+      'variant_id',
+      'product_id',
+      'clinic_id',
+      'category_id',
+      'product_code',
+      'product_name',
+      'description',
+      'brand_name',
+      'product_type',
+      'is_stock_tracked',
+      'is_restricted',
+      'requires_prescription',
+      'allow_negative_stock',
+      'tax_id',
+      'default_unit_of_measure',
+      'image_id',
+      'product_status',
+    ],
+  });
+
+  assert.deepEqual(row, {
+    variant_id: 7,
+    product_id: 15,
+    clinic_id: 22,
+    category_id: 4,
+    product_code: 'PRD-15',
+    product_name: 'Shampoo',
+    description: 'Gentle wash',
+    brand_name: 'BluPaws',
+    product_type: 'goods',
+    is_stock_tracked: 1,
+    is_restricted: 0,
+    requires_prescription: 0,
+    allow_negative_stock: 0,
+    tax_id: 2,
+    default_unit_of_measure: 'bottle',
+    image_id: 99,
+    product_status: 1,
+  });
+  const sql = calls.connections[0].queries[0].sql;
+  assert.equal(
+    sql.match(/INNER JOIN provider_products AS provider_products_ref/g)?.length,
+    1,
+  );
+  assert.match(sql, /provider_products_ref\.product_code AS product_code/);
+  assert.match(sql, /provider_products_ref\.status AS product_status/);
+  assert.match(sql, /provider_product_variants\.product_id AS product_id/);
+});
+
 test('getRowsFromTable counts rows with association filters using the same join graph', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [
@@ -942,7 +1020,7 @@ test('provider inventory stock read joins variant product and location fields', 
         clinic_id: 22,
         variant_id: 7,
         location_id: 3,
-        batch_id: 'B-1',
+        inventory_batch_id: 101,
         quantity_on_hand: 10,
         reserved_quantity: 2,
         available_quantity: 8,
@@ -971,7 +1049,7 @@ test('provider inventory stock read joins variant product and location fields', 
       'clinic_id',
       'variant_id',
       'location_id',
-      'batch_id',
+      'inventory_batch_id',
       'quantity_on_hand',
       'reserved_quantity',
       'available_quantity',
@@ -993,7 +1071,7 @@ test('provider inventory stock read joins variant product and location fields', 
     clinic_id: 22,
     variant_id: 7,
     location_id: 3,
-    batch_id: 'B-1',
+    inventory_batch_id: 101,
     quantity_on_hand: 10,
     reserved_quantity: 2,
     available_quantity: 8,

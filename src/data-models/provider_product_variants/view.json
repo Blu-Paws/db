@@ -68,5 +68,62 @@
   "clinic_id": {
     "type": "number",
     "association": "product"
+  },
+  "category_id": {
+    "type": "number",
+    "association": "product"
+  },
+  "product_code": {
+    "type": "string",
+    "association": "product"
+  },
+  "product_name": {
+    "type": "string",
+    "association": "product"
+  },
+  "description": {
+    "type": "string",
+    "association": "product"
+  },
+  "brand_name": {
+    "type": "string",
+    "association": "product"
+  },
+  "product_type": {
+    "type": "string",
+    "association": "product"
+  },
+  "is_stock_tracked": {
+    "type": "number",
+    "association": "product"
+  },
+  "is_restricted": {
+    "type": "number",
+    "association": "product"
+  },
+  "requires_prescription": {
+    "type": "number",
+    "association": "product"
+  },
+  "allow_negative_stock": {
+    "type": "number",
+    "association": "product"
+  },
+  "tax_id": {
+    "type": "number",
+    "association": "product"
+  },
+  "default_unit_of_measure": {
+    "type": "string",
+    "association": "product"
+  },
+  "image_id": {
+    "type": "number",
+    "association": "product"
+  },
+  "product_status": {
+    "type": "number",
+    "association": "product",
+    "field": "status"
   }
 }
