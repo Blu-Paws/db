@@ -235,21 +235,18 @@ test('pets view references named associations defined in associations json', () 
   assert.equal(Object.hasOwn(view.breed_name, 'field'), false);
   assert.equal(view.pet_owner_name.field, 'name');
   assert.equal(view.pet_owner_image_path.field, 'image_path');
-  assert.deepEqual(
-    Object.keys(associations).sort(),
-    [
-      'breed',
-      'coat',
-      'current_vitals',
-      'gender',
-      'pet_image',
-      'pet_owner',
-      'pet_owner_image',
-      'pet_status',
-      'pet_type',
-      'updated_by',
-    ],
-  );
+  assert.deepEqual(Object.keys(associations).sort(), [
+    'breed',
+    'coat',
+    'current_vitals',
+    'gender',
+    'pet_image',
+    'pet_owner',
+    'pet_owner_image',
+    'pet_status',
+    'pet_type',
+    'updated_by',
+  ]);
 });
 
 test('every view model emits a corresponding exported type declaration', () => {
@@ -382,14 +379,11 @@ test('read helpers select table view fields with validated clauses', async () =>
   const row = await db.getRowFromTable('login', {
     filters: [{ field: 'phone', operator: '=', value: '5551234' }],
   });
-  const rows = await db.getRowsFromTable(
-    'login',
-    {
-      filters: [{ field: 'login_status_id', operator: '=', value: 1 }],
-      offset: 10,
-      limit: 25,
-    },
-  );
+  const rows = await db.getRowsFromTable('login', {
+    filters: [{ field: 'login_status_id', operator: '=', value: 1 }],
+    offset: 10,
+    limit: 25,
+  });
 
   assert.deepEqual(row, { login_id: 123, phone: '5551234' });
   assert.deepEqual(rows, {
@@ -457,26 +451,29 @@ test('getRowsFromTable supports structured filters with parameterized values', a
     calls.connections[0].queries[0].sql,
     'SELECT COUNT(*) AS count FROM login WHERE login.status = ? AND LOWER(login.name) LIKE LOWER(?) AND login.login_id IN (?, ?)',
   );
-  assert.deepEqual(
-    calls.connections[0].queries[0].values,
-    [1, '%abc%', 123, 456],
-  );
+  assert.deepEqual(calls.connections[0].queries[0].values, [
+    1,
+    '%abc%',
+    123,
+    456,
+  ]);
   assert.equal(
     calls.connections[0].queries[1].sql,
     'SELECT login.login_id AS login_id,login.name AS name FROM login WHERE login.status = ? AND LOWER(login.name) LIKE LOWER(?) AND login.login_id IN (?, ?) LIMIT ? OFFSET ?',
   );
-  assert.deepEqual(
-    calls.connections[0].queries[1].values,
-    [1, '%abc%', 123, 456, 20, 5],
-  );
+  assert.deepEqual(calls.connections[0].queries[1].values, [
+    1,
+    '%abc%',
+    123,
+    456,
+    20,
+    5,
+  ]);
 });
 
 test('getRowsFromTable supports optional query fragments for complex conditions', async () => {
   const { api, calls } = createConnectionStub({
-    queryResults: [
-      [{ count: 1 }],
-      [{ login_id: 123, name: 'Abc Vet' }],
-    ],
+    queryResults: [[{ count: 1 }], [{ login_id: 123, name: 'Abc Vet' }]],
   });
   const db = api.createConnection('dev', 'clinic');
 
@@ -499,18 +496,20 @@ test('getRowsFromTable supports optional query fragments for complex conditions'
     calls.connections[0].queries[0].sql,
     'SELECT COUNT(*) AS count FROM login WHERE login.status = ? AND ((login.name LIKE ? OR login.email LIKE ?))',
   );
-  assert.deepEqual(
-    calls.connections[0].queries[0].values,
-    [1, '%abc%', '%abc%'],
-  );
+  assert.deepEqual(calls.connections[0].queries[0].values, [
+    1,
+    '%abc%',
+    '%abc%',
+  ]);
   assert.equal(
     calls.connections[0].queries[1].sql,
     'SELECT login.login_id AS login_id,login.name AS name FROM login WHERE login.status = ? AND ((login.name LIKE ? OR login.email LIKE ?))',
   );
-  assert.deepEqual(
-    calls.connections[0].queries[1].values,
-    [1, '%abc%', '%abc%'],
-  );
+  assert.deepEqual(calls.connections[0].queries[1].values, [
+    1,
+    '%abc%',
+    '%abc%',
+  ]);
 });
 
 test('pet reads without fields select only direct base columns', async () => {
@@ -566,9 +565,7 @@ test('pet reads without fields select only direct base columns', async () => {
 
 test('pet reads build the vw_pets join graph with caller-provided filters', async () => {
   const { api, calls } = createConnectionStub({
-    queryResults: [
-      [{ pet_id: 123, pet_status: 16, status_name: 'Active' }],
-    ],
+    queryResults: [[{ pet_id: 123, pet_status: 16, status_name: 'Active' }]],
   });
   const db = api.createConnection('dev', 'clinic');
 
@@ -588,10 +585,7 @@ test('pet reads build the vw_pets join graph with caller-provided filters', asyn
   });
   assert.equal(calls.connections.length, 1);
   const sql = calls.connections[0].queries[0].sql;
-  assert.match(
-    sql,
-    /mstr_status_ref\.status_name AS status_name/,
-  );
+  assert.match(sql, /mstr_status_ref\.status_name AS status_name/);
   assert.match(
     sql,
     /INNER JOIN mstr_status AS mstr_status_ref ON pets\.pet_status = mstr_status_ref\.status_id AND mstr_status_ref\.module_id = \?/,
@@ -607,19 +601,14 @@ test('pet reads build the vw_pets join graph with caller-provided filters', asyn
     ),
     true,
   );
-  assert.deepEqual(
-    calls.connections[0].queries[0].values,
-    [6, 1, 16, 123],
-  );
+  assert.deepEqual(calls.connections[0].queries[0].values, [6, 1, 16, 123]);
   assert.equal(sql.includes('mstr_gender'), false);
   assert.equal(sql.includes('mstr_pet_types'), false);
 });
 
 test('pet association paths add required intermediate joins', async () => {
   const { api, calls } = createConnectionStub({
-    queryResults: [
-      [{ pet_id: 123, coat: 'Short' }],
-    ],
+    queryResults: [[{ pet_id: 123, coat: 'Short' }]],
   });
   const db = api.createConnection('dev', 'clinic');
 
@@ -675,10 +664,7 @@ test('pet named associations reuse one join for multiple selected owner fields',
     pet_owner_phone: '5551234',
   });
   const sql = calls.connections[0].queries[0].sql;
-  assert.equal(
-    sql.match(/INNER JOIN login AS pet_owner_login/g)?.length,
-    1,
-  );
+  assert.equal(sql.match(/INNER JOIN login AS pet_owner_login/g)?.length, 1);
   assert.match(sql, /pet_owner_login\.name AS pet_owner_name/);
   assert.match(sql, /pet_owner_login\.email AS pet_owner_email/);
   assert.match(sql, /pet_owner_login\.phone AS pet_owner_phone/);
@@ -687,9 +673,7 @@ test('pet named associations reuse one join for multiple selected owner fields',
 
 test('pet named associations dedupe shared path joins across selected fields', async () => {
   const { api, calls } = createConnectionStub({
-    queryResults: [
-      [{ weight: 20, height: 12, coat: 'Short', coat_id: 4 }],
-    ],
+    queryResults: [[{ weight: 20, height: 12, coat: 'Short', coat_id: 4 }]],
   });
   const db = api.createConnection('dev', 'clinic');
 
@@ -719,12 +703,14 @@ test('pet named associations dedupe shared path joins across selected fields', a
 test('provider products read joins category tax and image fields from associations', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [
-      [{
-        product_id: 10,
-        category_name: 'Medicine',
-        tax_name: 'GST',
-        image_path: '/images/product.png',
-      }],
+      [
+        {
+          product_id: 10,
+          category_name: 'Medicine',
+          tax_name: 'GST',
+          image_path: '/images/product.png',
+        },
+      ],
     ],
   });
   const db = api.createConnection('dev', 'clinic');
@@ -753,7 +739,10 @@ test('provider products read joins category tax and image fields from associatio
     sql,
     /LEFT JOIN images AS images_ref ON provider_products\.image_id = images_ref\.image_id/,
   );
-  assert.match(sql, /mstr_product_categories_ref\.category_name AS category_name/);
+  assert.match(
+    sql,
+    /mstr_product_categories_ref\.category_name AS category_name/,
+  );
   assert.match(sql, /clinic_tax_ref\.tax_name AS tax_name/);
   assert.match(sql, /images_ref\.image_path AS image_path/);
   assert.deepEqual(calls.connections[0].queries[0].values, [22]);
@@ -762,11 +751,13 @@ test('provider products read joins category tax and image fields from associatio
 test('provider product variants read joins product clinic_id from associations', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [
-      [{
-        variant_id: 7,
-        product_id: 15,
-        clinic_id: 22,
-      }],
+      [
+        {
+          variant_id: 7,
+          product_id: 15,
+          clinic_id: 22,
+        },
+      ],
     ],
   });
   const db = api.createConnection('dev', 'clinic');
@@ -798,25 +789,27 @@ test('provider product variants read joins product clinic_id from associations',
 test('provider product variants expose product table columns through product association', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [
-      [{
-        variant_id: 7,
-        product_id: 15,
-        clinic_id: 22,
-        category_id: 4,
-        product_code: 'PRD-15',
-        product_name: 'Shampoo',
-        description: 'Gentle wash',
-        brand_name: 'BluPaws',
-        product_type: 'goods',
-        is_stock_tracked: 1,
-        is_restricted: 0,
-        requires_prescription: 0,
-        allow_negative_stock: 0,
-        tax_id: 2,
-        default_unit_of_measure: 'bottle',
-        image_id: 99,
-        product_status: 1,
-      }],
+      [
+        {
+          variant_id: 7,
+          product_id: 15,
+          clinic_id: 22,
+          category_id: 4,
+          product_code: 'PRD-15',
+          product_name: 'Shampoo',
+          description: 'Gentle wash',
+          brand_name: 'BluPaws',
+          product_type: 'goods',
+          is_stock_tracked: 1,
+          is_restricted: 0,
+          requires_prescription: 0,
+          allow_negative_stock: 0,
+          tax_id: 2,
+          default_unit_of_measure: 'bottle',
+          image_id: 99,
+          product_status: 1,
+        },
+      ],
     ],
   });
   const db = api.createConnection('dev', 'clinic');
@@ -875,10 +868,7 @@ test('provider product variants expose product table columns through product ass
 
 test('getRowsFromTable counts rows with association filters using the same join graph', async () => {
   const { api, calls } = createConnectionStub({
-    queryResults: [
-      [{ count: 1 }],
-      [{ variant_id: 7 }],
-    ],
+    queryResults: [[{ count: 1 }], [{ variant_id: 7 }]],
   });
   const db = api.createConnection('dev', 'clinic');
 
@@ -912,24 +902,26 @@ test('getRowsFromTable counts rows with association filters using the same join 
 test('provider inventory movements read joins variant product and location fields', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [
-      [{
-        movement_id: 9,
-        clinic_id: 22,
-        variant_id: 7,
-        variant_code: 'VAR-7',
-        variant_name: 'Small',
-        product_id: 15,
-        product_code: 'PRD-15',
-        product_name: 'Shampoo',
-        location_code: 'MAIN',
-        location_name: 'Main Store',
-        location_type: 'stock',
-        full_path_code: 'MAIN',
-        from_location_code: 'OLD',
-        from_location_name: 'Old Shelf',
-        to_location_code: 'NEW',
-        to_location_name: 'New Shelf',
-      }],
+      [
+        {
+          movement_id: 9,
+          clinic_id: 22,
+          variant_id: 7,
+          variant_code: 'VAR-7',
+          variant_name: 'Small',
+          product_id: 15,
+          product_code: 'PRD-15',
+          product_name: 'Shampoo',
+          location_code: 'MAIN',
+          location_name: 'Main Store',
+          location_type: 'stock',
+          full_path_code: 'MAIN',
+          from_location_code: 'OLD',
+          from_location_name: 'Old Shelf',
+          to_location_code: 'NEW',
+          to_location_name: 'New Shelf',
+        },
+      ],
     ],
   });
   const db = api.createConnection('dev', 'clinic');
@@ -998,9 +990,15 @@ test('provider inventory movements read joins variant product and location field
     sql,
     /LEFT JOIN provider_inventory_locations AS provider_inventory_to_locations_ref ON provider_inventory_movements\.to_location_id = provider_inventory_to_locations_ref\.location_id/,
   );
-  assert.match(sql, /provider_product_variants_ref\.variant_code AS variant_code/);
+  assert.match(
+    sql,
+    /provider_product_variants_ref\.variant_code AS variant_code/,
+  );
   assert.match(sql, /provider_products_ref\.product_name AS product_name/);
-  assert.match(sql, /provider_inventory_locations_ref\.full_path_code AS full_path_code/);
+  assert.match(
+    sql,
+    /provider_inventory_locations_ref\.full_path_code AS full_path_code/,
+  );
   assert.match(
     sql,
     /provider_inventory_from_locations_ref\.location_code AS from_location_code/,
@@ -1015,26 +1013,32 @@ test('provider inventory movements read joins variant product and location field
 test('provider inventory stock read joins variant product and location fields', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [
-      [{
-        stock_id: 12,
-        clinic_id: 22,
-        variant_id: 7,
-        location_id: 3,
-        inventory_batch_id: 101,
-        quantity_on_hand: 10,
-        reserved_quantity: 2,
-        available_quantity: 8,
-        variant_code: 'VAR-7',
-        variant_name: 'Small',
-        sku: 'SKU-7',
-        product_id: 15,
-        product_code: 'PRD-15',
-        product_name: 'Shampoo',
-        location_code: 'MAIN',
-        location_name: 'Main Store',
-        location_type: 'stock',
-        full_path_code: 'MAIN',
-      }],
+      [
+        {
+          stock_id: 12,
+          clinic_id: 22,
+          variant_id: 7,
+          location_id: 3,
+          inventory_batch_id: 101,
+          quantity_on_hand: 10,
+          reserved_quantity: 2,
+          available_quantity: 8,
+          variant_code: 'VAR-7',
+          variant_name: 'Small',
+          sku: 'SKU-7',
+          product_id: 15,
+          product_code: 'PRD-15',
+          product_name: 'Shampoo',
+          location_code: 'MAIN',
+          location_name: 'Main Store',
+          location_type: 'stock',
+          full_path_code: 'MAIN',
+          batch_number: 'B-101',
+          manufacture_date: '2026-01-01',
+          expiry_date: '2027-01-01',
+          purchase_cost: 125,
+        },
+      ],
     ],
   });
   const db = api.createConnection('dev', 'clinic');
@@ -1063,6 +1067,10 @@ test('provider inventory stock read joins variant product and location fields', 
       'location_name',
       'location_type',
       'full_path_code',
+      'batch_number',
+      'manufacture_date',
+      'expiry_date',
+      'purchase_cost',
     ],
   });
 
@@ -1085,6 +1093,10 @@ test('provider inventory stock read joins variant product and location fields', 
     location_name: 'Main Store',
     location_type: 'stock',
     full_path_code: 'MAIN',
+    batch_number: 'B-101',
+    manufacture_date: '2026-01-01',
+    expiry_date: '2027-01-01',
+    purchase_cost: 125,
   });
   const sql = calls.connections[0].queries[0].sql;
   assert.match(
@@ -1103,9 +1115,20 @@ test('provider inventory stock read joins variant product and location fields', 
     sql,
     /INNER JOIN provider_inventory_locations AS provider_inventory_locations_ref ON provider_inventory_stock\.location_id = provider_inventory_locations_ref\.location_id/,
   );
+  assert.match(
+    sql,
+    /LEFT JOIN provider_inventory_batch AS provider_inventory_batch_ref ON provider_inventory_stock\.inventory_batch_id = provider_inventory_batch_ref\.inventory_batch_id/,
+  );
   assert.match(sql, /provider_product_variants_ref\.sku AS sku/);
   assert.match(sql, /provider_products_ref\.product_name AS product_name/);
-  assert.match(sql, /provider_inventory_locations_ref\.full_path_code AS full_path_code/);
+  assert.match(
+    sql,
+    /provider_inventory_locations_ref\.full_path_code AS full_path_code/,
+  );
+  assert.match(
+    sql,
+    /provider_inventory_batch_ref\.batch_number AS batch_number/,
+  );
   assert.deepEqual(calls.connections[0].queries[0].values, [22, 12]);
 });
 
@@ -1128,10 +1151,7 @@ test('stock reads without fields omit computed and association fields', async ()
 
 test('getRowsFromTable supports validated orderBy for base table fields', async () => {
   const { api, calls } = createConnectionStub({
-    queryResults: [
-      [{ count: 1 }],
-      [{ product_id: 10, product_name: 'Alpha' }],
-    ],
+    queryResults: [[{ count: 1 }], [{ product_id: 10, product_name: 'Alpha' }]],
   });
   const db = api.createConnection('dev', 'clinic');
 
@@ -1159,10 +1179,7 @@ test('getRowsFromTable supports validated orderBy for base table fields', async 
 
 test('getRowsFromTable accepts inline order direction inside orderBy', async () => {
   const { api, calls } = createConnectionStub({
-    queryResults: [
-      [{ count: 1 }],
-      [{ product_id: 10, product_code: 'A-1' }],
-    ],
+    queryResults: [[{ count: 1 }], [{ product_id: 10, product_code: 'A-1' }]],
   });
   const db = api.createConnection('dev', 'clinic');
 
@@ -1188,10 +1205,7 @@ test('getRowsFromTable accepts inline order direction inside orderBy', async () 
 
 test('getRowsFromTable supports orderBy for associated view fields', async () => {
   const { api, calls } = createConnectionStub({
-    queryResults: [
-      [{ count: 1 }],
-      [{ product_id: 10 }],
-    ],
+    queryResults: [[{ count: 1 }], [{ product_id: 10 }]],
   });
   const db = api.createConnection('dev', 'clinic');
 
@@ -1224,10 +1238,7 @@ test('getRowsFromTable supports transaction connection as the third argument', a
   const loginSelect =
     'login.login_id AS login_id,login.email AS email,login.name AS name,login.password AS password,login.create_date AS create_date,login.status AS status,login.phone AS phone,login.force_change_password AS force_change_password,login.login_status_id AS login_status_id,login.created_by AS created_by,login.module_id AS module_id,login.country_code AS country_code';
   const { api, calls } = createConnectionStub({
-    queryResults: [
-      [{ count: 1 }],
-      [{ login_id: 123, phone: '5551234' }],
-    ],
+    queryResults: [[{ count: 1 }], [{ login_id: 123, phone: '5551234' }]],
   });
   const db = api.createConnection('dev', 'clinic');
 

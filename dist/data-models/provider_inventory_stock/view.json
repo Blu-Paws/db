@@ -75,5 +75,21 @@
   "full_path_code": {
     "type": "string",
     "association": "location"
+  },
+  "batch_number": {
+    "type": "string",
+    "association": "batch"
+  },
+  "manufacture_date": {
+    "type": "datetime",
+    "association": "batch"
+  },
+  "expiry_date": {
+    "type": "datetime",
+    "association": "batch"
+  },
+  "purchase_cost": {
+    "type": "number",
+    "association": "batch"
   }
 }

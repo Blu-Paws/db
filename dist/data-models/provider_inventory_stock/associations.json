@@ -31,5 +31,12 @@
     "targetField": "location_id",
     "alias": "provider_inventory_locations_ref",
     "joinType": "INNER"
+  },
+  "batch": {
+    "tableName": "provider_inventory_batch",
+    "sourceField": "inventory_batch_id",
+    "targetField": "inventory_batch_id",
+    "alias": "provider_inventory_batch_ref",
+    "joinType": "LEFT"
   }
 }
