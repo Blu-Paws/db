@@ -42,7 +42,6 @@ export declare const tableDefinitions: {
     promotion_rules: TableDefinition;
     provider_boarding_prices: TableDefinition;
     provider_boardings: TableDefinition;
-    provider_exceptions: TableDefinition;
     provider_experience_price: TableDefinition;
     provider_inspection_checklist: TableDefinition;
     provider_inspection_checklist_questions: TableDefinition;

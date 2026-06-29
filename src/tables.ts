@@ -41,7 +41,6 @@ import promotionTable from './data-models/promotion';
 import promotionRulesTable from './data-models/promotion_rules';
 import providerBoardingPricesTable from './data-models/provider_boarding_prices';
 import providerBoardingsTable from './data-models/provider_boardings';
-import providerExceptionsTable from './data-models/provider_exceptions';
 import providerExperiencePriceTable from './data-models/provider_experience_price';
 import providerInspectionChecklistTable from './data-models/provider_inspection_checklist';
 import providerInspectionChecklistQuestionsTable from './data-models/provider_inspection_checklist_questions';
@@ -108,7 +107,6 @@ export const tableDefinitions = {
   promotion_rules: promotionRulesTable,
   provider_boarding_prices: providerBoardingPricesTable,
   provider_boardings: providerBoardingsTable,
-  provider_exceptions: providerExceptionsTable,
   provider_experience_price: providerExperiencePriceTable,
   provider_inspection_checklist: providerInspectionChecklistTable,
   provider_inspection_checklist_questions:

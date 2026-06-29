@@ -17,10 +17,7 @@
   "rule_type": {
     "type": "string"
   },
-  "exception_scope": {
-    "type": "string"
-  },
-  "exception_date": {
+  "exception_start_date": {
     "type": "string"
   },
   "exception_name": {

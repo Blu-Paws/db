@@ -40,7 +40,6 @@ export type { VIEW_PROMOTION } from './promotion/type';
 export type { VIEW_PROMOTION_RULES } from './promotion_rules/type';
 export type { VIEW_PROVIDER_BOARDINGS } from './provider_boardings/type';
 export type { VIEW_PROVIDER_BOARDING_PRICES } from './provider_boarding_prices/type';
-export type { VIEW_PROVIDER_EXCEPTIONS } from './provider_exceptions/type';
 export type { VIEW_PROVIDER_EXPERIENCE_PRICE } from './provider_experience_price/type';
 export type { VIEW_PROVIDER_INSPECTION_CHECKLIST } from './provider_inspection_checklist/type';
 export type { VIEW_PROVIDER_INSPECTION_CHECKLIST_QUESTIONS } from './provider_inspection_checklist_questions/type';
