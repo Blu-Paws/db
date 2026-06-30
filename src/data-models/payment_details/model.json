@@ -68,7 +68,7 @@
   "paymenttype_id": {
     "type": "number",
     "createable": true,
-    "updateable": false,
+    "updateable": true,
     "required": true
   },
   "order_id": {
