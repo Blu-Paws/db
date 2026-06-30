@@ -10,6 +10,7 @@ import {
   GetSecretValueCommand,
   SecretsManagerClient,
 } from '@aws-sdk/client-secrets-manager';
+import { APIGatewayProxyEventHeaders } from 'aws-lambda';
 
 import type {
   AuthenticationResponse,
@@ -387,7 +388,9 @@ const createJoinResolutionState = (tableName: string): JoinResolutionState => ({
 });
 
 const getJoinStatement = (state: JoinResolutionState): string =>
-  state.joins.size === 0 ? '' : ` ${Array.from(state.joins.values()).join(' ')}`;
+  state.joins.size === 0
+    ? ''
+    : ` ${Array.from(state.joins.values()).join(' ')}`;
 
 const ensureAssociationJoins = (
   tableName: string,
@@ -395,7 +398,11 @@ const ensureAssociationJoins = (
   association: ViewAssociation,
   state: JoinResolutionState,
 ): { targetAlias: string; targetTableName: string } => {
-  const associationJoins = getAssociationJoins(tableName, fieldName, association);
+  const associationJoins = getAssociationJoins(
+    tableName,
+    fieldName,
+    association,
+  );
   let targetAlias = tableName;
   let targetTableName = tableName;
 
@@ -468,7 +475,10 @@ const resolveViewFieldReference = (
     throw new Error(`Unknown view field ${fieldName} for ${tableName}`);
   }
   if (field.expression != null) {
-    if (typeof field.expression !== 'string' || field.expression.trim().length === 0) {
+    if (
+      typeof field.expression !== 'string' ||
+      field.expression.trim().length === 0
+    ) {
       throw new Error(`Invalid expression for ${tableName}.${fieldName}`);
     }
     if (field.association != null) {
@@ -545,7 +555,11 @@ const getViewQueryParts = (
   const selectStatements: string[] = [];
   for (const [fieldName, field] of fields) {
     if (field.expression != null) {
-      const { expression } = resolveViewFieldReference(tableName, fieldName, state);
+      const { expression } = resolveViewFieldReference(
+        tableName,
+        fieldName,
+        state,
+      );
       selectStatements.push(`${expression} AS ${fieldName}`);
       continue;
     }
@@ -556,7 +570,11 @@ const getViewQueryParts = (
       selectStatements.push(`${tableName}.${fieldName} AS ${fieldName}`);
       continue;
     }
-    const { expression } = resolveViewFieldReference(tableName, fieldName, state);
+    const { expression } = resolveViewFieldReference(
+      tableName,
+      fieldName,
+      state,
+    );
     selectStatements.push(`${expression} AS ${fieldName}`);
   }
 
@@ -609,7 +627,11 @@ const getReadFilterData = (
       );
     }
     const fieldName = filter.field.trim();
-    const { expression } = resolveViewFieldReference(tableName, fieldName, state);
+    const { expression } = resolveViewFieldReference(
+      tableName,
+      fieldName,
+      state,
+    );
     const operator = filter.operator;
     switch (operator) {
       case '=':
@@ -747,11 +769,10 @@ const getReadOrderData = (
   }
   const { expression } = resolveViewFieldReference(tableName, fieldName, state);
 
-  const direction = options.orderDirection?.toLowerCase() ?? inlineDirection ?? 'asc';
+  const direction =
+    options.orderDirection?.toLowerCase() ?? inlineDirection ?? 'asc';
   if (direction !== 'asc' && direction !== 'desc') {
-    throw new Error(
-      `orderDirection must be "asc" or "desc" for ${tableName}`,
-    );
+    throw new Error(`orderDirection must be "asc" or "desc" for ${tableName}`);
   }
 
   return ` ORDER BY ${expression} ${direction.toUpperCase()}`;
@@ -1100,7 +1121,7 @@ export const verifyRefreshToken = async (stageValue: Stage, token: string) => {
 
 export const getAuthenticatedUserDetails = async (
   stageValue: Stage,
-  headers: Record<string, string>,
+  headers: APIGatewayProxyEventHeaders,
 ): Promise<AuthenticationResponse> => {
   const { 'x-api-key': blupawsApiKey, Authorization } = headers;
   if (blupawsApiKey == null && Authorization == null) {
@@ -1133,7 +1154,7 @@ export const getAuthenticatedUserDetails = async (
         error: 'Invalid api key',
       };
     } else if (Authorization != null) {
-      const jwtToken = headers.Authorization.substring(7);
+      const jwtToken = Authorization.substring(7);
       const user = await verifyJWTToken(stageValue, jwtToken);
       return { user };
     }

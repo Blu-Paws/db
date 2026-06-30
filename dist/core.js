@@ -267,7 +267,9 @@ const createJoinResolutionState = (tableName) => ({
     aliasTableNames: new Map([[tableName, tableName]]),
     joinValues: [],
 });
-const getJoinStatement = (state) => state.joins.size === 0 ? '' : ` ${Array.from(state.joins.values()).join(' ')}`;
+const getJoinStatement = (state) => state.joins.size === 0
+    ? ''
+    : ` ${Array.from(state.joins.values()).join(' ')}`;
 const ensureAssociationJoins = (tableName, fieldName, association, state) => {
     const associationJoins = getAssociationJoins(tableName, fieldName, association);
     let targetAlias = tableName;
@@ -318,7 +320,8 @@ const resolveViewFieldReference = (tableName, fieldName, state) => {
         throw new Error(`Unknown view field ${fieldName} for ${tableName}`);
     }
     if (field.expression != null) {
-        if (typeof field.expression !== 'string' || field.expression.trim().length === 0) {
+        if (typeof field.expression !== 'string' ||
+            field.expression.trim().length === 0) {
             throw new Error(`Invalid expression for ${tableName}.${fieldName}`);
         }
         if (field.association != null) {
@@ -755,7 +758,7 @@ const getAuthenticatedUserDetails = async (stageValue, headers) => {
             };
         }
         else if (Authorization != null) {
-            const jwtToken = headers.Authorization.substring(7);
+            const jwtToken = Authorization.substring(7);
             const user = await (0, exports.verifyJWTToken)(stageValue, jwtToken);
             return { user };
         }
