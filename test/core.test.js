@@ -381,6 +381,7 @@ test('read helpers select table view fields with validated clauses', async () =>
   });
   const rows = await db.getRowsFromTable('login', {
     filters: [{ field: 'login_status_id', operator: '=', value: 1 }],
+    totalResults: true,
     offset: 10,
     limit: 25,
   });
@@ -394,6 +395,8 @@ test('read helpers select table view fields with validated clauses', async () =>
       { login_id: 456, phone: '5555678' },
     ],
     count: 2,
+    hasMore: false,
+    totalResults: 2,
   });
   assert.equal(calls.connections.length, 2);
   assert.equal(
@@ -434,6 +437,7 @@ test('getRowsFromTable supports structured filters with parameterized values', a
       { field: 'login_id', operator: 'in', value: [123, 456] },
     ],
     fields: ['login_id', 'name'],
+    totalResults: true,
     offset: 5,
     limit: 20,
   });
@@ -446,6 +450,8 @@ test('getRowsFromTable supports structured filters with parameterized values', a
       { login_id: 456, name: 'Abc Care' },
     ],
     count: 2,
+    hasMore: false,
+    totalResults: 2,
   });
   assert.equal(
     calls.connections[0].queries[0].sql,
@@ -484,6 +490,7 @@ test('getRowsFromTable supports optional query fragments for complex conditions'
       values: ['%abc%', '%abc%'],
     },
     fields: ['login_id', 'name'],
+    totalResults: true,
   });
 
   assert.deepEqual(rows, {
@@ -491,6 +498,8 @@ test('getRowsFromTable supports optional query fragments for complex conditions'
     limit: 1,
     items: [{ login_id: 123, name: 'Abc Vet' }],
     count: 1,
+    hasMore: false,
+    totalResults: 1,
   });
   assert.equal(
     calls.connections[0].queries[0].sql,
@@ -510,6 +519,69 @@ test('getRowsFromTable supports optional query fragments for complex conditions'
     '%abc%',
     '%abc%',
   ]);
+});
+
+test('getRowsFromTable skips total count unless requested', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [[{ login_id: 123 }, { login_id: 456 }]],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const rows = await db.getRowsFromTable('login', {
+    filters: [{ field: 'status', operator: '=', value: 1 }],
+    fields: ['login_id'],
+    limit: 1,
+  });
+
+  assert.deepEqual(rows, {
+    offset: 0,
+    limit: 1,
+    items: [{ login_id: 123 }],
+    count: 1,
+    hasMore: true,
+  });
+  assert.equal('totalResults' in rows, false);
+  assert.equal(calls.connections.length, 1);
+  assert.equal(calls.connections[0].queries.length, 1);
+  assert.equal(
+    calls.connections[0].queries[0].sql,
+    'SELECT login.login_id AS login_id FROM login WHERE login.status = ? LIMIT ? OFFSET ?',
+  );
+  assert.deepEqual(calls.connections[0].queries[0].values, [1, 2, 0]);
+});
+
+test('getRowsFromTable derives hasMore from totalResults when requested', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [[{ count: 3 }], [{ login_id: 123 }]],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const rows = await db.getRowsFromTable('login', {
+    filters: [{ field: 'status', operator: '=', value: 1 }],
+    fields: ['login_id'],
+    totalResults: true,
+    limit: 1,
+  });
+
+  assert.deepEqual(rows, {
+    offset: 0,
+    limit: 1,
+    items: [{ login_id: 123 }],
+    count: 1,
+    hasMore: true,
+    totalResults: 3,
+  });
+  assert.equal(calls.connections.length, 1);
+  assert.equal(calls.connections[0].queries.length, 2);
+  assert.equal(
+    calls.connections[0].queries[0].sql,
+    'SELECT COUNT(*) AS count FROM login WHERE login.status = ?',
+  );
+  assert.equal(
+    calls.connections[0].queries[1].sql,
+    'SELECT login.login_id AS login_id FROM login WHERE login.status = ? LIMIT ? OFFSET ?',
+  );
+  assert.deepEqual(calls.connections[0].queries[1].values, [1, 1, 0]);
 });
 
 test('pet reads without fields select only direct base columns', async () => {
@@ -538,6 +610,7 @@ test('pet reads without fields select only direct base columns', async () => {
       { field: 'login_id', operator: '=', value: 55 },
     ],
     fields: [],
+    totalResults: true,
     offset: 0,
     limit: 10,
   });
@@ -548,6 +621,8 @@ test('pet reads without fields select only direct base columns', async () => {
     limit: 10,
     items: [{ pet_id: 123, pet_name: 'Milo' }],
     count: 1,
+    hasMore: false,
+    totalResults: 1,
   });
   assert.equal(
     calls.connections[0].queries[0].sql,
@@ -878,6 +953,7 @@ test('getRowsFromTable counts rows with association filters using the same join 
       { field: 'product_id', operator: '=', value: 15 },
     ],
     fields: ['variant_id'],
+    totalResults: true,
     limit: 20,
     offset: 0,
   });
@@ -887,6 +963,8 @@ test('getRowsFromTable counts rows with association filters using the same join 
     limit: 20,
     items: [{ variant_id: 7 }],
     count: 1,
+    hasMore: false,
+    totalResults: 1,
   });
   assert.equal(
     calls.connections[0].queries[0].sql,
@@ -909,6 +987,7 @@ test('provider inventory movements read joins variant product and location field
           variant_id: 7,
           variant_code: 'VAR-7',
           variant_name: 'Small',
+          unit_of_measure: 'bottle',
           product_id: 15,
           product_code: 'PRD-15',
           product_name: 'Shampoo',
@@ -937,6 +1016,7 @@ test('provider inventory movements read joins variant product and location field
       'variant_id',
       'variant_code',
       'variant_name',
+      'unit_of_measure',
       'product_id',
       'product_code',
       'product_name',
@@ -957,6 +1037,7 @@ test('provider inventory movements read joins variant product and location field
     variant_id: 7,
     variant_code: 'VAR-7',
     variant_name: 'Small',
+    unit_of_measure: 'bottle',
     product_id: 15,
     product_code: 'PRD-15',
     product_name: 'Shampoo',
@@ -994,6 +1075,10 @@ test('provider inventory movements read joins variant product and location field
     sql,
     /provider_product_variants_ref\.variant_code AS variant_code/,
   );
+  assert.match(
+    sql,
+    /provider_product_variants_ref\.unit_of_measure AS unit_of_measure/,
+  );
   assert.match(sql, /provider_products_ref\.product_name AS product_name/);
   assert.match(
     sql,
@@ -1025,6 +1110,7 @@ test('provider inventory stock read joins variant product and location fields', 
           available_quantity: 8,
           variant_code: 'VAR-7',
           variant_name: 'Small',
+          unit_of_measure: 'bottle',
           sku: 'SKU-7',
           product_id: 15,
           product_code: 'PRD-15',
@@ -1059,6 +1145,7 @@ test('provider inventory stock read joins variant product and location fields', 
       'available_quantity',
       'variant_code',
       'variant_name',
+      'unit_of_measure',
       'sku',
       'product_id',
       'product_code',
@@ -1085,6 +1172,7 @@ test('provider inventory stock read joins variant product and location fields', 
     available_quantity: 8,
     variant_code: 'VAR-7',
     variant_name: 'Small',
+    unit_of_measure: 'bottle',
     sku: 'SKU-7',
     product_id: 15,
     product_code: 'PRD-15',
@@ -1120,6 +1208,10 @@ test('provider inventory stock read joins variant product and location fields', 
     /LEFT JOIN provider_inventory_batch AS provider_inventory_batch_ref ON provider_inventory_stock\.inventory_batch_id = provider_inventory_batch_ref\.inventory_batch_id/,
   );
   assert.match(sql, /provider_product_variants_ref\.sku AS sku/);
+  assert.match(
+    sql,
+    /provider_product_variants_ref\.unit_of_measure AS unit_of_measure/,
+  );
   assert.match(sql, /provider_products_ref\.product_name AS product_name/);
   assert.match(
     sql,
@@ -1160,6 +1252,7 @@ test('getRowsFromTable supports validated orderBy for base table fields', async 
     fields: ['product_id', 'product_name'],
     orderBy: 'product_name',
     orderDirection: 'desc',
+    totalResults: true,
     offset: 0,
     limit: 20,
   });
@@ -1169,6 +1262,8 @@ test('getRowsFromTable supports validated orderBy for base table fields', async 
     limit: 20,
     items: [{ product_id: 10, product_name: 'Alpha' }],
     count: 1,
+    hasMore: false,
+    totalResults: 1,
   });
   assert.equal(
     calls.connections[0].queries[1].sql,
@@ -1187,6 +1282,7 @@ test('getRowsFromTable accepts inline order direction inside orderBy', async () 
     filters: [{ field: 'clinic_id', operator: '=', value: 22 }],
     fields: ['product_id', 'product_code'],
     orderBy: 'product_code asc',
+    totalResults: true,
     offset: 0,
     limit: 20,
   });
@@ -1196,6 +1292,8 @@ test('getRowsFromTable accepts inline order direction inside orderBy', async () 
     limit: 20,
     items: [{ product_id: 10, product_code: 'A-1' }],
     count: 1,
+    hasMore: false,
+    totalResults: 1,
   });
   assert.equal(
     calls.connections[0].queries[1].sql,
@@ -1213,6 +1311,7 @@ test('getRowsFromTable supports orderBy for associated view fields', async () =>
     filters: [{ field: 'clinic_id', operator: '=', value: 22 }],
     fields: ['product_id'],
     orderBy: 'category_name desc',
+    totalResults: true,
     offset: 0,
     limit: 20,
   });
@@ -1222,6 +1321,8 @@ test('getRowsFromTable supports orderBy for associated view fields', async () =>
     limit: 20,
     items: [{ product_id: 10 }],
     count: 1,
+    hasMore: false,
+    totalResults: 1,
   });
   assert.equal(
     calls.connections[0].queries[0].sql,
@@ -1245,7 +1346,10 @@ test('getRowsFromTable supports transaction connection as the third argument', a
   await db.withTransaction(async (conn) => {
     const rows = await db.getRowsFromTable(
       'login',
-      { filters: [{ field: 'login_status_id', operator: '=', value: 1 }] },
+      {
+        filters: [{ field: 'login_status_id', operator: '=', value: 1 }],
+        totalResults: true,
+      },
       conn,
     );
 
@@ -1254,6 +1358,8 @@ test('getRowsFromTable supports transaction connection as the third argument', a
       limit: 1,
       items: [{ login_id: 123, phone: '5551234' }],
       count: 1,
+      hasMore: false,
+      totalResults: 1,
     });
   });
 

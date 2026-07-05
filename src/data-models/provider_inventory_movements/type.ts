@@ -17,4 +17,18 @@ export interface VIEW_PROVIDER_INVENTORY_MOVEMENTS {
   notes: string;
   created_by: number;
   created_date: string;
+  variant_code: string;
+  variant_name: string;
+  unit_of_measure: string;
+  product_id: number;
+  product_code: string;
+  product_name: string;
+  location_code: string;
+  location_name: string;
+  location_type: string;
+  full_path_code: string;
+  from_location_code: string;
+  from_location_name: string;
+  to_location_code: string;
+  to_location_name: string;
 }

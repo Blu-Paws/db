@@ -13,6 +13,7 @@ export interface VIEW_PROVIDER_INVENTORY_STOCK {
     available_quantity: number;
     variant_code: string;
     variant_name: string;
+    unit_of_measure: string;
     sku: string;
     product_id: number;
     product_code: string;

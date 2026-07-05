@@ -78,6 +78,7 @@ const pets = await db.getRowsFromTable('pets', {
   ],
   orderBy: 'pet_name',
   orderDirection: 'asc',
+  totalResults: true,
   query: {
     sql: '(pets.likes LIKE ? OR pets.notes LIKE ?)',
     values: ['%treat%', '%treat%']
@@ -101,8 +102,10 @@ When `fields` is not provided or is an empty array, the query selects only
 direct base-table fields from `view.json` and does not add association joins.
 When `fields` is provided, each field must be a string that matches a key from
 `view.json`; association joins are added only for the selected associated
-fields.
-`getRowsFromTable(...)` returns paged metadata and rows in `items`:
+fields. Pass `totalResults: true` when you also want the full matching row
+count; in that case the response includes a `totalResults` field. `count` is
+always the number of items returned in `items`. `hasMore` tells you whether
+another page exists:
 
 ```js
 {
@@ -110,6 +113,8 @@ fields.
   limit: 25,
   items: [],
   count: 0,
+  hasMore: false,
+  totalResults: 0,
 }
 ```
 

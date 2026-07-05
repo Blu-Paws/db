@@ -640,23 +640,35 @@ const getRowsFromTableForStage = async (stageKey, conn, tableName, options = {})
     if (offset > 0 && limit === undefined) {
         throw new Error('limit is required when offset is provided');
     }
+    const wantsTotalResults = options.totalResults === true;
     let sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${where.statement}${orderStatement}`;
     const rowValues = [...joinValues, ...where.values];
+    const countSql = `SELECT COUNT(*) AS count FROM ${tableName}${joinStatement} WHERE ${where.statement}`;
+    const queryLimit = limit === undefined || wantsTotalResults ? limit : limit + 1;
     if (limit !== undefined) {
         sql = `${sql} LIMIT ? OFFSET ?`;
-        rowValues.push(limit, offset);
+        rowValues.push(queryLimit, offset);
     }
-    const countSql = `SELECT COUNT(*) AS count FROM ${tableName}${joinStatement} WHERE ${where.statement}`;
     const run = async (activeConn) => {
-        const countRows = await queryForStage(stageKey, countSql, [...joinValues, ...where.values], activeConn);
-        const rows = await queryForStage(stageKey, sql, rowValues, activeConn);
-        const count = Number(countRows[0]?.count ?? 0);
-        const items = rows;
+        let totalResults;
+        if (wantsTotalResults) {
+            const countRows = await queryForStage(stageKey, countSql, [...joinValues, ...where.values], activeConn);
+            totalResults = Number(countRows[0]?.count ?? 0);
+        }
+        const rows = (await queryForStage(stageKey, sql, rowValues, activeConn));
+        const items = limit !== undefined && !wantsTotalResults ? rows.slice(0, limit) : rows;
+        const hasMore = limit === undefined
+            ? false
+            : wantsTotalResults
+                ? (totalResults ?? 0) > offset + items.length
+                : rows.length > limit;
         return {
             offset,
             limit: limit ?? items.length,
             items,
-            count,
+            count: items.length,
+            hasMore,
+            ...(totalResults === undefined ? {} : { totalResults }),
         };
     };
     if (conn != null) {

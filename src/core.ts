@@ -950,34 +950,50 @@ const getRowsFromTableForStage = async <T>(
     throw new Error('limit is required when offset is provided');
   }
 
+  const wantsTotalResults = options.totalResults === true;
   let sql = `SELECT ${selectStatement} FROM ${tableName}${joinStatement} WHERE ${where.statement}${orderStatement}`;
   const rowValues = [...joinValues, ...where.values];
+  const countSql = `SELECT COUNT(*) AS count FROM ${tableName}${joinStatement} WHERE ${where.statement}`;
+  const queryLimit =
+    limit === undefined || wantsTotalResults ? limit : limit + 1;
   if (limit !== undefined) {
     sql = `${sql} LIMIT ? OFFSET ?`;
-    rowValues.push(limit, offset);
+    rowValues.push(queryLimit as number, offset);
   }
 
-  const countSql = `SELECT COUNT(*) AS count FROM ${tableName}${joinStatement} WHERE ${where.statement}`;
   const run = async (activeConn: PoolConnection): Promise<GetRowsResult<T>> => {
-    const countRows = await queryForStage<RowDataPacket[]>(
-      stageKey,
-      countSql,
-      [...joinValues, ...where.values],
-      activeConn,
-    );
-    const rows = await queryForStage<RowDataPacket[]>(
+    let totalResults: number | undefined;
+    if (wantsTotalResults) {
+      const countRows = await queryForStage<RowDataPacket[]>(
+        stageKey,
+        countSql,
+        [...joinValues, ...where.values],
+        activeConn,
+      );
+      totalResults = Number((countRows[0] as DataRow | undefined)?.count ?? 0);
+    }
+
+    const rows = (await queryForStage<RowDataPacket[]>(
       stageKey,
       sql,
       rowValues,
       activeConn,
-    );
-    const count = Number((countRows[0] as DataRow | undefined)?.count ?? 0);
-    const items = rows as T[];
+    )) as T[];
+    const items =
+      limit !== undefined && !wantsTotalResults ? rows.slice(0, limit) : rows;
+    const hasMore =
+      limit === undefined
+        ? false
+        : wantsTotalResults
+          ? (totalResults ?? 0) > offset + items.length
+          : rows.length > limit;
     return {
       offset,
       limit: limit ?? items.length,
       items,
-      count,
+      count: items.length,
+      hasMore,
+      ...(totalResults === undefined ? {} : { totalResults }),
     };
   };
 

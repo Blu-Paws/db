@@ -44,6 +44,10 @@
     "type": "string",
     "association": "variant"
   },
+  "unit_of_measure": {
+    "type": "string",
+    "association": "variant"
+  },
   "sku": {
     "type": "string",
     "association": "variant"

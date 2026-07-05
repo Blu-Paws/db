@@ -96,6 +96,7 @@ export type GetRowOptions = ReadOptions;
 export type ReadOrderDirection = 'asc' | 'desc';
 
 export type GetRowsOptions = ReadOptions & {
+  totalResults?: boolean;
   offset?: number;
   limit?: number;
   orderBy?: string;
@@ -107,6 +108,8 @@ export type GetRowsResult<T> = {
   limit: number;
   items: T[];
   count: number;
+  hasMore: boolean;
+  totalResults?: number;
 };
 
 export type FatalMysqlError = QueryError & {
