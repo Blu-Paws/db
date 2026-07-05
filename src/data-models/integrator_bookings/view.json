@@ -38,6 +38,9 @@
   "updated_at": {
     "type": "datetime"
   },
+  "sync_status": {
+    "type": "string"
+  },
   "last_sync_error": {
     "type": "string"
   }

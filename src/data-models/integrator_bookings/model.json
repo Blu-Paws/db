@@ -77,6 +77,12 @@
     "updateable": true,
     "createable": true
   },
+  "sync_status": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
   "last_sync_error": {
     "type": "string",
     "required": false,

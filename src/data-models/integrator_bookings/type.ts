@@ -12,5 +12,6 @@ export interface VIEW_INTEGRATOR_BOOKINGS {
   square_version: number;
   created_at: string;
   updated_at: string;
+  sync_status: string;
   last_sync_error: string;
 }
