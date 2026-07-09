@@ -178,5 +178,17 @@
     "createable": true,
     "updateable": true,
     "required": true
+  },
+  "payment_id": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": false
+  },
+  "paymenttype_id": {
+    "type": "number",
+    "createable": true,
+    "updateable": true,
+    "required": false
   }
 }

@@ -29,4 +29,6 @@ export interface VIEW_EVISIT_DETAILS {
   updated_by: number;
   updated_date: string;
   status: number;
+  payment_id: string;
+  paymenttype_id: number;
 }

@@ -88,5 +88,11 @@
   },
   "status": {
     "type": "number"
+  },
+  "payment_id": {
+    "type": "string"
+  },
+  "paymenttype_id": {
+    "type": "number"
   }
 }
