@@ -5,7 +5,7 @@
     "updateable": false,
     "createable": true
   },
-  "evisit_id": {
+  "entity_id": {
     "type": "number",
     "required": true,
     "updateable": false,

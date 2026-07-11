@@ -2,7 +2,7 @@
   "question_id": {
     "type": "number"
   },
-  "evisit_id": {
+  "entity_id": {
     "type": "number"
   },
   "module_id": {
