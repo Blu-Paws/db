@@ -25,6 +25,16 @@ export type ViewAssociationJoin = {
     targetFilters?: DataRow;
     alias?: string;
     joinType?: 'LEFT' | 'INNER';
+    aggregate?: ViewAssociationAggregate;
+};
+export type ViewAssociationAggregateFunction = 'SUM';
+export type ViewAssociationAggregateField = {
+    field: string;
+    function: ViewAssociationAggregateFunction;
+    default?: number;
+};
+export type ViewAssociationAggregate = {
+    fields: Record<string, ViewAssociationAggregateField>;
 };
 export type ViewAssociation = {
     tableName?: string;
@@ -35,6 +45,7 @@ export type ViewAssociation = {
     targetSelectField?: string;
     alias?: string;
     joinType?: 'LEFT' | 'INNER';
+    aggregate?: ViewAssociationAggregate;
     path?: ViewAssociationJoin[];
 };
 export type ViewAssociations = Record<string, ViewAssociation>;

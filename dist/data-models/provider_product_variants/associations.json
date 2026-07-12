@@ -5,5 +5,26 @@
     "targetField": "product_id",
     "alias": "provider_products_ref",
     "joinType": "INNER"
+  },
+  "stock": {
+    "tableName": "provider_inventory_stock",
+    "sourceField": "variant_id",
+    "targetField": "variant_id",
+    "alias": "provider_inventory_stock_totals",
+    "joinType": "LEFT",
+    "aggregate": {
+      "fields": {
+        "quantity_on_hand": {
+          "field": "quantity_on_hand",
+          "function": "SUM",
+          "default": 0
+        },
+        "reserved_quantity": {
+          "field": "reserved_quantity",
+          "function": "SUM",
+          "default": 0
+        }
+      }
+    }
   }
 }

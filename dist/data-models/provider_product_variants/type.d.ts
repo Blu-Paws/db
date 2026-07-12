@@ -21,6 +21,8 @@ export interface VIEW_PROVIDER_PRODUCT_VARIANTS {
     updated_by: number;
     created_date: string;
     updated_date: string;
+    quantity_on_hand: number;
+    reserved_quantity: number;
     clinic_id: number;
     category_id: number;
     product_code: string;

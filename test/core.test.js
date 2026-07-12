@@ -941,6 +941,54 @@ test('provider product variants expose product table columns through product ass
   assert.match(sql, /provider_product_variants\.product_id AS product_id/);
 });
 
+test('provider product variants expose summed stock quantities without duplicating variants', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [
+        {
+          variant_id: 7,
+          quantity_on_hand: 12,
+          reserved_quantity: 3,
+        },
+      ],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('provider_product_variants', {
+    filters: [
+      { field: 'variant_id', operator: '=', value: 7 },
+      { field: 'quantity_on_hand', operator: '>', value: 0 },
+    ],
+    fields: ['variant_id', 'quantity_on_hand', 'reserved_quantity'],
+  });
+
+  assert.deepEqual(row, {
+    variant_id: 7,
+    quantity_on_hand: 12,
+    reserved_quantity: 3,
+  });
+  const sql = calls.connections[0].queries[0].sql;
+  assert.match(
+    sql,
+    /LEFT JOIN \(SELECT variant_id, SUM\(provider_inventory_stock\.quantity_on_hand\) AS quantity_on_hand, SUM\(provider_inventory_stock\.reserved_quantity\) AS reserved_quantity FROM provider_inventory_stock GROUP BY variant_id\) AS provider_inventory_stock_totals ON provider_product_variants\.variant_id = provider_inventory_stock_totals\.variant_id/,
+  );
+  assert.match(
+    sql,
+    /COALESCE\(provider_inventory_stock_totals\.quantity_on_hand, 0\) AS quantity_on_hand/,
+  );
+  assert.match(
+    sql,
+    /COALESCE\(provider_inventory_stock_totals\.reserved_quantity, 0\) AS reserved_quantity/,
+  );
+  assert.match(
+    sql,
+    /COALESCE\(provider_inventory_stock_totals\.quantity_on_hand, 0\) > \?/,
+  );
+  assert.doesNotMatch(sql, /JOIN provider_inventory_stock AS/);
+  assert.deepEqual(calls.connections[0].queries[0].values, [7, 0]);
+});
+
 test('getRowsFromTable counts rows with association filters using the same join graph', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [[{ count: 1 }], [{ variant_id: 7 }]],

@@ -259,8 +259,36 @@ const getAssociationJoins = (tableName, fieldName, association) => {
             targetFilters: association.targetFilters,
             alias: association.alias,
             joinType: association.joinType,
+            aggregate: association.aggregate,
         },
     ];
+};
+const assertSqlIdentifier = (identifier, context) => {
+    if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(identifier)) {
+        throw new Error(`Invalid SQL identifier ${identifier} for ${context}`);
+    }
+};
+const getAggregateDefaultExpression = (aggregateField, expression) => {
+    if (aggregateField.default === undefined) {
+        return expression;
+    }
+    if (typeof aggregateField.default !== 'number' ||
+        !Number.isFinite(aggregateField.default)) {
+        throw new Error(`Aggregate default for ${aggregateField.field} must be a finite number`);
+    }
+    return `COALESCE(${expression}, ${aggregateField.default})`;
+};
+const resolveAggregateViewField = (association, targetSelectField) => {
+    const joins = association.path ?? [
+        {
+            tableName: association.tableName,
+            sourceField: association.sourceField,
+            targetField: association.targetField,
+            aggregate: association.aggregate,
+        },
+    ];
+    const aggregate = joins[joins.length - 1]?.aggregate;
+    return aggregate?.fields[targetSelectField] ?? null;
 };
 const createJoinResolutionState = (tableName) => ({
     joins: new Map(),
@@ -298,7 +326,29 @@ const ensureAssociationJoins = (tableName, fieldName, association, state) => {
         const targetFilterStatement = Object.keys(targetFilterData)
             .map((key) => `${alias}.${key} = ?`)
             .join(' AND ');
-        const join = `${joinType} JOIN ${associationJoin.tableName} AS ${alias} ON ${sourceAlias}.${associationJoin.sourceField} = ${alias}.${associationJoin.targetField}${targetFilterStatement.length === 0 ? '' : ` AND ${targetFilterStatement}`}`;
+        let join = `${joinType} JOIN ${associationJoin.tableName} AS ${alias} ON ${sourceAlias}.${associationJoin.sourceField} = ${alias}.${associationJoin.targetField}${targetFilterStatement.length === 0 ? '' : ` AND ${targetFilterStatement}`}`;
+        if (associationJoin.aggregate != null) {
+            const aggregateFields = Object.entries(associationJoin.aggregate.fields);
+            if (aggregateFields.length === 0) {
+                throw new Error(`Aggregate association has no fields for ${tableName}.${fieldName}`);
+            }
+            const aggregateSelects = aggregateFields.map(([aggregateFieldName, aggregateField]) => {
+                assertSqlIdentifier(aggregateFieldName, `${tableName}.${fieldName}`);
+                if (aggregateField.function !== 'SUM') {
+                    throw new Error(`Unsupported aggregate function ${aggregateField.function} for ${tableName}.${fieldName}`);
+                }
+                if (targetTable.model[aggregateField.field] == null) {
+                    throw new Error(`Unknown aggregate field ${aggregateField.field} for ${tableName}.${fieldName}`);
+                }
+                const aggregateExpression = `${aggregateField.function}(${associationJoin.tableName}.${aggregateField.field})`;
+                return `${aggregateExpression} AS ${aggregateFieldName}`;
+            });
+            const aggregateFilterStatement = Object.keys(targetFilterData)
+                .map((key) => `${associationJoin.tableName}.${key} = ?`)
+                .join(' AND ');
+            const aggregateTable = `(SELECT ${associationJoin.targetField}, ${aggregateSelects.join(', ')} FROM ${associationJoin.tableName}${aggregateFilterStatement.length === 0 ? '' : ` WHERE ${aggregateFilterStatement}`} GROUP BY ${associationJoin.targetField})`;
+            join = `${joinType} JOIN ${aggregateTable} AS ${alias} ON ${sourceAlias}.${associationJoin.sourceField} = ${alias}.${associationJoin.targetField}`;
+        }
         const existingJoin = state.joins.get(alias);
         if (existingJoin != null && existingJoin !== join) {
             throw new Error(`Conflicting join alias ${alias} for ${tableName}`);
@@ -347,6 +397,13 @@ const resolveViewFieldReference = (tableName, fieldName, state) => {
     const targetTable = (0, utils_1.getTableDefinition)(targetTableName);
     if (targetTable.model[targetSelectField] == null) {
         throw new Error(`Unknown target select field ${targetSelectField} for ${tableName}.${fieldName}`);
+    }
+    const aggregateField = resolveAggregateViewField(association, targetSelectField);
+    if (aggregateField != null) {
+        return {
+            expression: getAggregateDefaultExpression(aggregateField, `${targetAlias}.${targetSelectField}`),
+            field,
+        };
     }
     return {
         expression: `${targetAlias}.${targetSelectField}`,

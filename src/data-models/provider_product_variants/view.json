@@ -65,6 +65,14 @@
   "updated_date": {
     "type": "datetime"
   },
+  "quantity_on_hand": {
+    "type": "number",
+    "association": "stock"
+  },
+  "reserved_quantity": {
+    "type": "number",
+    "association": "stock"
+  },
   "clinic_id": {
     "type": "number",
     "association": "product"
