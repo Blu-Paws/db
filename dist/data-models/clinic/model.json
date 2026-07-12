@@ -11,6 +11,12 @@
     "updateable": true,
     "required": true
   },
+  "flavor": {
+    "type": "string",
+    "createable": true,
+    "updateable": true,
+    "required": true
+  },
   "alternate_contact_phone": {
     "type": "string",
     "createable": true,

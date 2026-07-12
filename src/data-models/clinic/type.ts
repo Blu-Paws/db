@@ -1,6 +1,7 @@
 export interface VIEW_CLINIC {
   clinic_id: number;
   name: string;
+  flavor: string;
   clinic_status_id: number;
   status_name: string;
   location_coordinates: string;
