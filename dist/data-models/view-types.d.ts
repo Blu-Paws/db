@@ -44,6 +44,7 @@ export type { VIEW_PROVIDER_EXPERIENCE_PRICE } from './provider_experience_price
 export type { VIEW_PROVIDER_INSPECTION_CHECKLIST } from './provider_inspection_checklist/type';
 export type { VIEW_PROVIDER_INSPECTION_CHECKLIST_QUESTIONS } from './provider_inspection_checklist_questions/type';
 export type { VIEW_PROVIDER_INVENTORY_BATCH } from './provider_inventory_batch/type';
+export type { VIEW_PROVIDER_INVENTORY_CONSUMPTION } from './provider_inventory_consumption/type';
 export type { VIEW_PROVIDER_INVENTORY_LOCATIONS } from './provider_inventory_locations/type';
 export type { VIEW_PROVIDER_INVENTORY_MOVEMENTS } from './provider_inventory_movements/type';
 export type { VIEW_PROVIDER_INVENTORY_STOCK } from './provider_inventory_stock/type';

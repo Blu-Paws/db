@@ -1,0 +1,28 @@
+{
+  "variant": {
+    "tableName": "provider_product_variants",
+    "sourceField": "variant_id",
+    "targetField": "variant_id",
+    "alias": "provider_product_variants_ref",
+    "joinType": "INNER"
+  },
+  "product": {
+    "path": [
+      {
+        "tableName": "provider_product_variants",
+        "sourceField": "variant_id",
+        "targetField": "variant_id",
+        "alias": "provider_product_variants_ref",
+        "joinType": "INNER"
+      },
+      {
+        "tableName": "provider_products",
+        "sourceAlias": "provider_product_variants_ref",
+        "sourceField": "product_id",
+        "targetField": "product_id",
+        "alias": "provider_products_ref",
+        "joinType": "INNER"
+      }
+    ]
+  }
+}

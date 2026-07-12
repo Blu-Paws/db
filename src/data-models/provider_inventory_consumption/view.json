@@ -1,0 +1,45 @@
+{
+  "consumption_id": {
+    "type": "number"
+  },
+  "clinic_id": {
+    "type": "number"
+  },
+  "reference_type": {
+    "type": "string"
+  },
+  "reference_id": {
+    "type": "string"
+  },
+  "variant_id": {
+    "type": "number"
+  },
+  "sku": {
+    "type": "string",
+    "association": "variant"
+  },
+  "variant_name": {
+    "type": "string",
+    "association": "variant"
+  },
+  "product_name": {
+    "type": "string",
+    "association": "product"
+  },
+  "image_path": {
+    "type": "string",
+    "association": "product"
+  },
+  "quantity": {
+    "type": "number"
+  },
+  "is_optional": {
+    "type": "number"
+  },
+  "created_by": {
+    "type": "number"
+  },
+  "create_date": {
+    "type": "datetime"
+  }
+}
