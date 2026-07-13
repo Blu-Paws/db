@@ -26,6 +26,10 @@
     "type": "string",
     "association": "product"
   },
+  "product_id": {
+    "type": "number",
+    "association": "variant"
+  },
   "image_path": {
     "type": "string",
     "association": "product"

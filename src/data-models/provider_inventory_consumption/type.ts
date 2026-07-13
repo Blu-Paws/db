@@ -7,6 +7,7 @@ export interface VIEW_PROVIDER_INVENTORY_CONSUMPTION {
   sku: string;
   variant_name: string;
   product_name: string;
+  product_id: number;
   image_path: string;
   quantity: number;
   is_optional: number;

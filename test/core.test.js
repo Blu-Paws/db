@@ -1025,6 +1025,47 @@ test('getRowsFromTable counts rows with association filters using the same join 
   );
 });
 
+test('provider inventory consumption exposes product_id through variant association', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [
+        {
+          consumption_id: 21,
+          variant_id: 7,
+          product_id: 15,
+        },
+      ],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('provider_inventory_consumption', {
+    filters: [
+      { field: 'consumption_id', operator: '=', value: 21 },
+      { field: 'product_id', operator: '=', value: 15 },
+    ],
+    fields: ['consumption_id', 'variant_id', 'product_id'],
+  });
+
+  assert.deepEqual(row, {
+    consumption_id: 21,
+    variant_id: 7,
+    product_id: 15,
+  });
+  const sql = calls.connections[0].queries[0].sql;
+  assert.match(
+    sql,
+    /INNER JOIN provider_product_variants AS provider_product_variants_ref ON provider_inventory_consumption\.variant_id = provider_product_variants_ref\.variant_id/,
+  );
+  assert.match(
+    sql,
+    /provider_product_variants_ref\.product_id AS product_id/,
+  );
+  assert.match(sql, /provider_product_variants_ref\.product_id = \?/);
+  assert.doesNotMatch(sql, /JOIN provider_products AS provider_products_ref/);
+  assert.deepEqual(calls.connections[0].queries[0].values, [21, 15]);
+});
+
 test('provider inventory movements read joins variant product and location fields', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [
