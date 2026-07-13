@@ -9,11 +9,11 @@ import type {
   ViewModel,
 } from '../../types';
 
-export type ProviderInventoryConsumptionTable =
-  typeof providerInventoryConsumptionTable;
+export type ProviderServiceConsumablesTable =
+  typeof providerServiceConsumablesTable;
 
-export const providerInventoryConsumptionTable: TableDefinition = {
-  tableName: 'provider_inventory_consumption',
+export const providerServiceConsumablesTable: TableDefinition = {
+  tableName: 'provider_service_consumables',
   model: model as DataModel,
   view: view as ViewModel,
   associations: associations as ViewAssociations,
@@ -22,4 +22,4 @@ export const providerInventoryConsumptionTable: TableDefinition = {
   validateDelete: async (_conn, _row) => {},
 };
 
-export default providerInventoryConsumptionTable;
+export default providerServiceConsumablesTable;

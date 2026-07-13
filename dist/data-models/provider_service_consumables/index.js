@@ -3,12 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.providerInventoryConsumptionTable = void 0;
+exports.providerServiceConsumablesTable = void 0;
 const model_json_1 = __importDefault(require("./model.json"));
 const view_json_1 = __importDefault(require("./view.json"));
 const associations_json_1 = __importDefault(require("./associations.json"));
-exports.providerInventoryConsumptionTable = {
-    tableName: 'provider_inventory_consumption',
+exports.providerServiceConsumablesTable = {
+    tableName: 'provider_service_consumables',
     model: model_json_1.default,
     view: view_json_1.default,
     associations: associations_json_1.default,
@@ -16,5 +16,5 @@ exports.providerInventoryConsumptionTable = {
     validateUpdate: async (_conn, _row) => { },
     validateDelete: async (_conn, _row) => { },
 };
-exports.default = exports.providerInventoryConsumptionTable;
+exports.default = exports.providerServiceConsumablesTable;
 //# sourceMappingURL=index.js.map

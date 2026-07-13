@@ -351,7 +351,7 @@ CREATE TABLE IF NOT EXISTS provider_inventory_stock (
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS provider_inventory_consumption (
+CREATE TABLE IF NOT EXISTS provider_service_consumables (
   consumption_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   clinic_id INT NOT NULL,
   reference_type VARCHAR(45) NOT NULL,
@@ -366,19 +366,19 @@ CREATE TABLE IF NOT EXISTS provider_inventory_consumption (
 
   PRIMARY KEY (consumption_id),
 
-  KEY idx_provider_inventory_consumption_clinic (clinic_id),
-  KEY idx_provider_inventory_consumption_reference_id (reference_id),
-  KEY idx_provider_inventory_consumption_variant (variant_id),
+  KEY idx_provider_service_consumables_clinic (clinic_id),
+  KEY idx_provider_service_consumables_reference_id (reference_id),
+  KEY idx_provider_service_consumables_variant (variant_id),
 
-  CONSTRAINT fk_provider_inventory_consumption_clinic
+  CONSTRAINT fk_provider_service_consumables_clinic
     FOREIGN KEY (clinic_id)
     REFERENCES clinic(clinic_id),
 
-  CONSTRAINT fk_provider_inventory_consumption_variant
+  CONSTRAINT fk_provider_service_consumables_variant
     FOREIGN KEY (variant_id)
     REFERENCES provider_product_variants(variant_id),
 
-  CONSTRAINT chk_provider_inventory_consumption_optional
+  CONSTRAINT chk_provider_service_consumables_optional
     CHECK (is_optional IN (0, 1))
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4

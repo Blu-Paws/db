@@ -1025,7 +1025,7 @@ test('getRowsFromTable counts rows with association filters using the same join 
   );
 });
 
-test('provider inventory consumption exposes product_id through variant association', async () => {
+test('provider service consumables expose product_id through variant association', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [
       [
@@ -1039,7 +1039,7 @@ test('provider inventory consumption exposes product_id through variant associat
   });
   const db = api.createConnection('dev', 'clinic');
 
-  const row = await db.getRowFromTable('provider_inventory_consumption', {
+  const row = await db.getRowFromTable('provider_service_consumables', {
     filters: [
       { field: 'consumption_id', operator: '=', value: 21 },
       { field: 'product_id', operator: '=', value: 15 },
@@ -1055,7 +1055,7 @@ test('provider inventory consumption exposes product_id through variant associat
   const sql = calls.connections[0].queries[0].sql;
   assert.match(
     sql,
-    /INNER JOIN provider_product_variants AS provider_product_variants_ref ON provider_inventory_consumption\.variant_id = provider_product_variants_ref\.variant_id/,
+    /INNER JOIN provider_product_variants AS provider_product_variants_ref ON provider_service_consumables\.variant_id = provider_product_variants_ref\.variant_id/,
   );
   assert.match(
     sql,

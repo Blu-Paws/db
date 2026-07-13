@@ -44,7 +44,6 @@ export type { VIEW_PROVIDER_EXPERIENCE_PRICE } from './provider_experience_price
 export type { VIEW_PROVIDER_INSPECTION_CHECKLIST } from './provider_inspection_checklist/type';
 export type { VIEW_PROVIDER_INSPECTION_CHECKLIST_QUESTIONS } from './provider_inspection_checklist_questions/type';
 export type { VIEW_PROVIDER_INVENTORY_BATCH } from './provider_inventory_batch/type';
-export type { VIEW_PROVIDER_INVENTORY_CONSUMPTION } from './provider_inventory_consumption/type';
 export type { VIEW_PROVIDER_INVENTORY_LOCATIONS } from './provider_inventory_locations/type';
 export type { VIEW_PROVIDER_INVENTORY_MOVEMENTS } from './provider_inventory_movements/type';
 export type { VIEW_PROVIDER_INVENTORY_STOCK } from './provider_inventory_stock/type';
@@ -58,6 +57,7 @@ export type { VIEW_PROVIDER_PRODUCTS } from './provider_products/type';
 export type { VIEW_PROVIDER_PRODUCT_CHANNELS } from './provider_product_channels/type';
 export type { VIEW_PROVIDER_PRODUCT_VARIANTS } from './provider_product_variants/type';
 export type { VIEW_PROVIDER_SCHEDULES } from './provider_schedules/type';
+export type { VIEW_PROVIDER_SERVICE_CONSUMABLES } from './provider_service_consumables/type';
 export type { VIEW_PROVIDER_SUBSCRIPTIONS } from './provider_subscriptions/type';
 export type { VIEW_PROVIDER_SUBSCRIPTIONS_HISTORY } from './provider_subscriptions_history/type';
 export type { VIEW_SESSION } from './session/type';

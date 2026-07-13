@@ -45,12 +45,12 @@ import providerExperiencePriceTable from './data-models/provider_experience_pric
 import providerInspectionChecklistTable from './data-models/provider_inspection_checklist';
 import providerInspectionChecklistQuestionsTable from './data-models/provider_inspection_checklist_questions';
 import providerInventoryLocationsTable from './data-models/provider_inventory_locations';
-import providerInventoryConsumptionTable from './data-models/provider_inventory_consumption';
 import providerInventoryMovementsTable from './data-models/provider_inventory_movements';
 import providerInventoryBatch from './data-models/provider_inventory_batch';
 import providerInventoryStockTable from './data-models/provider_inventory_stock';
 import providerPackageServicesTable from './data-models/provider_package_services';
 import providerPackagesTable from './data-models/provider_packages';
+import providerServiceConsumablesTable from './data-models/provider_service_consumables';
 import providerProductChannelsTable from './data-models/provider_product_channels';
 import providerProductVariantsTable from './data-models/provider_product_variants';
 import providerProductsTable from './data-models/provider_products';
@@ -113,12 +113,12 @@ export const tableDefinitions = {
   provider_inspection_checklist_questions:
     providerInspectionChecklistQuestionsTable,
   provider_inventory_locations: providerInventoryLocationsTable,
-  provider_inventory_consumption: providerInventoryConsumptionTable,
   provider_inventory_movements: providerInventoryMovementsTable,
   provider_inventory_batch: providerInventoryBatch,
   provider_inventory_stock: providerInventoryStockTable,
   provider_package_services: providerPackageServicesTable,
   provider_packages: providerPackagesTable,
+  provider_service_consumables: providerServiceConsumablesTable,
   provider_product_channels: providerProductChannelsTable,
   provider_product_variants: providerProductVariantsTable,
   provider_products: providerProductsTable,

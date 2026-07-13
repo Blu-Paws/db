@@ -49,12 +49,12 @@ const provider_experience_price_1 = __importDefault(require("./data-models/provi
 const provider_inspection_checklist_1 = __importDefault(require("./data-models/provider_inspection_checklist"));
 const provider_inspection_checklist_questions_1 = __importDefault(require("./data-models/provider_inspection_checklist_questions"));
 const provider_inventory_locations_1 = __importDefault(require("./data-models/provider_inventory_locations"));
-const provider_inventory_consumption_1 = __importDefault(require("./data-models/provider_inventory_consumption"));
 const provider_inventory_movements_1 = __importDefault(require("./data-models/provider_inventory_movements"));
 const provider_inventory_batch_1 = __importDefault(require("./data-models/provider_inventory_batch"));
 const provider_inventory_stock_1 = __importDefault(require("./data-models/provider_inventory_stock"));
 const provider_package_services_1 = __importDefault(require("./data-models/provider_package_services"));
 const provider_packages_1 = __importDefault(require("./data-models/provider_packages"));
+const provider_service_consumables_1 = __importDefault(require("./data-models/provider_service_consumables"));
 const provider_product_channels_1 = __importDefault(require("./data-models/provider_product_channels"));
 const provider_product_variants_1 = __importDefault(require("./data-models/provider_product_variants"));
 const provider_products_1 = __importDefault(require("./data-models/provider_products"));
@@ -115,12 +115,12 @@ exports.tableDefinitions = {
     provider_inspection_checklist: provider_inspection_checklist_1.default,
     provider_inspection_checklist_questions: provider_inspection_checklist_questions_1.default,
     provider_inventory_locations: provider_inventory_locations_1.default,
-    provider_inventory_consumption: provider_inventory_consumption_1.default,
     provider_inventory_movements: provider_inventory_movements_1.default,
     provider_inventory_batch: provider_inventory_batch_1.default,
     provider_inventory_stock: provider_inventory_stock_1.default,
     provider_package_services: provider_package_services_1.default,
     provider_packages: provider_packages_1.default,
+    provider_service_consumables: provider_service_consumables_1.default,
     provider_product_channels: provider_product_channels_1.default,
     provider_product_variants: provider_product_variants_1.default,
     provider_products: provider_products_1.default,

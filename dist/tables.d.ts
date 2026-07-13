@@ -46,12 +46,12 @@ export declare const tableDefinitions: {
     provider_inspection_checklist: TableDefinition;
     provider_inspection_checklist_questions: TableDefinition;
     provider_inventory_locations: TableDefinition;
-    provider_inventory_consumption: TableDefinition;
     provider_inventory_movements: TableDefinition;
     provider_inventory_batch: TableDefinition;
     provider_inventory_stock: TableDefinition;
     provider_package_services: TableDefinition;
     provider_packages: TableDefinition;
+    provider_service_consumables: TableDefinition;
     provider_product_channels: TableDefinition;
     provider_product_variants: TableDefinition;
     provider_products: TableDefinition;

@@ -1,4 +1,4 @@
-export interface VIEW_PROVIDER_INVENTORY_CONSUMPTION {
+export interface VIEW_PROVIDER_SERVICE_CONSUMABLES {
   consumption_id: number;
   clinic_id: number;
   reference_type: string;
