@@ -65,6 +65,7 @@ const provider_price_specialist_surcharges_1 = __importDefault(require("./data-m
 const provider_schedules_1 = __importDefault(require("./data-models/provider_schedules"));
 const provider_subscriptions_1 = __importDefault(require("./data-models/provider_subscriptions"));
 const provider_subscriptions_history_1 = __importDefault(require("./data-models/provider_subscriptions_history"));
+const provider_visit_consumptions_1 = __importDefault(require("./data-models/provider_visit_consumptions"));
 const session_1 = __importDefault(require("./data-models/session"));
 const visit_activities_1 = __importDefault(require("./data-models/visit_activities"));
 const fcm_login_device_map_1 = __importDefault(require("./data-models/fcm_login_device_map"));
@@ -131,6 +132,7 @@ exports.tableDefinitions = {
     provider_schedules: provider_schedules_1.default,
     provider_subscriptions: provider_subscriptions_1.default,
     provider_subscriptions_history: provider_subscriptions_history_1.default,
+    provider_visit_consumptions: provider_visit_consumptions_1.default,
     session: session_1.default,
     visit_activities: visit_activities_1.default,
 };

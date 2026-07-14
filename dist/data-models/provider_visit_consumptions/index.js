@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.providerVisitConsumptionsTable = void 0;
+const model_json_1 = __importDefault(require("./model.json"));
+const view_json_1 = __importDefault(require("./view.json"));
+const associations_json_1 = __importDefault(require("./associations.json"));
+exports.providerVisitConsumptionsTable = {
+    tableName: 'provider_visit_consumptions',
+    model: model_json_1.default,
+    view: view_json_1.default,
+    associations: associations_json_1.default,
+    validateInsert: async (_conn, _row) => { },
+    validateUpdate: async (_conn, _row) => { },
+    validateDelete: async (_conn, _row) => { },
+};
+exports.default = exports.providerVisitConsumptionsTable;
+//# sourceMappingURL=index.js.map

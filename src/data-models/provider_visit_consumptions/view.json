@@ -1,0 +1,89 @@
+{
+  "visit_consumption_id": {
+    "type": "number"
+  },
+  "clinic_id": {
+    "type": "number"
+  },
+  "evisit_id": {
+    "type": "number"
+  },
+  "variant_id": {
+    "type": "number"
+  },
+  "location_id": {
+    "type": "number"
+  },
+  "inventory_batch_id": {
+    "type": "number"
+  },
+  "quantity": {
+    "type": "number"
+  },
+  "created_by": {
+    "type": "number"
+  },
+  "create_date": {
+    "type": "datetime"
+  },
+  "sku": {
+    "type": "string",
+    "association": "variant"
+  },
+  "variant_code": {
+    "type": "string",
+    "association": "variant"
+  },
+  "variant_name": {
+    "type": "string",
+    "association": "variant"
+  },
+  "unit_of_measure": {
+    "type": "string",
+    "association": "variant"
+  },
+  "product_id": {
+    "type": "number",
+    "association": "product"
+  },
+  "product_code": {
+    "type": "string",
+    "association": "product"
+  },
+  "product_name": {
+    "type": "string",
+    "association": "product"
+  },
+  "location_code": {
+    "type": "string",
+    "association": "location"
+  },
+  "location_name": {
+    "type": "string",
+    "association": "location"
+  },
+  "location_type": {
+    "type": "string",
+    "association": "location"
+  },
+  "full_path_code": {
+    "type": "string",
+    "association": "location"
+  },
+  "batch_number": {
+    "type": "string",
+    "association": "batch"
+  },
+  "manufacture_date": {
+    "type": "datetime",
+    "association": "batch"
+  },
+  "expiry_date": {
+    "type": "datetime",
+    "association": "batch"
+  },
+  "purchase_cost": {
+    "type": "number",
+    "association": "batch"
+  }
+}

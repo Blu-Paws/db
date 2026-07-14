@@ -61,6 +61,7 @@ import providerPriceSpecialistSurchargesTable from './data-models/provider_price
 import providerSchedulesTable from './data-models/provider_schedules';
 import providerSubscriptionsTable from './data-models/provider_subscriptions';
 import providerSubscriptionsHistoryTable from './data-models/provider_subscriptions_history';
+import providerVisitConsumptionsTable from './data-models/provider_visit_consumptions';
 import sessionTable from './data-models/session';
 import visitActivitiesTable from './data-models/visit_activities';
 import fcmLoginDeviceMapTable from './data-models/fcm_login_device_map';
@@ -129,6 +130,7 @@ export const tableDefinitions = {
   provider_schedules: providerSchedulesTable,
   provider_subscriptions: providerSubscriptionsTable,
   provider_subscriptions_history: providerSubscriptionsHistoryTable,
+  provider_visit_consumptions: providerVisitConsumptionsTable,
   session: sessionTable,
   visit_activities: visitActivitiesTable,
 } satisfies Record<string, TableDefinition>;

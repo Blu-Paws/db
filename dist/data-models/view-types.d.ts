@@ -60,5 +60,6 @@ export type { VIEW_PROVIDER_SCHEDULES } from './provider_schedules/type';
 export type { VIEW_PROVIDER_SERVICE_CONSUMABLES } from './provider_service_consumables/type';
 export type { VIEW_PROVIDER_SUBSCRIPTIONS } from './provider_subscriptions/type';
 export type { VIEW_PROVIDER_SUBSCRIPTIONS_HISTORY } from './provider_subscriptions_history/type';
+export type { VIEW_PROVIDER_VISIT_CONSUMPTIONS } from './provider_visit_consumptions/type';
 export type { VIEW_SESSION } from './session/type';
 export type { VIEW_VISIT_ACTIVITIES } from './visit_activities/type';

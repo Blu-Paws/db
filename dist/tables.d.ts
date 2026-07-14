@@ -62,6 +62,7 @@ export declare const tableDefinitions: {
     provider_schedules: TableDefinition;
     provider_subscriptions: TableDefinition;
     provider_subscriptions_history: TableDefinition;
+    provider_visit_consumptions: TableDefinition;
     session: TableDefinition;
     visit_activities: TableDefinition;
 };

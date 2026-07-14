@@ -1313,6 +1313,104 @@ test('provider inventory stock read joins variant product and location fields', 
   assert.deepEqual(calls.connections[0].queries[0].values, [22, 12]);
 });
 
+test('provider visit consumptions join batch variant product and location fields', async () => {
+  const { api, calls } = createConnectionStub({
+    queryResults: [
+      [
+        {
+          visit_consumption_id: 31,
+          clinic_id: 22,
+          evisit_id: 410,
+          variant_id: 7,
+          location_id: 3,
+          inventory_batch_id: 101,
+          quantity: 2,
+          sku: 'SKU-7',
+          variant_code: 'VAR-7',
+          variant_name: 'Small',
+          unit_of_measure: 'bottle',
+          product_id: 15,
+          product_code: 'PRD-15',
+          product_name: 'Shampoo',
+          location_code: 'MAIN',
+          location_name: 'Main Store',
+          location_type: 'stock',
+          full_path_code: 'MAIN',
+          batch_number: 'B-101',
+          manufacture_date: '2026-01-01',
+          expiry_date: '2027-01-01',
+          purchase_cost: 125,
+        },
+      ],
+    ],
+  });
+  const db = api.createConnection('dev', 'clinic');
+
+  const row = await db.getRowFromTable('provider_visit_consumptions', {
+    filters: [
+      { field: 'clinic_id', operator: '=', value: 22 },
+      { field: 'visit_consumption_id', operator: '=', value: 31 },
+    ],
+    fields: [
+      'visit_consumption_id',
+      'clinic_id',
+      'evisit_id',
+      'variant_id',
+      'location_id',
+      'inventory_batch_id',
+      'quantity',
+      'sku',
+      'variant_code',
+      'variant_name',
+      'unit_of_measure',
+      'product_id',
+      'product_code',
+      'product_name',
+      'location_code',
+      'location_name',
+      'location_type',
+      'full_path_code',
+      'batch_number',
+      'manufacture_date',
+      'expiry_date',
+      'purchase_cost',
+    ],
+  });
+
+  assert.equal(row.visit_consumption_id, 31);
+  assert.equal(row.product_name, 'Shampoo');
+  assert.equal(row.location_name, 'Main Store');
+  assert.equal(row.batch_number, 'B-101');
+  const sql = calls.connections[0].queries[0].sql;
+  assert.match(
+    sql,
+    /INNER JOIN provider_product_variants AS provider_product_variants_ref ON provider_visit_consumptions\.variant_id = provider_product_variants_ref\.variant_id/,
+  );
+  assert.match(
+    sql,
+    /INNER JOIN provider_products AS provider_products_ref ON provider_product_variants_ref\.product_id = provider_products_ref\.product_id/,
+  );
+  assert.match(
+    sql,
+    /INNER JOIN provider_inventory_locations AS provider_inventory_locations_ref ON provider_visit_consumptions\.location_id = provider_inventory_locations_ref\.location_id/,
+  );
+  assert.match(
+    sql,
+    /INNER JOIN provider_inventory_batch AS provider_inventory_batch_ref ON provider_visit_consumptions\.inventory_batch_id = provider_inventory_batch_ref\.inventory_batch_id/,
+  );
+  assert.match(sql, /provider_product_variants_ref\.sku AS sku/);
+  assert.match(sql, /provider_products_ref\.product_name AS product_name/);
+  assert.match(
+    sql,
+    /provider_inventory_locations_ref\.location_name AS location_name/,
+  );
+  assert.match(
+    sql,
+    /provider_inventory_batch_ref\.batch_number AS batch_number/,
+  );
+  assert.deepEqual(calls.connections[0].queries[0].values, [22, 31]);
+});
+
 test('stock reads without fields omit computed and association fields', async () => {
   const { api, calls } = createConnectionStub({
     queryResults: [[{ stock_id: 12 }]],
