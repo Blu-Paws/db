@@ -43,6 +43,7 @@ const pet_vitals_1 = __importDefault(require("./data-models/pet_vitals"));
 const pets_1 = __importDefault(require("./data-models/pets"));
 const promotion_1 = __importDefault(require("./data-models/promotion"));
 const promotion_rules_1 = __importDefault(require("./data-models/promotion_rules"));
+const provider_api_keys_1 = __importDefault(require("./data-models/provider_api_keys"));
 const provider_boarding_prices_1 = __importDefault(require("./data-models/provider_boarding_prices"));
 const provider_boardings_1 = __importDefault(require("./data-models/provider_boardings"));
 const provider_experience_price_1 = __importDefault(require("./data-models/provider_experience_price"));
@@ -110,6 +111,7 @@ exports.tableDefinitions = {
     pets: pets_1.default,
     promotion: promotion_1.default,
     promotion_rules: promotion_rules_1.default,
+    provider_api_keys: provider_api_keys_1.default,
     provider_boarding_prices: provider_boarding_prices_1.default,
     provider_boardings: provider_boardings_1.default,
     provider_experience_price: provider_experience_price_1.default,

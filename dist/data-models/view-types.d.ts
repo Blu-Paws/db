@@ -38,6 +38,7 @@ export type { VIEW_PET_MEDICAL_HISTORY } from './pet_medical_history/type';
 export type { VIEW_PET_VITALS } from './pet_vitals/type';
 export type { VIEW_PROMOTION } from './promotion/type';
 export type { VIEW_PROMOTION_RULES } from './promotion_rules/type';
+export type { VIEW_PROVIDER_API_KEYS } from './provider_api_keys/type';
 export type { VIEW_PROVIDER_BOARDINGS } from './provider_boardings/type';
 export type { VIEW_PROVIDER_BOARDING_PRICES } from './provider_boarding_prices/type';
 export type { VIEW_PROVIDER_EXPERIENCE_PRICE } from './provider_experience_price/type';

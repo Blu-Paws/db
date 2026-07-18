@@ -1,0 +1,32 @@
+{
+  "api_key": {
+    "type": "string"
+  },
+  "clinic_id": {
+    "type": "number"
+  },
+  "create_date": {
+    "type": "datetime"
+  },
+  "update_date": {
+    "type": "datetime"
+  },
+  "updated_by": {
+    "type": "number"
+  },
+  "created_by": {
+    "type": "number"
+  },
+  "integrator_id": {
+    "type": "number"
+  },
+  "buyer_access_token": {
+    "type": "string"
+  },
+  "buyer_refresh_token": {
+    "type": "string"
+  },
+  "updated_date": {
+    "type": "datetime"
+  }
+}
