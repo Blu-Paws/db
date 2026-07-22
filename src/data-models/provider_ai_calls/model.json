@@ -1,0 +1,154 @@
+{
+  "clinic_id": {
+    "type": "number",
+    "primary": true,
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "call_id": {
+    "type": "string",
+    "primary": true,
+    "required": true,
+    "updateable": false,
+    "createable": true
+  },
+  "evisit_id": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "call_duration": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "call_end_time": {
+    "type": "datetime",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "call_start_time": {
+    "type": "datetime",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "call_summary": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "recording": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "transcript": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "additional_information": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "name": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "pet_name": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "pet_type": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "phone_number": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "service_requested": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "best_time_to_call_back": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "lead_source": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "message_receipient": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "message": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "status": {
+    "type": "string",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "assigned_id": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "create_date": {
+    "type": "datetime",
+    "required": false,
+    "updateable": false,
+    "createable": true
+  },
+  "created_by": {
+    "type": "number",
+    "required": false,
+    "updateable": false,
+    "createable": true
+  },
+  "update_date": {
+    "type": "datetime",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  },
+  "updated_by": {
+    "type": "number",
+    "required": false,
+    "updateable": true,
+    "createable": true
+  }
+}

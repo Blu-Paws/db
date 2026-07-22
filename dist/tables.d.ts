@@ -40,6 +40,7 @@ export declare const tableDefinitions: {
     pets: TableDefinition;
     promotion: TableDefinition;
     promotion_rules: TableDefinition;
+    provider_ai_calls: TableDefinition;
     provider_api_keys: TableDefinition;
     provider_boarding_prices: TableDefinition;
     provider_boardings: TableDefinition;

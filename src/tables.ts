@@ -39,6 +39,7 @@ import petVitalsTable from './data-models/pet_vitals';
 import petsTable from './data-models/pets';
 import promotionTable from './data-models/promotion';
 import promotionRulesTable from './data-models/promotion_rules';
+import providerAiCallsTable from './data-models/provider_ai_calls';
 import providerApiKeysTable from './data-models/provider_api_keys';
 import providerBoardingPricesTable from './data-models/provider_boarding_prices';
 import providerBoardingsTable from './data-models/provider_boardings';
@@ -108,6 +109,7 @@ export const tableDefinitions = {
   pets: petsTable,
   promotion: promotionTable,
   promotion_rules: promotionRulesTable,
+  provider_ai_calls: providerAiCallsTable,
   provider_api_keys: providerApiKeysTable,
   provider_boarding_prices: providerBoardingPricesTable,
   provider_boardings: providerBoardingsTable,
